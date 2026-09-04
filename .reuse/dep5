@@ -1,0 +1,14 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: OpenRDX
+Upstream-Contact: André Fiedler
+Source: https://github.com/SunboX/OpenRDX
+
+Files: *
+Copyright: 2026 André Fiedler
+License: AGPL-3.0-or-later
+
+Files:
+ README.md
+ NOTICE
+Copyright: 2026 André Fiedler
+License: CC-BY-SA-4.0
