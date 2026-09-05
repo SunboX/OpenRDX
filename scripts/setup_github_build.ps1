@@ -48,6 +48,17 @@ $process = Start-Process -FilePath $installer -Wait -PassThru -ArgumentList @(
 if ($process.ExitCode -ne 0) {
     throw "TI compiler installer failed with exit code $($process.ExitCode)."
 }
+# The 5.2.5 installer adds its own versioned child below --prefix. Resolve
+# the one installed bin directory instead of assuming the 5.2.9 layout.
+$installedCompilers = @(
+    Get-ChildItem -LiteralPath $ToolsDirectory -Recurse -File -Filter 'armcl.exe' |
+        Where-Object { $_.Directory.Name -eq 'bin' }
+)
+if ($installedCompilers.Count -ne 1) {
+    throw "Expected one installed TI compiler below $ToolsDirectory; found $($installedCompilers.Count)."
+}
+$compilerRoot = $installedCompilers[0].Directory.Parent.FullName
+Write-Host "Installed TI compiler root: $compilerRoot"
 foreach ($name in @('armcl.exe', 'armhex.exe')) {
     $tool = Join-Path $compilerRoot "bin\$name"
     if (-not (Test-Path -LiteralPath $tool -PathType Leaf)) {
