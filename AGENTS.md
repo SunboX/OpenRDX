@@ -89,7 +89,8 @@ conversion remain TI ARM Code Generation Tools responsibilities.
 - Always create and push an explicit version-number Git tag for every GitHub
   release, using `v<MAJOR.MINOR>` (for example, `v1.06`). The tag must identify
   the exact validated release commit, and its version must match `VERSION` and
-  the compiled firmware version. Publish the release against that tag.
+  the compiled firmware version. Publish the release against that tag and title
+  it `OpenRDX v<MAJOR.MINOR>` (for example, `OpenRDX v1.06`).
 - For GitLab merge requests, provide a concise summary, affected repositories
   or paths, and exact testing performed. Attach UI screenshots when a change
   introduces or modifies a UI.
