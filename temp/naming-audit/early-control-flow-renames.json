@@ -1,0 +1,650 @@
+[
+  {
+    "old": "core_validate_structured_flash_image_before_compare_buffers_from_end",
+    "new": "core_image_validation_select_compatibility_checks",
+    "address": "0x08000C96",
+    "evidence": "src/rdx_core/01_image_validation.inc:146; core_validate_structured_flash_image. Transforms the record compatibility field with (field ^ 0x30) & 0x30; the resulting two bits gate signature and authentication checks. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000AEC_FUN_08000aec.c:125.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_001",
+    "changed": true
+  },
+  {
+    "old": "core_validate_structured_flash_image_before_transfer_range_end_range_start_for_validate_structured_flash",
+    "new": "core_image_validation_reject_metadata",
+    "address": "0x08000D36",
+    "evidence": "src/rdx_core/01_image_validation.inc:105; core_validate_structured_flash_image. Sets response_code to 0x2d and resets validation state when the metadata is short, its payload span is below 0xa8, or metadata initialization fails. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000AEC_FUN_08000aec.c:87.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_002",
+    "changed": true
+  },
+  {
+    "old": "core_image_validation_check_failure_status",
+    "new": "core_image_validation_check_failure_status",
+    "address": "0x08000D3C",
+    "evidence": "src/rdx_core/01_image_validation.inc:65; core_validate_structured_flash_image. Tests response_code and resets the image-validation context only on a nonzero failure status. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000AEC_FUN_08000aec.c:51.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_003",
+    "changed": false
+  },
+  {
+    "old": "core_image_validation_reset_rejected_context",
+    "new": "core_image_validation_reset_rejected_context",
+    "address": "0x08000D40",
+    "evidence": "src/rdx_core/01_image_validation.inc:68; core_validate_structured_flash_image. Invokes the validation-context reset helper after selecting the rejection code; the helper preserves the context option byte at offset 0x20. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000AEC_FUN_08000aec.c:53.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_004",
+    "changed": false
+  },
+  {
+    "old": "core_validate_structured_flash_image_before_process_device_status_update",
+    "new": "core_image_validation_dispatch_transfer_state",
+    "address": "0x08000D52",
+    "evidence": "src/rdx_core/01_image_validation.inc:256; core_validate_structured_flash_image. Tests the validation context state: state 1 continues payload processing, and state 2 with finalization enabled and zero source length invokes completion. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000AEC_FUN_08000aec.c:230.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_005",
+    "changed": true
+  },
+  {
+    "old": "core_validate_structured_flash_image_before_updating_operation_result",
+    "new": "core_image_validation_transfer_payload",
+    "address": "0x08000D76",
+    "evidence": "src/rdx_core/01_image_validation.inc:194; core_validate_structured_flash_image. Initializes transfer status, checks the continuation offset, bounds the payload against remaining bytes, writes flash data, and advances CRC/hash state. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000AEC_FUN_08000aec.c:168.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_006",
+    "changed": true
+  },
+  {
+    "old": "core_flash_transfer_reset_failed_context_and_return",
+    "new": "core_flash_transfer_reset_failed_context_and_return",
+    "address": "0x08000E7A",
+    "evidence": "src/rdx_core/01_image_validation.inc:270; core_validate_structured_flash_image. Resets the validation context and returns the selected nonzero transfer or validation failure status. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000AEC_FUN_08000aec.c:240.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_007",
+    "changed": false
+  },
+  {
+    "old": "core_build_scsi_mode_sense_response_before_updating_forward_end_remaining_result",
+    "new": "core_mode_sense_include_caching_page_length",
+    "address": "0x08000EF2",
+    "evidence": "src/rdx_core/01_image_validation.inc:315; core_build_scsi_mode_sense_response. Adds 0x14 bytes for caching mode page 8, then selects page 0x33 as well only for the all-pages request 0x3f. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000E8C_FUN_08000e8c.c:45.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_008",
+    "changed": true
+  },
+  {
+    "old": "core_build_scsi_mode_sense_response_before_updating_data_cursor",
+    "new": "core_mode_sense_select_page_33_length",
+    "address": "0x08000F16",
+    "evidence": "src/rdx_core/01_image_validation.inc:320; core_build_scsi_mode_sense_response. Selects core_mode_page_33_length for direct page 0x33 requests and after the caching-page length for an all-pages request. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000E8C_FUN_08000e8c.c:48.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_009",
+    "changed": true
+  },
+  {
+    "old": "core_build_scsi_mode_sense_response_before_process_ti_memset_for_build_scsi_mode",
+    "new": "core_mode_sense_check_response_length",
+    "address": "0x08000F2C",
+    "evidence": "src/rdx_core/01_image_validation.inc:340; core_build_scsi_mode_sense_response. Returns when the accumulated response length is zero; otherwise allocates and builds the MODE SENSE response. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000E8C_FUN_08000e8c.c:67.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_010",
+    "changed": true
+  },
+  {
+    "old": "core_mode_sense_write_vendor_short_page",
+    "new": "core_mode_sense_write_vendor_short_page",
+    "address": "0x08001092",
+    "evidence": "src/rdx_core/01_image_validation.inc:453; core_build_scsi_mode_sense_response. Builds mode page 0x33 by copying its two-byte header, publishing notification suppression at byte 3 for current/default values, and exposing mask 1 for changeable values. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000E8C_FUN_08000e8c.c:180.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_011",
+    "changed": false
+  },
+  {
+    "old": "core_mode_sense_store_page_byte_six",
+    "new": "core_mode_sense_store_page_byte_six",
+    "address": "0x08001106",
+    "evidence": "src/rdx_core/01_image_validation.inc:410; core_build_scsi_mode_sense_response. Stores the already selected working byte at offset 6 of the current mode page and returns; used by page 0x31 and the page 0x34 changeable mask. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08000E8C_FUN_08000e8c.c:139.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_012",
+    "changed": false
+  },
+  {
+    "old": "core_attribute_list_append_successfully_probed_type",
+    "new": "core_attribute_list_append_successfully_probed_type",
+    "address": "0x08001432",
+    "evidence": "src/rdx_core/01_image_validation.inc:807; core_handle_payload_byte_type_or_response_payload_response_context. Appends the attribute identifier and advances by two bytes only when the attribute probe returned zero, the success convention shared by all three supported attribute types. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080013BC_FUN_080013bc.c:131.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_013",
+    "changed": false
+  },
+  {
+    "old": "core_handle_payload_byte_type_or_response_payload_response_context_before_get_runtime_context_base_for_build_scsi_mode",
+    "new": "core_attribute_values_open_source_record",
+    "address": "0x08001474",
+    "evidence": "src/rdx_core/01_image_validation.inc:707; core_handle_payload_byte_type_or_response_payload_response_context. Opens the runtime source record for the attribute-values response after validating the requested attribute identifier. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080013BC_FUN_080013bc.c:37.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_014",
+    "changed": true
+  },
+  {
+    "old": "core_attribute_values_write_entry_header",
+    "new": "core_attribute_values_write_entry_header",
+    "address": "0x0800152A",
+    "evidence": "src/rdx_core/01_image_validation.inc:759; core_handle_payload_byte_type_or_response_payload_response_context. Writes attribute identifier, format byte, and two-byte value length into the five-byte entry header, then advances the response cursor by that header and its value. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080013BC_FUN_080013bc.c:90.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_015",
+    "changed": false
+  },
+  {
+    "old": "core_handle_payload_byte_type_or_response_payload_response_context_before_store_duplicate_record_value",
+    "new": "core_attribute_response_store_lengths_and_release_record",
+    "address": "0x0800155E",
+    "evidence": "src/rdx_core/01_image_validation.inc:820; core_handle_payload_byte_type_or_response_payload_response_context. Stores the final response length twice, writes the four-byte attribute data length, and releases the temporary source record. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080013BC_FUN_080013bc.c:143.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_016",
+    "changed": true
+  },
+  {
+    "old": "core_attribute_response_store_error",
+    "new": "core_attribute_response_store_error",
+    "address": "0x0800157C",
+    "evidence": "src/rdx_core/01_image_validation.inc:713; core_handle_payload_byte_type_or_response_payload_response_context. Stores the selected attribute command error into the command-status word before the common payload attachment path. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080013BC_FUN_080013bc.c:42.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_017",
+    "changed": false
+  },
+  {
+    "old": "core_attribute_response_build_empty_list",
+    "new": "core_attribute_response_build_empty_list",
+    "address": "0x080015AE",
+    "evidence": "src/rdx_core/01_image_validation.inc:785; core_handle_payload_byte_type_or_response_payload_response_context. Allocates the four-byte response for the empty attribute list forms and writes the compact response header. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080013BC_FUN_080013bc.c:111.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_018",
+    "changed": false
+  },
+  {
+    "old": "core_handle_payload_byte_type_or_response_payload_response_context_before_update_release_record_payload",
+    "new": "core_attribute_response_attach_payload",
+    "address": "0x080015CE",
+    "evidence": "src/rdx_core/01_image_validation.inc:851; core_handle_payload_byte_type_or_response_payload_response_context. Calls the response-payload attachment helper using the selected response record and allocation-length CDB bytes 10 through 13. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080013BC_FUN_080013bc.c:170.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_019",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_or_descriptor_delta_before_copy_word_buffer",
+    "new": "core_multiword_division_copy_remainder",
+    "address": "0x0800165A",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:73; core_handle_descriptor_or_descriptor_delta. Copies the dividend to the remainder buffer when it has fewer significant limbs than the divisor, or equal limb count but a smaller value. The quotient has already been cleared. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080015E4_FUN_080015e4.c:60.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_020",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_or_descriptor_delta_before_get_range_end_range_start",
+    "new": "core_multiword_division_correct_quotient_estimate",
+    "address": "0x08001710",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:112; core_handle_descriptor_or_descriptor_delta. Checks the estimated quotient limb against the next divisor and dividend limbs; decrements the estimate and adds the high divisor limb to the trial remainder when the estimate is too large. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080015E4_FUN_080015e4.c:95.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_021",
+    "changed": true
+  },
+  {
+    "old": "core_handle_response_attribute_bytes_before_forward_end_remaining",
+    "new": "core_attribute_update_append_entry_metadata",
+    "address": "0x0800192E",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:308; core_handle_response_attribute_bytes. Enforces the three-entry bound, copies six bytes of validated attribute metadata into the selected slot, and increments the entry count. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001804_FUN_08001804.c:124.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_022",
+    "changed": true
+  },
+  {
+    "old": "core_handle_response_attribute_bytes_before_release_record_buffer",
+    "new": "core_attribute_update_reject_entry",
+    "address": "0x08001940",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:276; core_handle_response_attribute_bytes. Stores command status 10 for a short entry header, unsupported or nonascending identifier, invalid length, or more than three selected entries. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001804_FUN_08001804.c:92.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_023",
+    "changed": true
+  },
+  {
+    "old": "core_handle_response_attribute_bytes_before_get_runtime_context_base_for_build_scsi_mode",
+    "new": "core_attribute_update_apply_entries",
+    "address": "0x0800194E",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:240; core_handle_response_attribute_bytes. Opens the runtime source record and applies the collected attribute entries before releasing it and finalizing the command. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001804_FUN_08001804.c:58.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_024",
+    "changed": true
+  },
+  {
+    "old": "core_handle_response_attribute_bytes_before_finalize_command_response_hook",
+    "new": "core_attribute_update_finalize_response",
+    "address": "0x080019C4",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:336; core_handle_response_attribute_bytes. Invokes the common command-response finalization hook and returns after attribute processing or a format error. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001804_FUN_08001804.c:150.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_025",
+    "changed": true
+  },
+  {
+    "old": "core_handle_response_attribute_bytes_before_update_command_validation_context",
+    "new": "core_attribute_update_store_validation_error",
+    "address": "0x080019D2",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:223; core_handle_response_attribute_bytes. Stores the selected command status and returns before attribute parsing for an excessive parameter length or failure to acquire the command payload. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001804_FUN_08001804.c:42.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_026",
+    "changed": true
+  },
+  {
+    "old": "core_handle_device_descriptor_response_flag_device_descriptor_context_before_updating_operation_status",
+    "new": "core_descriptor_response_check_source_status",
+    "address": "0x08001B72",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:441; core_handle_device_descriptor_response_flag_device_descriptor_context. Checks whether the source-record initialization succeeded; failed initialization is routed to the existing error-preservation branch, while a usable source yields success. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080019DC_FUN_080019dc.c:91.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_027",
+    "changed": true
+  },
+  {
+    "old": "core_descriptor_response_preserve_initialization_error",
+    "new": "core_descriptor_response_preserve_initialization_error",
+    "address": "0x08001B78",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:476; core_handle_device_descriptor_response_flag_device_descriptor_context. Preserves the record-initialization error when command phase 3 is available; when the phase is absent, it falls through to success instead of publishing that initialization error. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080019DC_FUN_080019dc.c:123.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_028",
+    "changed": false
+  },
+  {
+    "old": "core_descriptor_response_release_record_and_return",
+    "new": "core_descriptor_response_release_record_and_return",
+    "address": "0x08001B80",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:482; core_handle_device_descriptor_response_flag_device_descriptor_context. Releases the temporary device-descriptor record only when opening it succeeded, then returns the selected operation status. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080019DC_FUN_080019dc.c:127.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_029",
+    "changed": false
+  },
+  {
+    "old": "ahci_port_init_wait_for_status_clear",
+    "new": "ahci_port_init_wait_for_status_clear",
+    "address": "0x08001D08",
+    "evidence": "src/ahci.c:134; ahci_run_port_initialization_state_machine. Sets the expected register-mask value to zero before entering the shared AHCI polling call. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001B98_FUN_08001b98.c:114.",
+    "confidence": "structural",
+    "placeholder_name": "ahci_branch_target_001",
+    "changed": false
+  },
+  {
+    "old": "ahci_port_init_poll_selected_status",
+    "new": "ahci_port_init_poll_selected_status",
+    "address": "0x08001D0A",
+    "evidence": "src/ahci.c:137; ahci_run_port_initialization_state_machine. Calls ahci_wait_complete with the register, mask, expected value, and attempt limit selected by the incoming initialization case. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001B98_FUN_08001b98.c:116.",
+    "confidence": "structural",
+    "placeholder_name": "ahci_branch_target_002",
+    "changed": false
+  },
+  {
+    "old": "ahci_run_port_initialization_state_machine_return_path",
+    "new": "ahci_port_init_commit_next_state",
+    "address": "0x08001D18",
+    "evidence": "src/ahci.c:170; ahci_run_port_initialization_state_machine. Stores the selected next initialization state through the caller pointer, returns only for terminal state 0x10, and otherwise continues the state-machine loop. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001B98_FUN_08001b98.c:146.",
+    "confidence": "structural",
+    "placeholder_name": "ahci_branch_target_003",
+    "changed": true
+  },
+  {
+    "old": "usb_hal_init_before_update_masked_register_bits",
+    "new": "usb_init_apply_revision_configuration",
+    "address": "0x08001E4A",
+    "evidence": "src/usb_stack.c:110; usb_hal_init. Applies USB3 PIPE, USB2 PHY, and global control changes gated by core revision, then initializes endpoint transfer state and marks the stack ready. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001D48_FUN_08001d48.c:82.",
+    "confidence": "structural",
+    "placeholder_name": "usb_branch_target_001",
+    "changed": true
+  },
+  {
+    "old": "mww_handle_transfer_mww0_addr_device_transfer_state_before_process_mww_transfer_storage",
+    "new": "mww_transfer_check_buffered_read_limit",
+    "address": "0x08001F84",
+    "evidence": "src/mww.c:139; mww_handle_transfer_mww0_addr_device_transfer_state. Rejects an input request larger than the 0x1014-byte local response buffer by stalling endpoint 0x83 and building command status; otherwise dispatches only when the buffered operation is ready. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001EF0_FUN_08001ef0.c:124.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_001",
+    "changed": true
+  },
+  {
+    "old": "mww_handle_transfer_mww0_addr_device_transfer_state_before_handle_saved_register_mww_saved_register",
+    "new": "mww_transfer_dispatch_saved_command",
+    "address": "0x08002014",
+    "evidence": "src/mww.c:149; mww_handle_transfer_mww0_addr_device_transfer_state. Calls the saved-command dispatcher after the transfer mode and any buffered payload have been prepared, then returns. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001EF0_FUN_08001ef0.c:133.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_002",
+    "changed": true
+  },
+  {
+    "old": "mww_handle_transfer_mww0_addr_device_transfer_state_before_update_mww1_addr_mww_secondary_address_register",
+    "new": "mww_transfer_initialize_write_window",
+    "address": "0x0800204C",
+    "evidence": "src/mww.c:105; mww_handle_transfer_mww0_addr_device_transfer_state. Initializes the write-only wrap window, dispatches the command, and submits endpoint 3 from MWW1_ADDR only when dispatch permits a nonzero transfer. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001EF0_FUN_08001ef0.c:92.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_003",
+    "changed": true
+  },
+  {
+    "old": "mww_handle_transfer_mww0_addr_device_transfer_state_before_process_transfer_descriptor_mww0_addr_mww_transfer_descriptor",
+    "new": "mww_transfer_submit_selected_endpoint",
+    "address": "0x08002060",
+    "evidence": "src/mww.c:118; mww_handle_transfer_mww0_addr_device_transfer_state. Submits the already selected endpoint/address pair and transfer length; incoming read and write paths choose 0x83/MWW0_ADDR or 3/MWW1_ADDR. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08001EF0_FUN_08001ef0.c:104.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_004",
+    "changed": true
+  },
+  {
+    "old": "core_dispatch_rdx_management_record_return_path",
+    "new": "core_management_record_return_dispatch_result",
+    "address": "0x08002206",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:600; core_dispatch_rdx_management_record. Returns the original value argument in the high word and the selected dispatch status in the low word with CONCAT44. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002090_FUN_08002090.c:105.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_030",
+    "changed": true
+  },
+  {
+    "old": "core_transition_reserved_command_byte_reserved_command_word_descriptor_queue_context_before_process_a_command_validation_context",
+    "new": "core_ata_transfer_submit_command_descriptor",
+    "address": "0x080024AC",
+    "evidence": "src/rdx_core/02_management_descriptors.inc:816; core_transition_reserved_command_byte_reserved_command_word_descriptor_queue_context. Clears reserved FIS and command-descriptor fields, stores the requested transfer byte count, submits the ATA command descriptor, and maps its result. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002388_FUN_08002388.c:108.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_031",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context_before_release_record_payload_when_short",
+    "new": "core_mode_select_read_parameter_length",
+    "address": "0x08002694",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:113; core_handle_descriptor_command_descriptor_context. Reads parameter-list length from CDB byte 4 for MODE SELECT(6), or bytes 7 through 8 for MODE SELECT(10). Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002668_FUN_08002668.c:37.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_032",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context_before_is_cartridge_input_state_six",
+    "new": "core_mode_select_choose_page_31_flags",
+    "address": "0x0800275E",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:180; core_handle_descriptor_command_descriptor_context. Examines incoming page 0x31 bit 3 and chooses either the existing flags with bit 3 cleared or the shared branch that sets bit 3; reached again after consuming the page bit-4 request. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002668_FUN_08002668.c:101.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_033",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context_before_updating_command_descriptor_context_snapshot",
+    "new": "core_mode_select_set_page_31_bit_three",
+    "address": "0x0800276C",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:195; core_handle_descriptor_command_descriptor_context. Sets bit 3 in the existing page 0x31 state before merging bit 4 and publishing the byte. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002668_FUN_08002668.c:114.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_034",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context_before_process_request_request_for_descriptor_descriptor_resource",
+    "new": "core_mode_select_reject_page_parameters",
+    "address": "0x080027A2",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:215; core_handle_descriptor_command_descriptor_context. Selects command status 10 for unsupported mode pages or invalid page 0x31/0x33 fields and branches to the common page-status store. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002668_FUN_08002668.c:135.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_035",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context_before_updating_buffer",
+    "new": "core_mode_select_store_page_status",
+    "address": "0x080027A4",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:169; core_handle_descriptor_command_descriptor_context. Stores the selected status in the command buffer, shared by accepted caching-page parameters and rejected mode-page parameters. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002668_FUN_08002668.c:91.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_036",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context_before_finalize_command_response_hook",
+    "new": "core_mode_select_finalize_response",
+    "address": "0x080027BA",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:228; core_handle_descriptor_command_descriptor_context. Calls the common response-finalization hook after mode-page handling, including the path where the page-format CDB bit is clear. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002668_FUN_08002668.c:147.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_037",
+    "changed": true
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context_before_update_command_validation_context",
+    "new": "core_mode_select_store_validation_error",
+    "address": "0x080027CA",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:128; core_handle_descriptor_command_descriptor_context. Stores the selected early validation error and immediately returns when parameter length exceeds capacity or payload acquisition fails. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002668_FUN_08002668.c:52.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_038",
+    "changed": true
+  },
+  {
+    "old": "core_cartridge_monitor_wait_for_removal",
+    "new": "core_cartridge_monitor_wait_for_removal",
+    "address": "0x08002868",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:314; core_monitor_cartridge_input. Retains cartridge states 2 and 6 while the debounced presence helper is true, and falls through to the absent-state transition when presence clears. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080027D4_FUN_080027d4.c:78.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_039",
+    "changed": false
+  },
+  {
+    "old": "core_cartridge_monitor_enter_device_discovery",
+    "new": "core_cartridge_monitor_enter_device_discovery",
+    "address": "0x080028D8",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:308; core_monitor_cartridge_input. Selects cartridge state 2; the state setter calls core_handle_clear_memory_lookup_ata_command_buffer, which performs ATA device discovery and identity processing. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080027D4_FUN_080027d4.c:73.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_040",
+    "changed": false
+  },
+  {
+    "old": "core_cartridge_monitor_publish_selected_state",
+    "new": "core_cartridge_monitor_publish_selected_state",
+    "address": "0x080028DA",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:364; core_monitor_cartridge_input. Publishes the selected cartridge state through its common state-transition handler exactly once and returns. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080027D4_FUN_080027d4.c:126.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_041",
+    "changed": false
+  },
+  {
+    "old": "core_cartridge_monitor_enter_absent_state",
+    "new": "core_cartridge_monitor_enter_absent_state",
+    "address": "0x080028E0",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:361; core_monitor_cartridge_input. Selects cartridge state zero and joins the common publication path; state zero invokes the absent-cartridge reset handler. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080027D4_FUN_080027d4.c:124.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_042",
+    "changed": false
+  },
+  {
+    "old": "core_handle_clear_memory_lookup_ata_command_buffer_before_set_command_phase_to_one",
+    "new": "core_ata_discovery_mark_failure",
+    "address": "0x08002A44",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:439; core_handle_clear_memory_lookup_ata_command_buffer. If no successful discovery path set condition_met, marks ATA discovery failed and schedules command phase 1. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002938_FUN_08002938.c:70.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_043",
+    "changed": true
+  },
+  {
+    "old": "core_mechanism_select_retry_delay",
+    "new": "core_mechanism_select_retry_delay",
+    "address": "0x08002B2C",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:500; core_advance_mechanism_state. Selects mechanism state 5, the retry-delay output state, from expired state 3 or the retry branches of states 1 and 6. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002A80_FUN_08002a80.c:52.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_044",
+    "changed": false
+  },
+  {
+    "old": "core_mechanism_select_terminal_stop",
+    "new": "core_mechanism_select_terminal_stop",
+    "address": "0x08002B30",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:476; core_advance_mechanism_state. Selects terminal mechanism state 8 after the response condition or exhaustion of the bounded retry count. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002A80_FUN_08002a80.c:31.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_045",
+    "changed": false
+  },
+  {
+    "old": "core_mechanism_stop_after_input_release",
+    "new": "core_mechanism_stop_after_input_release",
+    "address": "0x08002B38",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:481; core_advance_mechanism_state. Selects mechanism state 4 when the input-release helper signals during active output states 1, 2, 3, or 5. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002A80_FUN_08002a80.c:36.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_046",
+    "changed": false
+  },
+  {
+    "old": "core_advance_mechanism_state_before_update_sci_read_logical_for_advance_mechanism_state",
+    "new": "core_mechanism_update_input_debounce",
+    "address": "0x08002B3E",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:530; core_advance_mechanism_state. Samples the mechanism input edge, starts or polls its 100 ms debounce timer, and records the latest raw level after mechanism-state handling. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002A80_FUN_08002a80.c:78.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_047",
+    "changed": true
+  },
+  {
+    "old": "core_select_rdx_sense_status_before_updating_response_detail",
+    "new": "core_sense_status_select_failure_code_five",
+    "address": "0x08002C7C",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:659; core_select_rdx_sense_status. Selects internal command status 5 for two runtime sense paths; preserves the already selected sense key and ASC/ASCQ for the shared publication branch. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002BC0_FUN_08002bc0.c:89.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_048",
+    "changed": true
+  },
+  {
+    "old": "core_sense_status_publish_selected_condition",
+    "new": "core_sense_status_publish_selected_condition",
+    "address": "0x08002CD2",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:689; core_select_rdx_sense_status. Stores the selected internal command status, then publishes the selected sense key and ASC/ASCQ through core_write_selected_sense_fields. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002BC0_FUN_08002bc0.c:120.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_049",
+    "changed": false
+  },
+  {
+    "old": "core_sense_status_publish_hardware_error",
+    "new": "core_sense_status_publish_hardware_error",
+    "address": "0x08002CE2",
+    "evidence": "src/rdx_core/03_identity_and_mechanism.inc:596; core_select_rdx_sense_status. Publishes sense key 4 with the selected hardware-error ASC/ASCQ and response class, then stores the selected internal command status and returns. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002BC0_FUN_08002bc0.c:29.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_050",
+    "changed": false
+  },
+  {
+    "old": "core_read_capacity_clear_alignment_offset",
+    "new": "core_read_capacity_clear_alignment_offset",
+    "address": "0x08002F0E",
+    "evidence": "src/rdx_core/04_hash_flash_usb_thermal.inc:229; core_handle_response_end_word_response_tail_storage. Clears the READ CAPACITY(16) logical-block alignment offset when ATA alignment is absent or lies outside the reported logical-per-physical bounds. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002E2C_FUN_08002e2c.c:101.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_051",
+    "changed": false
+  },
+  {
+    "old": "core_read_capacity_write_final_field",
+    "new": "core_read_capacity_write_final_field",
+    "address": "0x08002F42",
+    "evidence": "src/rdx_core/04_hash_flash_usb_thermal.inc:235; core_handle_response_end_word_response_tail_storage. Writes the final selected response field through the big-endian field writer: block size for READ CAPACITY(10), or alignment offset for READ CAPACITY(16). Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08002E2C_FUN_08002e2c.c:106.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_052",
+    "changed": false
+  },
+  {
+    "old": "core_transition_flash_validation_context_before_process_identity_update_context",
+    "new": "core_identity_import_commit_fields",
+    "address": "0x080032A0",
+    "evidence": "src/rdx_core/04_hash_flash_usb_thermal.inc:414; core_transition_flash_validation_context. Calls the identity-update commit helper after importing identity fields and returns its result. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08003198_FUN_08003198.c:67.",
+    "confidence": "structural",
+    "placeholder_name": "core_branch_target_053",
+    "changed": true
+  },
+  {
+    "old": "usb_hal_handle_link_state_change_before_update_masked_register_bits",
+    "new": "usb_link_update_usb2_phy_state",
+    "address": "0x080043DE",
+    "evidence": "src/usb_stack.c:147; usb_hal_handle_link_state_change. Dispatches the USB2 link-state path and changes USB2 PHY configuration bit 0x40 according to the selected link state; the older controller device state 3 uses the alternate state branch. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080043B8_FUN_080043b8.c:22.",
+    "confidence": "structural",
+    "placeholder_name": "usb_branch_target_002",
+    "changed": true
+  },
+  {
+    "old": "usb_hal_handle_link_state_change_before_set_CDDIS_REG_OFF_to_hex_38_handler",
+    "new": "usb_link_disable_dynamic_clock_gating",
+    "address": "0x0800441A",
+    "evidence": "src/usb_stack.c:198; usb_hal_handle_link_state_change. Invokes the helper that writes CDDIS=0x38. TI system.h defines 0x08, 0x10, and 0x20 as dynamic clock-gating disable bits for M3 RAM/ROM, BMM2, and AHB-to-VBUS. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080043B8_FUN_080043b8.c:64.",
+    "confidence": "structural",
+    "placeholder_name": "usb_branch_target_003",
+    "changed": true
+  },
+  {
+    "old": "usb_hal_handle_link_state_change_before_updating_link_state",
+    "new": "usb_link_dispatch_event_state",
+    "address": "0x08004422",
+    "evidence": "src/usb_stack.c:168; usb_hal_handle_link_state_change. Dispatches selected link-state values 2, 3, 4, and 8; state 3 emits the link callback and state 8 can complete the pending generic command. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080043B8_FUN_080043b8.c:40.",
+    "confidence": "structural",
+    "placeholder_name": "usb_branch_target_004",
+    "changed": true
+  },
+  {
+    "old": "usb_hal_handle_link_state_change_before_update_cddis_reg_off_cartridge_eject_control",
+    "new": "usb_link_enable_sleep_clock_gating",
+    "address": "0x08004472",
+    "evidence": "src/usb_stack.c:207; usb_hal_handle_link_state_change. Calls the revision-gated helper writing CDDIS=3. TI system.h defines these bits as GCLK/HCLK sleep gating and its system_enable_clock_gating helper uses the same revision threshold. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x080043B8_FUN_080043b8.c:72.",
+    "confidence": "structural",
+    "placeholder_name": "usb_branch_target_005",
+    "changed": true
+  },
+  {
+    "old": "spi_set_logical_output_before_updating_status_bits",
+    "new": "spi_output_apply_polarity_adjusted_level",
+    "address": "0x0800508A",
+    "evidence": "src/spi.c:53; spi_set_logical_output. Uses the physical pin mapping to write the polarity-adjusted logical output to GIO, SCI, SPI, or PWM; the incoming branches have already selected the physical level. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x0800506C_FUN_0800506c.c:31.",
+    "confidence": "structural",
+    "placeholder_name": "spi_branch_target_001",
+    "changed": true
+  },
+  {
+    "old": "spi_process_pin_mask_spi_pc3_before_set_logical_output",
+    "new": "spi_output_initialize_inactive_level",
+    "address": "0x08005802",
+    "evidence": "src/spi.c:141; spi_process_pin_mask_spi_pc3. Initializes the configured logical output to zero after any required GPIO direction and function setup. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08005780_FUN_08005780.c:51.",
+    "confidence": "structural",
+    "placeholder_name": "spi_branch_target_002",
+    "changed": true
+  },
+  {
+    "old": "mww_transition_selection_state_before_process_mww_transfer_storage",
+    "new": "mww_phase_select_bulk_in_stall",
+    "address": "0x08005FC2",
+    "evidence": "src/mww.c:599; mww_transition_selection_state. Selects endpoint 0x83 for phase-error paths 2, 3, 7, and 8, then calls the endpoint-stall helper. TI usb_hal.h defines endpoint command 4 used by that helper as SET_STALL. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08005F5C_FUN_08005f5c.c:20.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_005",
+    "changed": true
+  },
+  {
+    "old": "mww_transition_selection_state_before_process_device_transfer_state",
+    "new": "mww_phase_send_command_status",
+    "address": "0x08005FD4",
+    "evidence": "src/mww.c:638; mww_transition_selection_state. Invokes the command-status wrapper builder with the selected status: zero for phase paths 4/5 or two after other stalled phase-error paths. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08005F5C_FUN_08005f5c.c:59.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_006",
+    "changed": true
+  },
+  {
+    "old": "sci_read_logical_input_return_path",
+    "new": "sci_input_apply_configured_polarity",
+    "address": "0x080061D6",
+    "evidence": "src/sci.c:61; sci_read_logical_input. Compares the sampled physical input level with the configured active polarity, returning logical one when they match and zero otherwise. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08006174_FUN_08006174.c:42.",
+    "confidence": "structural",
+    "placeholder_name": "sci_branch_target_001",
+    "changed": true
+  },
+  {
+    "old": "mww_process_device_transfer_state_before_updating_transfer_phase",
+    "new": "mww_command_status_store_residue",
+    "address": "0x08006C98",
+    "evidence": "src/mww.c:675; mww_process_device_transfer_state. Stores the remaining transfer byte count in CSW word 2; the wrapper has signature 0x53425355 and status byte 12. Phase 9 uses the whole requested length, while phases 5/11 subtract transferred bytes. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08006C50_FUN_08006c50.c:37.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_007",
+    "changed": true
+  },
+  {
+    "old": "mww_process_device_transfer_state_before_update_mww_transfer_context_for_mww_process_resource",
+    "new": "mww_command_status_clear_transfer_context",
+    "address": "0x08006CB0",
+    "evidence": "src/mww.c:688; mww_process_device_transfer_state. Clears the two transfer-context flags after command-status submission or when the saved request already denotes a completed status wrapper. Matching address block: ../TUSB9261_RDX_Ghidra_Project/Reconstructed_Source/functions/0x08006C50_FUN_08006c50.c:51.",
+    "confidence": "structural",
+    "placeholder_name": "mww_branch_target_008",
+    "changed": true
+  }
+]

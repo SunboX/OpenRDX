@@ -1,0 +1,754 @@
+[
+  {
+    "old": "core_handle_descriptor_or_descriptor_delta",
+    "new": "core_divide_multiword_unsigned",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:18: Normalizes limb arrays, estimates quotient limbs, subtracts products and corrects borrow, then denormalizes the remainder.",
+      "Sibling function core_coordinate_004 at 0x080015E4; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:864 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transition_scale_word_range_word",
+    "new": "core_divide_doubleword_by_word",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:613: Splits divisor and numerator into 16-bit halves and computes one quotient word plus remainder.",
+      "Sibling function core_update_state_001 at 0x0800220E; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:1456 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_word_copy",
+    "new": "core_multiply_multiword_unsigned",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Clears twice the input limb count, multiplies every pair of limbs and propagates carry into the double-width result.",
+      "Sibling function core_transfer_012 at 0x08005648; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:4825 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_component_scaled",
+    "new": "core_multiply_u32_to_u64",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Computes four 16-bit partial products and stores low and high product words in buffer[0] and buffer[1].",
+      "Sibling function core_configure_018 at 0x080094E8; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10320 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_range_start_range_end",
+    "new": "core_add_multiword_unsigned",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:506: Adds corresponding words from two operands with propagated unsigned carry and returns the final carry.",
+      "Sibling function core_transfer_042 at 0x0800A340; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11781 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_shifts_remaining_words",
+    "new": "core_shift_multiword_left",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:78: Shifts each low-to-high limb left and merges the preceding limb carry.",
+      "Sibling function core_transfer_030 at 0x08008BE8; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9449 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_shifts_remaining_word",
+    "new": "core_shift_multiword_right",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:582: Shifts each high-to-low limb right and merges high-word carry bits.",
+      "Sibling function core_transfer_028 at 0x08008702; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9052 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_word_bit_mask",
+    "new": "core_divide_multiword_by_word",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:118: Normalizes a word divisor, shifts the multiword dividend, divides high-to-low limbs and returns the denormalized remainder.",
+      "Sibling function core_transfer_025 at 0x08008182; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:8560 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_capacity_word_default_block_size_capacity_block_context",
+    "new": "core_parse_ata_identify_device",
+    "evidence": [
+      "src/rdx_core/01_image_validation.inc:473: Reads ATA identify words for strings, LBA capability, sector sizes, SATA speed and transfer-mode support into per-device records.",
+      "Sibling function core_transfer_001 at 0x0800113C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:476 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_payload_byte_type_or_response_payload_response_context",
+    "new": "core_handle_scsi_read_attribute",
+    "evidence": [
+      "src/rdx_core/01_image_validation.inc:679: Dispatches READ ATTRIBUTE service actions 0,1,2,3,5 and serializes attributes or attribute identifiers.",
+      "Sibling function core_coordinate_003 at 0x080013BC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:681 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_response_attribute_bytes",
+    "new": "core_handle_scsi_write_attribute",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:190: Reads parameter length from CDB bytes 10 through 13 and validates and updates supplied attribute records.",
+      "Sibling function core_coordinate_005 at 0x08001804; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:1033 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_descriptor_command_descriptor_context",
+    "new": "core_handle_scsi_mode_select",
+    "evidence": [
+      "src/rdx_core/03_identity_and_mechanism.inc:82: Handles CDB opcodes 0x15 and 0x55 and mode pages 8,0x31,0x33,0x34.",
+      "Sibling function core_coordinate_009 at 0x08002668; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:1762 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_parse_stream_record",
+    "new": "core_build_superspeed_configuration_descriptor",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:532: Finds USB configuration descriptor type 2 and copies interface, endpoint, companion, HID and class-specific descriptors while updating wTotalLength.",
+      "Sibling function core_transfer_009 at 0x08004FC0; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:4579 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_parse_stream_record_with_output_word",
+    "new": "core_build_usb_two_configuration_descriptor",
+    "evidence": [
+      "src/rdx_core/05_device_descriptor_dispatch.inc:700: Builds a USB 2 configuration descriptor, omits SuperSpeed companion descriptors and adjusts bulk endpoint maximum packet size to 512 or 64 bytes by selected speed.",
+      "Sibling function core_transfer_006 at 0x0800448C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:3914 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_remaining_bytes_word",
+    "new": "core_decrypt_keyed_word_block",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:680: Subtracts a keyed mixing expression from words in reverse order for 6+52/word_count rounds using a decreasing round sum.",
+      "Sibling function core_transfer_011 at 0x080053C4; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:4728 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_mixed_word_key_sum",
+    "new": "core_encrypt_keyed_word_block",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Adds a keyed mixing expression across words for 6+52/word_count rounds using an increasing round sum.",
+      "Sibling function core_transfer_017 at 0x0800692A; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:6230 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_special_control_record",
+    "new": "core_handle_usb_bot_class_request",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:544: Handles USB class request 0xFF with zero-length data and 0xFE with one-byte maximum-LUN response.",
+      "Sibling function core_process_017 at 0x080074A0; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7242 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_ti_memset",
+    "new": "core_handle_scsi_get_event_status",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:202: Requires IMMED in CDB byte 1, checks requested notification classes at byte 4 and writes an event header with supported class 0x10 and media status.",
+      "Sibling function core_coordinate_030 at 0x080066D0; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:6013 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_ti_memset",
+    "new": "core_encode_ata_taskfile_lba",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:583: Encodes sector count and 28-bit or 48-bit LBA bytes into an ATA taskfile structure.",
+      "Sibling function core_configure_006 at 0x08007570; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7278 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_ata_command_opcode_ata_command_context",
+    "new": "core_execute_ata_security_unlock",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:800: Builds ATA command opcode 0xF2 with a 512-byte payload and publishes authentication success only after taskfile completion.",
+      "Sibling function core_coordinate_034 at 0x08007768; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7488 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_command_opcode_transfer_size_atapi_device_flag",
+    "new": "core_submit_ata_identify_command",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:360: Builds H2D FIS with opcode 0xEC or 0xA1 according to the ATAPI flag and a 512-byte identify data transfer.",
+      "Sibling function core_process_022 at 0x08007B9C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7944 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_command_opcode_command",
+    "new": "core_submit_ata_set_transfer_mode",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:216: Builds ATA SET FEATURES opcode 0xEF, subcommand 3, with the selected supported transfer mode.",
+      "Sibling function core_process_026 at 0x08008290; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:8663 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_command_opcode_response",
+    "new": "core_submit_ata_sata_feature_control",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:78: Builds SET FEATURES 0xEF with subcommand 0x10 or 0x90 and SATA feature selector 2.",
+      "Sibling function core_configure_010 at 0x08008128; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:8516 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_device_feature_mask_feature_mask",
+    "new": "core_select_ata_transfer_mode",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:617: Selects PIO, multiword DMA or UDMA mode codes from supported ATA identify transfer-mode masks.",
+      "Sibling function core_transfer_019 at 0x080075D8; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7315 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_ata_address_ata_configuration_address",
+    "new": "core_queue_ata_d2h_completion",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:674: Copies received D2H FIS status/error and command byte count into a 12-byte completion entry, then enqueues its callback.",
+      "Sibling function core_configure_007 at 0x0800763C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7372 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_ata_address_ata_queue_context",
+    "new": "core_queue_ata_pio_completion",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:712: Copies received PIO Setup FIS status/error, transfer count and direction into a completion entry and enqueues callback.",
+      "Sibling function core_configure_008 at 0x080076A0; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7405 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_update_ata_address_ata_queue_context",
+    "new": "core_queue_ata_set_device_bits_completion",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:774: Uses received Set Device Bits FIS status/error and sentinel tag 0xFD for an ATA completion entry.",
+      "Sibling function core_update_013 at 0x08009C04; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11130 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_update_ata_queue_address_ata_pending_ata_queue_context",
+    "new": "core_enqueue_ata_completion_callback",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:754: Stores a nonzero callback in a 16-slot queue, marks its slot pending and advances the producer index with wrap.",
+      "Sibling function core_update_012 at 0x08009BC4; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11107 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_update_ata_address_ata_device_address",
+    "new": "core_queue_ata_dma_setup_completion",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:89: Copies the received DMA Setup tag masked to 5 bits and enqueues the DMA-setup callback.",
+      "Sibling function core_update_017 at 0x08009F80; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11337 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_ata_command",
+    "new": "core_execute_ata_read_verify",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:537: Builds ATA READ VERIFY SECTORS 0x40 or READ VERIFY SECTORS EXT 0x42 depending on LBA48 support.",
+      "Sibling function core_configure_011 at 0x080086AC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9004 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_submit_ata_standby_immediate",
+    "new": "core_execute_ata_standby_or_verify",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:496: Selects STANDBY IMMEDIATE 0xE0 for condition 1 and READ VERIFY 0x40 otherwise.",
+      "Sibling function core_process_030 at 0x08008656; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:8960 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_command_profile_c8_or_25_selector",
+    "new": "core_execute_ata_read_dma",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:272: Selects READ DMA 0xC8 or READ DMA EXT 0x25 and executes one-sector input transfer.",
+      "Sibling function core_configure_015 at 0x08008EA8; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9656 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_command_profile_ca_or_35_selector",
+    "new": "core_execute_ata_write_dma",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:315: Selects WRITE DMA 0xCA or WRITE DMA EXT 0x35 and executes one-sector output transfer.",
+      "Sibling function core_configure_016 at 0x08008EF4; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9702 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_ata_command_for_ata_standby_context",
+    "new": "core_execute_ata_flush_cache",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:846: Executes ATA FLUSH CACHE 0xE7 or FLUSH CACHE EXT 0xEA depending on LBA48 support.",
+      "Sibling function core_process_044 at 0x080094A2; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10281 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_update_ahci_control_register",
+    "new": "core_issue_ahci_command_slot",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:15: Writes a command slot bit into PxCI and additionally PxSACT for queued commands.",
+      "Sibling function core_update_010 at 0x08008B48; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9380 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_device_descriptor_0x15_device_descriptor_storage",
+    "new": "core_configure_ahci_command_header",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:360: Writes AHCI command-header flags, PRD count, transferred-byte count and command-table base for a selected slot.",
+      "Sibling function core_configure_002 at 0x08005CAC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:5280 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_fourth_byte_byte",
+    "new": "core_decode_big_endian_multiword_integer",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:63: Loads big-endian 32-bit words while reversing the word order for a little-endian multiword integer representation.",
+      "Sibling function core_transfer_021 at 0x080078F8; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7636 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_descriptor_wait_completion",
+    "new": "core_copy_descriptor_text_field",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:448: Copies text into a bounded descriptor byte range and pads with spaces after NUL when the final flag is set; it performs no completion polling.",
+      "Sibling function core_transfer_027 at 0x08008600; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:8910 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_range_end_range_start_for_validate_structured_flash",
+    "new": "core_read_big_endian_u32_field",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:500: Loads an inclusive byte range of at most four bytes in big-endian order into an unsigned 32-bit result.",
+      "Sibling function core_transfer_039 at 0x08009A38; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10840 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_range_end_range_start_for_descriptor_descriptor_resource",
+    "new": "core_read_big_endian_record_field",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:625: Loads an inclusive byte range of at most four bytes in big-endian order into an unsigned 32-bit result.",
+      "Sibling function core_transfer_040 at 0x08009AFE; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10972 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_range_end_range_start_for_short_available",
+    "new": "core_write_big_endian_u32_field",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:16: Writes up to four low bytes into a descending inclusive field range and zero-fills additional leading bytes.",
+      "Sibling function core_transfer_024 at 0x080080CC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:8452 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_tracker",
+    "new": "core_append_little_endian_value",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:446: Appends at most four little-endian bytes to a length-bounded buffer and advances the caller offset.",
+      "Sibling function core_transfer_038 at 0x080099F6; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10783 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_usb_get_device",
+    "new": "core_find_usb_descriptor",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:358: Walks length/type USB descriptors, handles embedded HID report-descriptor lengths and locates a requested descriptor type and instance.",
+      "Sibling function core_transfer_026 at 0x080083F0; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:8814 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_polls_remaining_channel_usb_poll_context",
+    "new": "core_wait_usb_endpoint_command",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:364: Polls DEPCMD command-active bit 10 for the selected logical USB endpoint up to the caller retry limit.",
+      "Sibling function core_transfer_045 at 0x0800AA7C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:12574 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_wdt_reset",
+    "new": "core_end_usb_endpoint_transfer",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:671: Issues endpoint command 0x908 with transfer-resource index, clears the active field and polls DEPCMD completion.",
+      "Sibling function core_process_054 at 0x08009B40; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11020 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_descriptor_configuration_context",
+    "new": "core_submit_usb_control_status_trb",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:351: Builds zero-length control-status TRB with type 3 or 4 and submits it on the selected control endpoint direction.",
+      "Sibling function core_configure_019 at 0x0800992C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10676 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_descriptor_component_context",
+    "new": "core_configure_usb_endpoint",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:762: Builds endpoint configuration parameters, issues DEPCFG command 1 and initializes its transfer resource count.",
+      "Sibling function core_process_041 at 0x080093CC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10186 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_firmware_transfer_for_mww",
+    "new": "core_arm_usb_control_setup_reception",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:447: Resets control-transfer phase and programs an eight-byte EP0 setup TRB with control word 0x23.",
+      "Sibling function core_process_064 at 0x0800A2C8; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11720 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_firmware_transfer_for_mww_transition",
+    "new": "core_dispatch_usb_control_completion",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:777: Copies the eight-byte USB SETUP packet when idle, calls control callbacks and rearms setup reception after completion.",
+      "Sibling function core_process_033 at 0x08008A00; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9256 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_firmware_transfer_context",
+    "new": "core_complete_usb_control_out_transfer",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:792: Handles OUT-data phase 2, requests more OUT data or runs the completion callback, then advances status/setup phases.",
+      "Sibling function core_process_042 at 0x08009414; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10219 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_a_command_validation_context",
+    "new": "core_submit_scsi_ata_command",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:678: Submits the current SCSI-derived ATA descriptor, maps errors, recognizes queued opcodes 0x60/0x61 and issues the AHCI command slot.",
+      "Sibling function core_process_040 at 0x080092F4; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10094 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_ti_memset_n",
+    "new": "core_test_transfer_buffer_memory",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:291: Allocates a transfer buffer, fills 4096 bytes with 0x0A, verifies every byte and releases the buffer.",
+      "Sibling function core_transfer_037 at 0x0800981C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10612 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_response_word_clear_memory_response_word_context",
+    "new": "core_build_encrypted_password_record",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:744: Builds a 32-byte record containing the decoded Password: prefix and 20-byte input, then encrypts eight words with a derived key.",
+      "Sibling function core_process_032 at 0x0800885C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9221 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_fprinttyp2",
+    "new": "core_build_type_two_fingerprint",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:720: Writes FprintTyp2- 0 prefix and assembles a 128-byte fingerprint from input identity and derived fields.",
+      "Sibling function core_process_031 at 0x08008804; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9194 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_usb_event_context",
+    "new": "core_build_type_one_fingerprint",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:160: Decodes the FprintTyp1- prefix, fixes its final character to 0 and assembles the fingerprint payload; it has no USB event processing.",
+      "Sibling function core_process_075 at 0x0800A874; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:12349 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_configure_payload_ti_memset",
+    "new": "core_parse_typed_payload_record",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:639: Clears a 16-byte output descriptor, bounds-checks a four-byte typed header and exposes its payload length and pointer.",
+      "Sibling function core_configure_012 at 0x08008758; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9112 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_maximum_payload_payload",
+    "new": "core_find_typed_payload_with_minimum_length",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:677: Walks typed payload records until target type or terminator and requires payload length to be at least the final argument.",
+      "Sibling function core_transfer_029 at 0x080087AE; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9152 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_ti_memset_copy",
+    "new": "core_copy_and_pad_record_payload",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:230: Bounds payload copy by descriptor capacity, rejects missing nonempty source, copies supplied bytes and zero-pads the remainder.",
+      "Sibling function core_process_020 at 0x08007A7C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:7808 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_ti_memset_component",
+    "new": "core_read_buffer_bytes",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:590: Copies bytes from the supplied buffer descriptor at a starting offset and zero-fills the unfulfilled requested length.",
+      "Sibling function core_transfer_048 at 0x0800AC74; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:12816 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_bytes_remaining_descriptor",
+    "new": "core_append_buffer_bytes",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:656: Appends source bytes or zeros to a bounded buffer descriptor and advances the supplied cursor.",
+      "Sibling function core_transfer_049 at 0x0800ACD4; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:12887 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_end_remaining",
+    "new": "core_copy_memory_bytes",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:365: Copies an arbitrary byte count with aligned word transfers followed by trailing bytes.",
+      "Sibling function core_transfer_041 at 0x0800A250; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11632 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_command_queue_context",
+    "new": "core_validate_firmware_image_chunk",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:237: Resets the validation context for the first chunk, calls structured-image validation and clears the completion flag for nonzero status.",
+      "Sibling function core_process_061 at 0x0800A0E8; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11493 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_spi_configure_spi",
+    "new": "core_send_spi_flash_command_address",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:229: Sends a flash opcode followed by three big-endian address bytes with final chip-select behavior controlled by condition.",
+      "Sibling function core_transfer_031 at 0x08008E10; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9612 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_register_offsets_register_offset_context",
+    "new": "core_configure_board_logical_pins",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:354: Chooses board pin-configuration table by identity hardware value and applies seven logical pin mappings.",
+      "Sibling function core_transfer_032 at 0x08008F40; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9744 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_command_completion_context",
+    "new": "core_initialize_cartridge_mechanism_inputs",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:196: Registers cartridge LED state and GPIO3 callback, initializes mechanism debounce timers and selects state from current input level.",
+      "Sibling function core_process_047 at 0x08009750; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10512 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_update_scsi_logical_address_context",
+    "new": "core_update_mechanism_input_release",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:108: Tracks mechanism logical input from unseen to asserted to released and reports released state; it does not process SCSI addresses.",
+      "Sibling function core_update_018 at 0x08009FBC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11358 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_header_word_header_words",
+    "new": "core_build_ata_identity_summary",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:823: Copies and byte-swaps ATA identify serial/model strings and includes the two-word capacity value.",
+      "Sibling function core_process_043 at 0x0800945C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:10255 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_get_mww_transfer_limit",
+    "new": "core_validate_bot_command_wrapper",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:860: Validates 31-byte BOT CBW length, signature 0x43425355, zero LUN and bounded CDB length/flags.",
+      "Sibling function core_get_value_005 at 0x0800A654; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:12165 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "mww_transition_request_or_cartridge_eject_control",
+    "new": "mww_handle_usb_endpoint_event",
+    "evidence": [
+      "src/mww.c:406: Decodes endpoint number/direction and event type from a USB event word and dispatches transfer completion, progress or command completion.",
+      "Sibling function mww_update_state_002 at 0x080051C4; ../TUSB9261_RDX_Recovered_Source/source/mww.c:428 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "mww_process_command_word_channel_mww_command_channel",
+    "new": "mww_send_usb_endpoint_command",
+    "evidence": [
+      "src/mww.c:350: Polls command-active, writes endpoint DEPCMD parameters and command, and synchronizes MWW offsets for EndTransfer.",
+      "Sibling function mww_process_001 at 0x08005118; ../TUSB9261_RDX_Recovered_Source/source/mww.c:366 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "mww_process_transfer_descriptor_mww0_addr_mww_transfer_descriptor",
+    "new": "mww_submit_usb_transfer",
+    "evidence": [
+      "src/mww.c:474: Builds a TRB from a memory buffer or MWW window and submits it through the endpoint transfer descriptor path.",
+      "Sibling function mww_process_002 at 0x08005270; ../TUSB9261_RDX_Recovered_Source/source/mww.c:503 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "mww_process_descriptor_slot_ring_capacity_mww_descriptor_ring_state",
+    "new": "mww_advance_completed_usb_trb",
+    "evidence": [
+      "src/mww.c:531: Consumes completed ring bytes, updates buffer position and remaining length and wraps the ring index.",
+      "Sibling function mww_process_003 at 0x080059D8; ../TUSB9261_RDX_Recovered_Source/source/mww.c:566 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "mww_transition_firmware_context_channel_mww_descriptor_ring_state",
+    "new": "mww_complete_usb_transfer",
+    "evidence": [
+      "src/mww.c:163: Computes actual transferred bytes, clears active state, updates endpoint buffer accounting and dispatches completion callbacks.",
+      "Sibling function mww_update_state_001 at 0x080047BC; ../TUSB9261_RDX_Recovered_Source/source/mww.c:165 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "mww_transfer_mww0_addr_mww1_addr_mww_address_pair",
+    "new": "mww_build_ahci_prd_table",
+    "evidence": [
+      "src/mww.c:700: Builds up to eight 16-byte AHCI PRD entries with buffer address and zero-based byte count capped at 0x3E000 bytes each.",
+      "Sibling function mww_transfer_001 at 0x080070F8; ../TUSB9261_RDX_Recovered_Source/source/mww.c:742 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "rti_process_thermal_timer_state",
+    "new": "rti_set_software_timer",
+    "evidence": [
+      "src/rti.c:192: Temporarily disables compare interrupt, stores a duration in the indexed software timer array and restores interrupt state.",
+      "Sibling function rti_process_002 at 0x0800BC5C; ../TUSB9261_RDX_Recovered_Source/source/rti.c:209 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "rti_update_interrupt_enabled_rtisetint_reg_off",
+    "new": "rti_suspend_compare_interrupt",
+    "evidence": [
+      "src/rti.c:168: Tests compare interrupt enable bit, clears it through RTICLEARINT and records whether it was previously enabled.",
+      "Sibling function rti_update_004 at 0x0800BB84; ../TUSB9261_RDX_Recovered_Source/source/rti.c:182 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "rti_forward_rtisetint_reg_off_rtisetint",
+    "new": "rti_suspend_compare_interrupt_for_timer",
+    "evidence": [
+      "src/rti.c:249: Tests compare interrupt enable bit, clears it through RTICLEARINT and records whether it was previously enabled.",
+      "Sibling function rti_forward_001 at 0x0800D3F8; ../TUSB9261_RDX_Recovered_Source/source/rti.c:275 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "spi_process_pin_mask_spi_pc3",
+    "new": "spi_configure_logical_pin_direction",
+    "evidence": [
+      "src/spi.c:97: Maps a logical pin to GIO, SCI or SPI pin registers, sets its direction and drives the initial inactive level.",
+      "Sibling function spi_process_001 at 0x08005780; ../TUSB9261_RDX_Recovered_Source/source/spi.c:101 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "spi_process_spi_gcr0_spi_pc7_peripheral_pin_configuration",
+    "new": "spi_initialize_logical_gpio",
+    "evidence": [
+      "src/spi.c:151: Initializes GIO/SCI/SPI GPIO access, clears callbacks/interrupts and configures all 17 logical pins.",
+      "Sibling function spi_process_002 at 0x080067C4; ../TUSB9261_RDX_Recovered_Source/source/spi.c:156 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "spi_get_spi_transfer_storage",
+    "new": "spi_get_logical_pin_configuration",
+    "evidence": [
+      "src/spi.c:269: Returns the indexed board logical-pin table entry, not SPI transfer payload storage.",
+      "Sibling function spi_get_value_001 at 0x0800CD8C; ../TUSB9261_RDX_Recovered_Source/source/spi.c:282 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_find_last_nonzero",
+    "new": "core_modular_exponentiation_multiword",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Uses exponent significant-bit scan and repeated modular squaring plus conditional multiplication by base.",
+      "Sibling function core_transfer_013 at 0x08005AFC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:5088 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_get_descriptor",
+    "new": "core_reduce_multiword_modulo",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Divides the multiword input into quotient and remainder scratch buffers and copies the remainder to the destination.",
+      "Sibling function core_get_value_003 at 0x08009D44; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:11234 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_get_zero_word_buffer",
+    "new": "core_multiply_multiword_modulo",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:473: Multiplies two n-word operands into a 2n-word scratch result and reduces the product modulo the supplied n-word modulus.",
+      "Sibling function core_get_value_008 at 0x0800AB4A; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:12689 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_response_end_word_response_tail_storage",
+    "new": "core_handle_scsi_read_capacity",
+    "evidence": [
+      "src/rdx_core/04_hash_flash_usb_thermal.inc:135: Handles READ CAPACITY 10 opcode 0x25 and READ CAPACITY 16 opcode 0x9E, serializing last LBA, block length and alignment fields.",
+      "Sibling function core_coordinate_014 at 0x08002E2C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:2478 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transition_reserved_command_byte_reserved_command_word_descriptor_queue_context",
+    "new": "core_submit_scsi_read_write_ata_fis",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:723: Converts the decoded SCSI LBA/count/direction into READ/WRITE DMA, DMA EXT or FPDMA queued H2D FIS and submits it.",
+      "Sibling function core_update_state_002 at 0x08002388; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:1566 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_address_stack_transfer_address",
+    "new": "core_execute_spi_flash_operation",
+    "evidence": [
+      "src/rdx_core/04_hash_flash_usb_thermal.inc:536: Dispatches SPI page program 2, read 3, write enable 6 and sector erase 0x20 with address/data transfers and readiness checks.",
+      "Sibling function core_transfer_005 at 0x080036CC; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:2876 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_write_response_type",
+    "new": "core_handle_scsi_write_buffer",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:93: Reads WRITE BUFFER mode and buffer ID from CDB bytes 1/2 plus offset and parameter length from bytes 3\u20135 and 6\u20138, then updates identity or flash payload.",
+      "Sibling function core_coordinate_021 at 0x08004884; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:4136 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_handle_x02_n",
+    "new": "core_handle_scsi_read_buffer",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:310: Reads READ BUFFER mode/ID and allocation fields, returns unit or compact identity in mode 2 and buffer capacity in mode 3.",
+      "Sibling function core_coordinate_027 at 0x08005C1C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:5227 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_process_short_available",
+    "new": "core_append_typed_payload_record",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:255: Bounds-checks an output record, writes its four-byte type/flags/length header and copies payload, returning updated offset.",
+      "Sibling function core_process_014 at 0x0800708C; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:6948 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_firmware_t_byte",
+    "new": "core_dispatch_scsi_command",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:227: Finds the opcode metadata entry, validates CDB length and flags, checks command readiness and calls the selected opcode handler.",
+      "Sibling function core_transfer_008 at 0x08004B80; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:4271 and reports/function_module_map.csv preserve its address and matching operation sequence."
+    ]
+  },
+  {
+    "old": "core_transfer_spi_response_context",
+    "new": "core_service_led_patterns",
+    "evidence": [
+      "src/rdx_core/12_ahci_smart_spi_control.inc:583: On software-timer expiration, iterates registered LED state records, advances their pattern state and logical outputs, then rearms the LED interval.",
+      "Sibling function core_transfer_034 at 0x080091D4; ../TUSB9261_RDX_Recovered_Source/source/recovered_core.c:9991. The registration call in src/rdx_core/13_runtime_transfer_helpers.inc:200 supplies cartridge green/amber logical output IDs."
+    ]
+  },
+  {
+    "old": "rti_enable_counter_if_requested",
+    "new": "rti_restore_compare_interrupt",
+    "evidence": [
+      "src/rti.c:214: When requested, sets RTISETINT bit zero at 0xFFFFFC80; this enables the compare interrupt, not the free-running counter.",
+      "Sibling function rti_update_005 at 0x0800CB24; ../TUSB9261_RDX_Recovered_Source/source/rti.c:234."
+    ]
+  },
+  {
+    "old": "rti_enable_counter_when_requested",
+    "new": "rti_restore_compare_interrupt_for_timer",
+    "evidence": [
+      "src/rti.c:271: When requested, sets RTISETINT bit zero at 0xFFFFFC80; this enables the compare interrupt, not the free-running counter.",
+      "Sibling function rti_forward_002 at 0x0800D404; ../TUSB9261_RDX_Recovered_Source/source/rti.c:299."
+    ]
+  },
+  {
+    "old": "gio_configure_pin_configuration_pin_number_peripheral_pin_configuration",
+    "new": "gio_configure_logical_pin_interrupt",
+    "evidence": [
+      "src/gio.c:56: Resolves a board logical pin and configures GIO interrupt polarity, level, pending-flag clear and enable, while storing its callback slot.",
+      "../TUSB9261_RDX_Recovered_Source/source/gio.c:31: gio_configure_001 at 0x08009684 contains the same GIOPOL/GIOLVLSET/GIOFLG/GIOENASET operation sequence."
+    ]
+  }
+]

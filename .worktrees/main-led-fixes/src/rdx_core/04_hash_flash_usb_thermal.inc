@@ -1,0 +1,879 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Andre Fiedler
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+/**
+ * @brief Sha256 compress block.
+ *
+ * @param offset Procedure input.
+ * @param buffer Procedure input.
+ * @return No value.
+ */
+uint32_t core_sha256_compress_block(offset, buffer)
+int offset;
+uint8_t *buffer;
+
+{
+    /* Sha256 compress block; persistent state is carried in core descriptor selection context. */
+    uint8_t *buffer_cursor;
+    uint8_t *third_input_byte;
+    uint8_t *fourth_input_byte;
+    uint8_t first_input_byte;
+    uint32_t working_result;
+    uint32_t offset_field_0x5c;
+    uint32_t offset_field_0x50;
+    uint32_t offset_field_0x60;
+    uint32_t offset_field_0x4c;
+    int accumulator_word;
+    int *core_descriptor_selection_context_pointer;
+    int *concat11_result;
+    int *data_cursor;
+    int operation_status;
+    uint32_t offset_field_0x54;
+    uint32_t status_bits;
+    uint32_t state_word;
+    int working_state[9];
+    volatile int packed_command_words[5];
+    volatile uint32_t expanded_state[50];
+    uint32_t offset_field_0x68;
+    uint32_t state_word_g;
+    uint32_t offset_field_0x58;
+    volatile int assembled_word = 0;
+
+    operation_status = 0x10;
+    core_descriptor_selection_context_pointer = working_state;
+    concat11_result = working_state;
+    /* Repeat while operation_status != 0; the body advances or polls the state needed to leave the loop. */
+    do {
+        first_input_byte = *buffer;
+        buffer_cursor = buffer + 1;
+        third_input_byte = buffer + 2;
+        fourth_input_byte = buffer + 3;
+        operation_status = operation_status + -1;
+        buffer = buffer + 4;
+        data_cursor = concat11_result + 1;
+        *concat11_result = CONCAT31(CONCAT21(CONCAT11(first_input_byte, *buffer_cursor), *third_input_byte), *fourth_input_byte);
+        concat11_result = data_cursor;
+    } while (operation_status != 0);
+    operation_status = 0x30;
+    /* Repeat while operation_status != 0; the body advances or polls the state needed to leave the loop. */
+    do {
+        offset_field_0x5c = core_descriptor_selection_context_pointer[0xe];
+        offset_field_0x4c = core_descriptor_selection_context_pointer[1];
+        concat11_result = core_descriptor_selection_context_pointer + 9;
+        accumulator_word = *core_descriptor_selection_context_pointer;
+        operation_status = operation_status + -1;
+        core_descriptor_selection_context_pointer = core_descriptor_selection_context_pointer + 1;
+        *data_cursor = accumulator_word +
+                            ((offset_field_0x4c >> 7 | offset_field_0x4c << 0x19) ^ (offset_field_0x4c >> 0x12 | offset_field_0x4c << 0xe) ^
+                             offset_field_0x4c >> 3) +
+                            *concat11_result +
+                            ((offset_field_0x5c >> 0x11 | offset_field_0x5c << 0xf) ^ (offset_field_0x5c >> 0x13 | offset_field_0x5c << 0xd) ^
+                             offset_field_0x5c >> 10);
+        data_cursor = data_cursor + 1;
+    } while (operation_status != 0);
+    operation_status = 0x40;
+    offset_field_0x58 = *(uint32_t *)(offset + 0x58);
+    state_word_g = *(uint32_t *)(offset + 100);
+    offset_field_0x68 = *(uint32_t *)(offset + 0x68);
+    offset_field_0x4c = *(uint32_t *)(offset + 0x4c);
+    offset_field_0x5c = *(uint32_t *)(offset + 0x5c);
+    concat11_result = working_state;
+    offset_field_0x50 = *(uint32_t *)(offset + 0x50);
+    offset_field_0x60 = *(uint32_t *)(offset + 0x60);
+    core_descriptor_selection_context_pointer = (int *)&core_descriptor_selection_context;
+    offset_field_0x54 = *(uint32_t *)(offset + 0x54);
+    /* Repeat while operation_status != 0; the body advances or polls the state needed to leave the loop. */
+    do {
+        state_word = offset_field_0x54;
+        status_bits = offset_field_0x60;
+        offset_field_0x54 = offset_field_0x50;
+        offset_field_0x60 = offset_field_0x5c;
+        offset_field_0x50 = offset_field_0x4c;
+        offset_field_0x5c = offset_field_0x58;
+        working_result = state_word_g;
+        assembled_word = *concat11_result;
+        operation_status = operation_status + -1;
+        accumulator_word = offset_field_0x68 + *concat11_result + *core_descriptor_selection_context_pointer +
+                         (state_word_g & ~offset_field_0x60 ^ status_bits & offset_field_0x60) +
+                         ((offset_field_0x60 >> 6 | offset_field_0x60 << 0x1a) ^ (offset_field_0x60 >> 0xb | offset_field_0x60 << 0x15) ^
+                          (offset_field_0x60 >> 0x19 | offset_field_0x60 << 7));
+        state_word_g = status_bits;
+        offset_field_0x68 = working_result;
+        offset_field_0x58 = state_word;
+        offset_field_0x5c = offset_field_0x5c + accumulator_word;
+        offset_field_0x4c =
+            (state_word & offset_field_0x54 ^ state_word & offset_field_0x50 ^ offset_field_0x54 & offset_field_0x50) +
+            ((offset_field_0x50 >> 2 | offset_field_0x50 << 0x1e) ^ (offset_field_0x50 >> 0xd | offset_field_0x50 << 0x13) ^
+             (offset_field_0x50 >> 0x16 | offset_field_0x50 << 10)) +
+            accumulator_word;
+        concat11_result = concat11_result + 1;
+        core_descriptor_selection_context_pointer = core_descriptor_selection_context_pointer + 1;
+    } while (operation_status != 0);
+    *(uint32_t *)(offset + 0x4c) = offset_field_0x4c + *(int *)(offset + 0x4c);
+    *(uint32_t *)(offset + 0x5c) = offset_field_0x5c + *(int *)(offset + 0x5c);
+    *(uint32_t *)(offset + 0x50) = *(int *)(offset + 0x50) + offset_field_0x50;
+    *(uint32_t *)(offset + 0x54) = *(int *)(offset + 0x54) + offset_field_0x54;
+    *(uint32_t *)(offset + 0x60) = offset_field_0x60 + *(int *)(offset + 0x60);
+    *(uint32_t *)(offset + 0x58) = state_word + *(int *)(offset + 0x58);
+    *(uint32_t *)(offset + 100) = status_bits + *(int *)(offset + 100);
+    *(uint32_t *)(offset + 0x68) = working_result + *(int *)(offset + 0x68);
+    return 0;
+}
+
+/**
+ * @brief Handle response end word response tail storage.
+ *
+ * @param buffer Procedure input.
+ * @param value Procedure input.
+ * @param length Procedure input.
+ * @param flags Procedure input.
+ * @return No value.
+ */
+void core_handle_response_end_word_response_tail_storage(buffer, value, length, flags) uint32_t *buffer;
+uint32_t value;
+uint32_t length;
+uint32_t flags;
+
+{
+    /* Handle response end word response tail storage; persistent state is carried in core storage 013, core response tail storage. */
+    int operation_status;
+    uint32_t core_process_ti_memset_for_build_scsi_mode_result;
+    uint32_t working_result;
+    uint32_t callback_result = 0;
+    uint32_t core_transfer_constant_0x13_result;
+    uint32_t core_process_ata_command_buffer_for_build_scsi_mode_result;
+    uint32_t response_end;
+    uint32_t zero_high_word = 0;
+    uint8_t condition_met;
+    uint32_t status_bits;
+    uint32_t *core_storage_013_pointer;
+    bool core_response_tail_storage_pointer;
+    int64_t bit_position;
+
+    operation_status = core_get_runtime_context_base_for_build_scsi_mode();
+    bit_position = core_get_structure_field_hex_for_response_end_word(operation_status + 0x2c);
+    operation_status = core_get_response_end_context_for_response_end_word();
+    core_process_ata_command_buffer_for_build_scsi_mode_result = callback_result;
+    core_transfer_constant_0x13_result = zero_high_word;
+    if (operation_status != 0) {
+        operation_status = (int)core_get_ata_command_buffer();
+        core_transfer_constant_0x13_result = (uint32_t)bit_position - (uint32_t)*(uint16_t *)(operation_status + 0x14);
+        core_process_ata_command_buffer_for_build_scsi_mode_result = core_transfer_constant_0x13_result - 7;
+        core_transfer_constant_0x13_result =
+            (int)((uint64_t)bit_position >> 0x20) +
+            (-(uint32_t)(core_transfer_constant_0x13_result < 7) - (uint32_t)((uint32_t)bit_position < (uint32_t)*(uint16_t *)(operation_status + 0x14)));
+        bit_position = CONCAT44(core_transfer_constant_0x13_result >> 3, core_process_ata_command_buffer_for_build_scsi_mode_result >> 3 | core_transfer_constant_0x13_result * 0x20000000);
+    }
+    core_storage_013_pointer = (uint32_t *)(uint32_t)((uint64_t)bit_position >> 0x20);
+    status_bits = (uint32_t)bit_position;
+    if (*(int8_t *)buffer[2] == -0x62) {
+        core_process_ti_memset_for_build_scsi_mode_result = 0x20;
+    } else {
+        core_process_ti_memset_for_build_scsi_mode_result = 8;
+    }
+    core_process_ti_memset_for_build_scsi_mode_result = (uint32_t)core_process_ti_memset_for_build_scsi_mode(buffer, core_process_ti_memset_for_build_scsi_mode_result, core_process_ata_command_buffer_for_build_scsi_mode_result, core_transfer_constant_0x13_result, flags);
+    core_process_ata_command_buffer_for_build_scsi_mode_result = core_process_ata_command_buffer_for_build_scsi_mode();
+    core_process_ata_command_buffer_for_build_scsi_mode_result = core_process_ata_command_buffer_for_build_scsi_mode_result & 0xffff;
+    if (*(char *)buffer[2] == '%') {
+        if (core_storage_013_pointer != (uint32_t *)0x0) {
+            status_bits = 0xffffffff;
+        }
+        core_process_halt_forever_for_response_end_word(core_process_ti_memset_for_build_scsi_mode_result, 0, 3, status_bits, 0);
+        working_result = 4;
+        response_end = 7;
+        goto core_branch_target_052;
+    }
+    if (*(int8_t *)buffer[2] != -0x62) {
+        *buffer = 8;
+        return;
+    }
+    operation_status = (int)core_get_ata_command_buffer();
+    condition_met = *(uint8_t *)(operation_status + 0x13);
+    core_update_release_record_payload(core_process_ti_memset_for_build_scsi_mode_result, buffer, 10, 0xd);
+    core_response_tail_storage_pointer = &core_response_tail_storage < core_storage_013_pointer;
+    if (core_storage_013_pointer == (uint32_t *)&core_storage_013) {
+        core_response_tail_storage_pointer = 0xfffffffd < status_bits;
+    }
+    if (!core_response_tail_storage_pointer || bit_position == -2) {
+        buffer = core_storage_013_pointer;
+    }
+    if (core_response_tail_storage_pointer && (core_storage_013_pointer != (uint32_t *)&core_storage_013 || status_bits != 0xfffffffe)) {
+        status_bits = 0xfffffffe;
+        buffer = (uint32_t *)&core_storage_013;
+    }
+    core_process_halt_forever_for_response_end_word(core_process_ti_memset_for_build_scsi_mode_result, 0, 7, status_bits, buffer);
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 8, 0xb, core_process_ata_command_buffer_for_build_scsi_mode_result);
+    operation_status = core_get_response_end_context_for_response_end_word();
+    if (operation_status != 0) {
+        if (condition_met < 3) {
+            condition_met = 0;
+        } else {
+            condition_met = condition_met - 3;
+        }
+    }
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 0xd, 0xd, condition_met);
+    operation_status = core_get_response_end_context_for_response_end_word();
+    if (operation_status == 0) {
+        core_get_ata_command_buffer();
+        core_transfer_constant_0x13_result = core_transfer_constant_0x13();
+        operation_status = (int)core_get_ata_command_buffer();
+        status_bits = (uint32_t)*(uint16_t *)(operation_status + 0x14);
+        core_process_ata_command_buffer_for_build_scsi_mode_result = core_transfer_constant_0x13_result - status_bits;
+        if ((status_bits == 0) || (core_transfer_constant_0x13_result < status_bits))
+            goto core_branch_target_051;
+    } else {
+    /* Shared target for core branch target 051; incoming paths preserve the same state assumptions. */
+    core_branch_target_051:
+        core_process_ata_command_buffer_for_build_scsi_mode_result = 0;
+    }
+    working_result = 0xe;
+    response_end = 0xf;
+/* Shared target for core branch target 052; incoming paths preserve the same state assumptions. */
+core_branch_target_052:
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, working_result, response_end, core_process_ata_command_buffer_for_build_scsi_mode_result);
+    return;
+}
+
+/**
+ * @brief Sha256 finalize.
+ *
+ * @param offset Procedure input.
+ * @param value Procedure input.
+ * @param condition Procedure input.
+ * @return No value.
+ */
+void core_sha256_finalize(offset, value, condition) int offset;
+int value;
+int condition;
+
+{
+    /* Sha256 finalize using only caller-provided data. */
+    uint32_t offset_field_0x40;
+    int status_bits;
+    uint32_t core_sha256_compress_block_derived;
+    uint8_t *computed_offset;
+    uint32_t offset_field_0x44;
+    int operation_status;
+
+    offset_field_0x40 = *(uint32_t *)(offset + 0x40);
+    if (offset_field_0x40 < 0x38) {
+        computed_offset = (uint8_t *)(offset + offset_field_0x40);
+        *computed_offset = 0x80;
+        if (offset_field_0x40 + 1 < 0x38) {
+            status_bits = 0x38 - (offset_field_0x40 + 1);
+            /* Repeat while status_bits != 0; the body advances or polls the state needed to leave the loop. */
+            do {
+                computed_offset = computed_offset + 1;
+                status_bits = status_bits + -1;
+                *computed_offset = 0;
+            } while (status_bits != 0);
+        }
+    } else {
+        *(uint8_t *)(offset + offset_field_0x40) = 0x80;
+        offset_field_0x40 = offset_field_0x40 + 1;
+        if (offset_field_0x40 < 0x40) {
+            status_bits = 0x40 - offset_field_0x40;
+            computed_offset = (uint8_t *)(offset + offset_field_0x40);
+            /* Repeat while status_bits != 0; the body advances or polls the state needed to leave the loop. */
+            do {
+                status_bits = status_bits + -1;
+                *computed_offset = 0;
+                computed_offset = computed_offset + 1;
+            } while (status_bits != 0);
+        }
+        core_sha256_compress_block_derived = ((uint32_t (*)())core_sha256_compress_block)(offset, offset);
+        ti_memset(core_sha256_compress_block_derived, 0, 0x38);
+    }
+    offset_field_0x44 = *(uint32_t *)(offset + 0x44);
+    offset_field_0x40 = *(int *)(offset + 0x40) * 8;
+    *(uint32_t *)(offset + 0x44) = offset_field_0x40 + offset_field_0x44;
+    *(uint32_t *)(offset + 0x48) = *(int *)(offset + 0x48) + (uint32_t)CARRY4(offset_field_0x40, offset_field_0x44);
+    *(uint8_t *)(offset + 0x3f) = *(uint8_t *)(offset + 0x44);
+    *(char *)(offset + 0x3e) = (char)((uint32_t)*(uint32_t *)(offset + 0x44) >> 8);
+    *(char *)(offset + 0x3d) = (char)((uint32_t)*(uint32_t *)(offset + 0x44) >> 0x10);
+    *(char *)(offset + 0x3c) = (char)((uint32_t)*(uint32_t *)(offset + 0x44) >> 0x18);
+    *(char *)(offset + 0x3b) = (char)*(uint32_t *)(offset + 0x48);
+    *(char *)(offset + 0x3a) = (char)((uint32_t)*(uint32_t *)(offset + 0x48) >> 8);
+    *(char *)(offset + 0x39) = (char)((uint32_t)*(uint32_t *)(offset + 0x48) >> 0x10);
+    *(char *)(offset + 0x38) = (char)((uint32_t)*(uint32_t *)(offset + 0x48) >> 0x18);
+    ((uint32_t (*)())core_sha256_compress_block)(offset);
+    offset_field_0x40 = 0;
+    /* Repeat while operation_status != 0; the body advances or polls the state needed to leave the loop. */
+    do {
+        operation_status = 8;
+        status_bits = 0;
+        /* Repeat while operation_status != 0; the body advances or polls the state needed to leave the loop. */
+        do {
+            offset_field_0x44 = offset_field_0x40 + status_bits & 0xff;
+            if ((int)offset_field_0x44 < condition) {
+                *(char *)(value + offset_field_0x44) =
+                    (char)(*(uint32_t *)(offset + status_bits + 0x4c) >> (0x18U - offset_field_0x40 * 8U & 0xff));
+            }
+            operation_status = operation_status + -1;
+            status_bits = status_bits + 4;
+        } while (operation_status != 0);
+        offset_field_0x40 = offset_field_0x40 + 1;
+    } while (offset_field_0x40 < 4);
+    return;
+}
+
+/**
+ * @brief Prepare runtime services hook.
+ *
+ * @return No value.
+ */
+void core_prepare_runtime_services_hook()
+
+{
+    /* Prepare runtime services hook using only caller-provided data. */
+    return;
+}
+
+/**
+ * @brief Transition flash validation context.
+ *
+ * @param buffer Procedure input.
+ * @param condition Procedure input.
+ * @param length Procedure input.
+ * @param flags Procedure input.
+ * @return Result produced by the procedure.
+ */
+uint32_t core_transition_flash_validation_context(buffer, condition, length, flags)
+int *buffer;
+int condition;
+uint32_t length;
+int flags;
+
+{
+    /* Transition flash validation context; persistent state is carried in core flash validation context, core state 093 and related record fields. */
+    int working_result;
+    uint8_t *data_cursor;
+    uint32_t core_process_identity_update_context_result;
+    uint32_t mode_value;
+    int status_bits;
+
+    status_bits = flags;
+    if (condition == 2) {
+        /* Record type 2 carries the main identity block; its version controls which tail fields exist. */
+        mode_value = buffer[7];
+        if (5 < mode_value) {
+            /* Version 6 adds the validation selector and three 16-byte identity extensions. */
+            core_flash_validation_context = (uint16_t)buffer[0x1e];
+            core_forward_end_remaining(&core_state_093, (int)buffer + 0x7a, 0x10);
+            core_forward_end_remaining(&core_state_094, (int)buffer + 0x8a, 0x10);
+            core_forward_end_remaining(&core_state_095, (int)buffer + 0x9a, 0x10);
+        }
+        if (4 < mode_value) {
+            /* Version 5 adds the eight-byte auxiliary identity field. */
+            core_forward_end_remaining(&core_state_091, buffer + 0x1c, 8);
+        }
+        if (3 < mode_value) {
+            /* Version 4 adds two words and preserves the parsed record version. */
+            core_state_089 = buffer[0x1a];
+            core_state_090 = buffer[0x1b];
+            core_state_078 = mode_value;
+        }
+        core_state_082 = buffer[8];
+        core_primary_response_buffer = buffer[9];
+        core_forward_end_remaining(&core_unit_serial_number, buffer + 4, 10);
+        /* Select the version-independent payload segment copied after the common fields. */
+        data_cursor = (uint8_t *)&core_state_084;
+        working_result = 0x28;
+        core_process_identity_update_context_result = 0x40;
+    } else {
+        if (1 < condition - 3U) {
+            if (condition - 3U != 7) {
+                return 1;
+            }
+            /* Record type 10 authenticates its first word against the defined firmware constant. */
+            status_bits = 0;
+            core_forward_end_remaining(&status_bits, 0x800e744, 4);
+            status_bits = core_transfer_component_for_flash_validation_context(buffer + 1, 0x1c, status_bits);
+            /* Gate the following state transition on *buffer != status_bits; the handler is skipped when this condition is false. */
+            if (*buffer != status_bits) {
+                return 1;
+            }
+            core_forward_end_remaining(&core_secondary_response_buffer, buffer + 2, 8);
+            /* Once verified, import the compact serial/identity tuple into persistent globals. */
+            core_forward_end_remaining(&core_state_088, buffer + 4, 0x10);
+            core_state_085 = (uint16_t)buffer[1];
+            core_state_086 = *(uint16_t *)((int)buffer + 6);
+            goto core_transition_flash_validation_context_before_process_identity_update_context;
+        }
+        core_forward_end_remaining(&core_state_081, buffer + 7, 0x10);
+        /* Types 3 and 4 share a smaller 16-byte payload followed by an eight-byte field. */
+        working_result = 0x10;
+        data_cursor = (uint8_t *)&core_state_080;
+        core_process_identity_update_context_result = 8;
+    }
+    core_forward_end_remaining(data_cursor, (int)buffer + working_result, core_process_identity_update_context_result);
+/* Shared target for core transition flash validation context before process identity update context; incoming paths preserve the same state assumptions. */
+core_transition_flash_validation_context_before_process_identity_update_context:
+    /* Commit all imported fields through the common identity-update path. */
+    core_process_identity_update_context_result = core_process_identity_update_context();
+    return core_process_identity_update_context_result;
+}
+
+/**
+ * @brief Transfer descriptor capacity previous descriptor address descriptor queue context.
+ *
+ * @param transfer_direction Procedure input.
+ * @param remaining_bytes Procedure input.
+ * @param command_parameter Command-specific value stored with the transfer.
+ * @return Result produced by the procedure.
+ */
+uint64_t core_transfer_descriptor_capacity_previous_descriptor_address_descriptor_queue_context(transfer_direction, remaining_bytes, command_parameter)
+int transfer_direction;
+uint32_t remaining_bytes;
+uint32_t command_parameter;
+
+{
+    /* Transfer descriptor capacity previous descriptor address descriptor queue context; persistent state is carried in core state 059, USB core revision and related record fields. */
+    int working_result;
+    uint32_t condition_3_field;
+    uint32_t *data_cursor;
+    uint32_t *descriptor_base;
+    uint32_t *core_state_059_pointer;
+    uint32_t status_bits;
+    uint32_t chain_flag;
+    uint32_t completion_mask;
+    uint32_t condition_2_field;
+    uint32_t base_command_flags;
+    int previous_descriptor_address;
+    uint32_t condition_1_field;
+    uint32_t operation_status;
+    uint32_t descriptor_capacity;
+    uint32_t *usb_core_revision_pointer;
+
+    /* Descriptor-queue mode changes the completion bits written into each TRB. */
+    if (core_descriptor_queue_context == 0) {
+        completion_mask = 0x20000;
+    } else {
+        completion_mask = 0x30000;
+    }
+    condition_1_field = 0;
+    if (transfer_direction == 0) {
+        /* OUT transfers use eight descriptors and split data into 128 KiB chunks. */
+        working_result = 0x1c0;
+        operation_status = 0x20000;
+        descriptor_capacity = 8;
+        descriptor_base = (uint32_t *)&usb_trb_ring_out;
+    } else {
+        /* IN transfers use ten descriptors and the mode-dependent 16/32 KiB chunk limit. */
+        working_result = 0x184;
+        descriptor_base = (uint32_t *)&usb_trb_ring_in;
+        if (core_descriptor_queue_context == 0) {
+            operation_status = 0x8000;
+        } else {
+            operation_status = 0x4000;
+        }
+        descriptor_capacity = 10;
+    }
+    condition_3_field = (command_parameter & 0xffff) << 0xe;
+    /* Preserve the command parameter in the TRB control word beside the defined base flags. */
+    base_command_flags = condition_3_field | 0x811;
+    data_cursor = descriptor_base;
+    usb_core_revision_pointer = (uint32_t *)((int)&usb_core_revision + working_result);
+    /* Repeat while (remaining_bytes != 0) && (data_cursor = core_state_059_pointer + 4, condition_1_field < descriptor_capacity); the body advances or polls the state needed to leave the loop. */
+    do {
+        core_state_059_pointer = data_cursor;
+        usb_core_revision_pointer = usb_core_revision_pointer + 1;
+        condition_2_field = remaining_bytes;
+        if (operation_status <= remaining_bytes) {
+            condition_2_field = operation_status;
+        }
+        /* Clear stale completion state before publishing this segment to hardware. */
+        *(uint32_t *)(&core_state_059 + working_result) = ~completion_mask & *(uint32_t *)(&core_state_059 + working_result);
+        remaining_bytes = remaining_bytes - condition_2_field;
+        status_bits = base_command_flags;
+        if ((((usb_core_revision == 0x120a) && (command_parameter != 0)) && (condition_1_field == 0)) && (transfer_direction == 0)) {
+            /* Revision 0x120a clears the low control bit on the first parameterized OUT TRB. */
+            status_bits = condition_3_field | 0x810;
+        }
+        if (remaining_bytes == 0) {
+            /* Mark the final data TRB; otherwise keep the chain open for the next segment. */
+            chain_flag = 2;
+        } else {
+            chain_flag = 4;
+        }
+        *core_state_059_pointer = *(uint32_t *)(&core_state_059 + working_result);
+        condition_1_field = condition_1_field + 1;
+        core_state_059_pointer[1] = 0;
+        core_state_059_pointer[2] = condition_2_field;
+        previous_descriptor_address = *(int *)(&core_state_059 + working_result);
+        core_state_059_pointer[3] = chain_flag | status_bits;
+        *(uint32_t *)(&core_state_059 + working_result) = condition_2_field + previous_descriptor_address;
+        *usb_core_revision_pointer = condition_2_field;
+    } while ((remaining_bytes != 0) && (data_cursor = core_state_059_pointer + 4, condition_1_field < descriptor_capacity));
+    if (descriptor_capacity == condition_1_field) {
+        /* A full ring ends with a link TRB that wraps execution back to the ring base. */
+        core_state_059_pointer[4] = (uint32_t)descriptor_base;
+        core_state_059_pointer[5] = 0;
+        core_state_059_pointer[6] = 0;
+        core_state_059_pointer[7] = 0x81;
+        condition_1_field = 0;
+    }
+    *(uint32_t *)(&core_state_055 + working_result) = condition_1_field;
+    /* Retain producer index, residual byte count, and command metadata for the completion path. */
+    *(uint32_t *)((int)&usb_core_revision + working_result) = remaining_bytes;
+    *(uint32_t *)(&core_state_063 + working_result) = command_parameter;
+    *(uint32_t *)(&core_state_057 + working_result) = 0;
+    return CONCAT44(descriptor_base, descriptor_base);
+}
+
+/**
+ * @brief Transfer address stack transfer address.
+ *
+ * @param operation_code Procedure input.
+ * @param transfer_address Procedure input.
+ * @param length Procedure input.
+ * @param remaining_blocks Number of blocks still to transfer.
+ * @return Result produced by the procedure.
+ */
+uint64_t core_transfer_address_stack_transfer_address(operation_code, transfer_address, length, remaining_blocks)
+int operation_code;
+uint32_t transfer_address;
+int length;
+int remaining_blocks;
+
+{
+    /* Transfer address stack transfer address using only caller-provided data. */
+    int operation_status;
+    int remaining_count;
+    uint32_t status_bits;
+    uint32_t condition_2_field;
+    int length_component;
+    int iStack_1c;
+
+    condition_2_field = transfer_address;
+    length_component = length;
+    iStack_1c = remaining_blocks;
+    if (operation_code == 2) {
+    /* Shared target for core transfer address stack transfer address before run watchdog reset remaining; incoming paths preserve the same state assumptions. */
+    core_transfer_address_stack_transfer_address_before_run_wdt_reset_remaining:
+        operation_status = core_run_wdt_reset_remaining(1);
+        if ((operation_status != 0) || (operation_status = core_transfer_spi_configure_spi(1, operation_code, transfer_address), operation_status != 0))
+            goto core_transfer_address_stack_transfer_address_return_path;
+        remaining_count = 0;
+        status_bits = 0x14000000;
+        operation_status = 0;
+        /* Iterate while (remaining_blocks != 0 && (operation_status == 0)), preserving the defined cursor and bound. */
+        while ((remaining_blocks != 0 && (operation_status == 0))) {
+            if (remaining_blocks == 1) {
+                status_bits = status_bits & 0xefffffff;
+            }
+            operation_status = core_update_spi_configure_spi(*(uint8_t *)(length + remaining_count) | status_bits, &condition_2_field);
+            remaining_blocks = remaining_blocks + -1;
+            remaining_count = remaining_count + 1;
+        }
+    } else {
+        if (operation_code == 3) {
+            operation_status = core_run_wdt_reset_remaining(1);
+            if (operation_status == 0) {
+                operation_status = core_transfer_spi_configure_spi(1, 3, transfer_address);
+                if (operation_status == 0) {
+                    remaining_count = 0;
+                    /* Iterate while (remaining_blocks != 0 && (operation_status == 0)), preserving the defined cursor and bound. */
+                    while ((remaining_blocks != 0 && (operation_status == 0))) {
+                        core_update_spi_update_spi();
+                        operation_status = spi_transfer_word(0x14060000, &length_component);
+                        if (operation_status == 0) {
+                            remaining_blocks = remaining_blocks + -1;
+                            *(uint8_t *)(length + remaining_count) = (uint8_t)length_component;
+                            remaining_count = remaining_count + 1;
+                        }
+                    }
+                }
+                spi_transfer_word(0x60000, &length_component);
+            }
+            goto core_transfer_address_stack_transfer_address_return_path;
+        }
+        if (operation_code == 6) {
+            operation_status = spi_transfer_word(0x4060006, &iStack_1c);
+            if (operation_status == 0) {
+                core_run_wdt_reset_remaining(1);
+                core_run_wdt_reset_remaining(2);
+            }
+            goto core_transfer_address_stack_transfer_address_return_path;
+        }
+        if (operation_code == 10)
+            goto core_transfer_address_stack_transfer_address_before_run_wdt_reset_remaining;
+        if (operation_code != 0x20) {
+            operation_status = -1;
+            goto core_transfer_address_stack_transfer_address_return_path;
+        }
+        operation_status = core_transfer_spi_configure_spi(0, 0x20, transfer_address);
+        if (operation_status != 0)
+            goto core_transfer_address_stack_transfer_address_return_path;
+    }
+    operation_status = core_run_wdt_reset_remaining(1);
+/* Shared target for core transfer address stack transfer address return path; incoming paths preserve the same state assumptions. */
+core_transfer_address_stack_transfer_address_return_path:
+    return CONCAT44(condition_2_field, operation_status);
+}
+
+/**
+ * @brief Transition queue capacity command queue capacity context.
+ *
+ * @param condition Procedure input.
+ * @return Result produced by the procedure.
+ */
+uint32_t core_transition_queue_capacity_command_queue_capacity_context(condition)
+uint32_t condition;
+
+{
+    /* Transition queue capacity command queue capacity context; persistent state is carried in core queue capacity context, USB trb ring out and related record fields. */
+    uint32_t operation_status;
+    uint32_t core_process_mww_update_resource_result;
+    int *data_cursor;
+    uint32_t status_bits;
+    int *queue_state;
+    uint32_t queue_capacity;
+    uint32_t command_bits;
+    int previous_counter_value;
+
+    if ((condition >> 7 & 1) == 0) {
+        /* Endpoint direction selects the OUT ring or the separate MWW IN ring. */
+        queue_capacity = 8;
+        queue_state = (int *)&core_queue_capacity_context;
+        data_cursor = (int *)(&usb_trb_ring_out + core_state_074 * 0x10);
+        operation_status = core_queue_capacity_context;
+        if (core_queue_capacity_context >> 0x11 != 0) {
+            operation_status = 0x20000;
+        }
+    } else {
+        queue_capacity = 10;
+        queue_state = (int *)&core_mww_descriptor_ring_state;
+        data_cursor = (int *)&usb_trb_ring_in;
+        operation_status = core_mww_descriptor_ring_state;
+        if (core_descriptor_queue_context == 0) {
+            if (core_mww_descriptor_ring_state >> 0xf != 0) {
+                operation_status = 0x8000;
+            }
+        } else if (core_mww_descriptor_ring_state >> 0xe != 0) {
+            operation_status = 0x4000;
+        }
+    }
+    if (core_descriptor_queue_context == 0) {
+        /* Match the completion-mask encoding used when the ring was initially built. */
+        command_bits = 0x20000;
+    } else {
+        command_bits = 0x30000;
+    }
+    /* Gate the following state transition on *queue_state == 0; the handler is skipped when this condition is false. */
+    if (*queue_state == 0) {
+        /* An empty queue needs no TRB publication and is already complete. */
+        core_process_mww_update_resource_result = 1;
+    } else {
+        /* Consume one hardware-sized chunk and publish it at the current producer slot. */
+        previous_counter_value = *queue_state;
+        queue_state[0xd] = queue_state[0xd] & ~command_bits;
+        command_bits = queue_state[0xe];
+        *queue_state = previous_counter_value - operation_status;
+        if (previous_counter_value - operation_status == 0) {
+            /* The final chunk terminates the chain; intermediate chunks remain chained. */
+            status_bits = 2;
+        } else {
+            status_bits = 4;
+        }
+        *data_cursor = queue_state[0xd];
+        data_cursor[1] = 0;
+        data_cursor[2] = operation_status;
+        data_cursor[3] = status_bits | (command_bits & 0xffff) << 0xe | 0x811;
+        queue_state[queue_state[0xb] + 1] = operation_status;
+        queue_state[0xd] = operation_status + queue_state[0xd];
+        previous_counter_value = queue_state[0xb];
+        queue_state[0xb] = previous_counter_value + 1U;
+        if (queue_capacity <= previous_counter_value + 1U) {
+            /* Wrap the software producer index at the physical ring capacity. */
+            queue_state[0xb] = 0;
+        }
+        if ((usb_core_revision < 0x109a) &&
+            ((*(uint32_t *)(&usb_endpoint_command_register + ((condition & 0x7fffff7f) << 1 | condition >> 7) * 0x10) & 0xff) == 7)) {
+            /* Older cores defer the update while the endpoint command reports state 7. */
+            core_process_mww_update_resource_result = 0;
+        } else {
+            core_process_mww_update_resource_result = core_process_mww_update_resource(condition);
+        }
+    }
+    return core_process_mww_update_resource_result;
+}
+
+/**
+ * @brief Ramp thermal pwm.
+ *
+ * @return No value.
+ */
+void core_ramp_thermal_pwm()
+
+{
+    /* Ramp thermal pwm; persistent state is carried in core flash validation status, core mechanism phase and related record fields. */
+    int operation_status;
+    uint32_t working_result;
+
+    /* State 8 is the explicit inactive/terminal value for this PWM sequencer. */
+    if (core_flash_validation_status == 8) {
+        return;
+    }
+    if (core_mechanism_phase == 0) {
+        /* An idle mechanism forces the output off and resets the ramp state. */
+        core_flash_validation_status = 4;
+        core_mechanism_phase = 3;
+    /* Shared target for core branch target 058; incoming paths preserve the same state assumptions. */
+    core_branch_target_058:
+        core_update_flash_validation_status(0);
+        core_flash_validation_status = 0;
+        return;
+    }
+    if (core_flash_validation_status == 0) {
+        /* Mechanism phases 1 and 2 begin with a 100 ms settling interval. */
+        if (core_mechanism_phase != 1 && core_mechanism_phase != 2) {
+            return;
+        }
+        rti_process_thermal_timer_state(0x800f280, 100);
+        core_flash_validation_status = 5;
+        return;
+    }
+    if (core_flash_validation_status == 1) {
+        /* This state translates mechanism direction changes into the next PWM ramp phase. */
+        if (core_mechanism_phase == 2) {
+            rti_process_thermal_timer_state(0x800f280, 0);
+            core_flash_validation_status = 3;
+            return;
+        }
+        if (core_mechanism_phase != 4) {
+            return;
+        }
+        operation_status = 0x32;
+        core_state_217 = 0x32;
+        core_mechanism_phase = 5;
+        core_flash_validation_status = 5;
+        goto core_branch_target_056;
+    }
+    if (core_flash_validation_status == 2) {
+        /* Re-enter the downward ramp at 50 percent only from mechanism phase 1. */
+        if (core_mechanism_phase != 1) {
+            return;
+        }
+        core_update_flash_validation_status(0x32);
+        core_flash_validation_status = 1;
+        return;
+    }
+    if (core_flash_validation_status == 3) {
+        /* On each one-minute tick, advance the stored duty target by 13 until it exceeds 99. */
+        operation_status = core_get_thermal_control_context(0x800f280);
+        if (operation_status == 0) {
+            return;
+        }
+        if (99 < core_state_217) {
+            core_flash_validation_status = 2;
+            return;
+        }
+        core_update_flash_validation_status(core_state_217 + 0xd);
+        working_result = 60000;
+        goto core_ramp_thermal_pwm_before_rti_process_thermal_timer_state;
+    }
+    if (core_flash_validation_status == 4)
+        goto core_branch_target_058;
+    if (core_flash_validation_status != 5) {
+        return;
+    }
+    operation_status = core_get_thermal_control_context(0x800f280);
+    if (operation_status == 0) {
+        return;
+    }
+    if (core_mechanism_phase == 4) {
+        /* Start the short ramp at 5 percent when the mechanism enters phase 4. */
+        operation_status = 5;
+        core_state_217 = 5;
+        core_mechanism_phase = 5;
+    /* Shared target for core branch target 056; incoming paths preserve the same state assumptions. */
+    core_branch_target_056:
+        core_update_flash_validation_status(operation_status);
+    } else if (core_mechanism_phase == 5) {
+        /* Increase duty in five-point steps and advance after the defined 104-percent sentinel. */
+        core_update_flash_validation_status(core_state_217 + 5);
+        if (0x68 < core_state_217) {
+            core_mechanism_phase = 6;
+        }
+    } else {
+        if (core_mechanism_phase != 6) {
+            core_flash_validation_status = 1;
+            core_update_flash_validation_status(0x32);
+            return;
+        }
+        if (core_state_217 != 5) {
+            operation_status = core_state_217 - 5;
+            goto core_branch_target_056;
+        }
+        core_mechanism_phase = 5;
+    }
+    working_result = 5000;
+/* Shared target for core ramp thermal pwm before RTI process thermal timer state; incoming paths preserve the same state assumptions. */
+core_ramp_thermal_pwm_before_rti_process_thermal_timer_state:
+    /* Ramp steps normally run every five seconds; state 3 selects the one-minute interval above. */
+    rti_process_thermal_timer_state(0x800f280, working_result);
+    return;
+}
+
+/**
+ * @brief Handle descriptor clear memory device descriptor context.
+ *
+ * @param context Procedure input.
+ * @return Result produced by the procedure.
+ */
+uint32_t core_handle_descriptor_clear_memory_device_descriptor_context(context)
+uint32_t context;
+
+{
+    /* Handle descriptor clear memory device descriptor context; persistent state is carried in core device descriptor context. */
+    int operation_status;
+    uint32_t core_process_ti_memset_for_build_scsi_mode_result;
+    uint32_t working_result;
+    char data_cursor[4];
+    uint8_t working_buffer[148];
+    uint8_t record_descriptor[44];
+
+    operation_status = core_process_command_phase_three();
+    data_cursor[0] = '\0';
+    if (operation_status != 0) {
+        operation_status = core_get_runtime_context_base_for_build_scsi_mode();
+        operation_status = core_initialize_output_record_from_source(operation_status + 0x2c, record_descriptor);
+        if (operation_status == 0) {
+            return 0x21;
+        }
+        operation_status = core_transfer_match_found_expected_type(record_descriptor, data_cursor, 0, 0, 1);
+        if (operation_status == 0) {
+            return 0x21;
+        }
+    }
+    ti_memset(working_buffer, 0, 0x4c);
+    core_process_ti_memset_for_build_scsi_mode_result = (uint32_t)core_process_ti_memset_for_build_scsi_mode(context, 0x18);
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 0, 1, 0x20);
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 2, 3, 0x14);
+    if (data_cursor[0] == '\0') {
+        working_result = 0;
+    } else {
+        working_result = 0x42;
+    }
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 4, 4, working_result);
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 5, 5);
+    if ((data_cursor[0] == '\0') || (core_device_descriptor_context != 2 && core_device_descriptor_context != 3)) {
+        working_result = 1;
+    } else {
+        working_result = 2;
+    }
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 6, 6, working_result);
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 7, 7, 1);
+    if (data_cursor[0] == '\0') {
+        working_result = 0;
+    } else {
+        working_result = 8;
+    }
+    core_process_halt_forever_for_build_scsi_mode(core_process_ti_memset_for_build_scsi_mode_result, 0xc, 0xc, working_result);
+    return 0;
+}
+

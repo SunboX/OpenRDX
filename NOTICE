@@ -1,13 +1,44 @@
 # Attribution and notices
 
-OpenRDX is an original project by André Fiedler / SunboX.
+OpenRDX was created by André Fiedler / SunboX.
 
-Public project page: https://github.com/SunboX/OpenRDX
+Project repositories:
+
+- https://github.com/SunboX/OpenRDX
+- https://git.just.4be.mobi/sunbox/TUSB9261_RDX_PlatformIO
 
 Copyright (C) 2026 André Fiedler.
 
-When redistributing future OpenRDX software, documentation, binaries, or larger
-works based on the project, preserve all copyright, license, attribution, and
-source-origin notices required by the applicable licenses.
+When redistributing this project, modified versions, binaries, packaged
+applications, or larger works based on this project, preserve the copyright,
+license, attribution, source-origin, and third-party notices required by the
+applicable licenses.
 
-Third-party material retains its own notices and license terms.
+Files derived from the Texas Instruments TUSB926x firmware support package
+retain their Texas Instruments copyright notices. OpenRDX additions
+and modifications are separately identified; the OpenRDX license does not
+replace or broaden the terms governing the underlying Texas Instruments
+material.
+
+The following files use the BSD-3-Clause source license supplied with Texas
+Instruments TUSB9261-FIRMWARE-SOURCE-CODE version 1.06:
+
+- `include/rdx_mount/dox.h`
+- `src/rdx_mount/exceptions_isr.asm`
+- `src/rdx_mount/intvecs.asm`
+- `src/exceptions_isr.asm`
+- `src/intvecs.asm`
+
+Copyright (c) 2019, Texas Instruments Incorporated. All rights reserved.
+The full supplied notice, three conditions, and disclaimer are retained in
+`LICENSES/BSD-3-Clause.txt`. OpenRDX additions in the two top-level assembly
+files additionally carry `AGPL-3.0-or-later` and their separate author notice.
+
+The supplied `TUSB9261-FIRMWARE-SOURCE-CODE_1.06_manifest.html` assigns
+BSD-3-Clause to its Source entry and separate TI commercial terms to its Binary
+entry. The listed files match that package's source bodies; the two top-level
+assembly files also contain OpenRDX integration comments. Other TI material
+retains its existing file-specific declarations.
+
+Datasheets, product manuals, release notes, and other third-party documents
+retain the rights and terms supplied by their respective publishers.

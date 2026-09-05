@@ -10,5 +10,28 @@ License: AGPL-3.0-or-later
 Files:
  README.md
  NOTICE
+ docs/*.md
+ docs/assets/*.jpg
+ docs/assets/*.png
+ dist/*.md
+ temp/README.md
+ temp/history/**.md
 Copyright: 2026 André Fiedler
 License: CC-BY-SA-4.0
+
+Files: include/ti_reference/**
+Copyright: 2009-2013 Texas Instruments Incorporated
+License: LicenseRef-TI-TUSB926x
+
+Files:
+ dist/*.bin
+ dist/*.hex
+ dist/*.json
+ dist/*.sha256
+Copyright: 2009-2013 Texas Instruments Incorporated
+           2026 André Fiedler
+License: LicenseRef-TI-TUSB926x AND AGPL-3.0-or-later
+
+Files: temp/vendor/*.pdf
+Copyright: respective publishers and authors
+License: LicenseRef-ThirdParty-Documentation

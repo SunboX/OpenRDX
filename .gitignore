@@ -1,0 +1,4 @@
+.pio/
+__pycache__/
+*.py[cod]
+/docs/superpowers/

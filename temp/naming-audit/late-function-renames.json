@@ -1,0 +1,450 @@
+[
+  {
+    "old": "core_update_firmware_context_usb_transfer_state",
+    "new": "core_notify_usb_disconnect",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_update_firmware_context_usb_transfer_state: Sets negotiated speed to UNKNOWN=4, power state USB_PM_DISCONNECT=3 and device state NOT_CONNECTED=0, then emits event3; see include/rdx_mount/usb_hal.h."
+    ]
+  },
+  {
+    "old": "core_process_firmware_context_endpoint_context",
+    "new": "core_handle_usb_bus_reset",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_process_firmware_context_endpoint_context: Sets device state to DEFAULT=1, cancels endpoint requests, clears USB address, and emits RESET event 2. TI USB_DEVICE_STATE_T distinguishes INITIAL=0 from DEFAULT=1."
+    ]
+  },
+  {
+    "old": "core_update_device_base_device_base_context",
+    "new": "core_register_usb_request_callback",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_update_device_base_device_base_context: Appends a callback and bmRequestType bits6:0 to the four-slot request registry; SETUP dispatch reads the matching request type. include/rdx_mount/usb_stack.h and src/rdx_mount/usb_stack.c register callbacks for bmRequestType0x21."
+    ]
+  },
+  {
+    "old": "core_transfer_component_for_fallback_decoded_request",
+    "new": "core_accumulate_response_byte_lanes",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_transfer_component_for_fallback_decoded_request: Adds each input byte into one of four independent byte lanes of the supplied checksum seed."
+    ]
+  },
+  {
+    "old": "core_transfer_component_for_flash_validation_context",
+    "new": "core_accumulate_image_byte_lanes",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_transfer_component_for_flash_validation_context: Adds each input byte into one of four independent byte lanes of the supplied image checksum seed."
+    ]
+  },
+  {
+    "old": "core_transfer_reverse",
+    "new": "core_compare_multiword_integers",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_transfer_reverse: Compares unsigned 32-bit words from the highest word down and returns 1, -1 or 0."
+    ]
+  },
+  {
+    "old": "core_update_configuration_update_context",
+    "new": "core_get_configured_delay_ms",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_update_configuration_update_context: Reads one of four configured delays or default delay, then adds 5000 for slot zero while the processing timer is active."
+    ]
+  },
+  {
+    "old": "core_process_rti_clock_mhz",
+    "new": "core_initialize_pwm_channel",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_process_rti_clock_mhz: Initializes PWM channel PCR=1 and CFG=0x12, programs PWM parameters, then writes PWM_START=1. include/rdx_mount/pwm.h defines these register offsets."
+    ]
+  },
+  {
+    "old": "core_update_flag_one_interrupt_transfer_context",
+    "new": "core_allocate_software_timer",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_update_flag_one_interrupt_transfer_context: Allocates one of 19 countdown slots, clears its value and increments the allocation cursor."
+    ]
+  },
+  {
+    "old": "core_process_halt_forever_for_response_end_word",
+    "new": "core_copy_bounded_response_field",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_process_halt_forever_for_response_end_word: Checks response length before copying the caller-selected reversed field bytes."
+    ]
+  },
+  {
+    "old": "core_process_ahci_port_control",
+    "new": "core_reset_sata_link",
+    "evidence": [
+      "src/rdx_core/16_record_builders_and_capacity.inc::core_process_ahci_port_control: Sets PxSCTL.DET=1, waits 5000 us and clears DET to initiate COMRESET."
+    ]
+  },
+  {
+    "old": "core_get_gpio_pin_context",
+    "new": "core_verify_ata_media_and_refresh_state",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_get_gpio_pin_context: Calls the ATA standby/verify dispatcher with0, selecting READ VERIFY SECTORS0x40; on success updates device state and clears the associated flag."
+    ]
+  },
+  {
+    "old": "core_update_device_update_context",
+    "new": "core_is_adc_sample_above_threshold",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_update_device_update_context: Reads the selected MCP3008 channel and compares the low 16 bits against its indexed uint16 threshold."
+    ]
+  },
+  {
+    "old": "core_update_multiplier_multiplier",
+    "new": "core_subtract_split_product",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_update_multiplier_multiplier: Subtracts value times a high/low 16-bit multiplier from a two-word accumulator, propagating borrow."
+    ]
+  },
+  {
+    "old": "core_is_supported_descriptor_opcode",
+    "new": "core_is_scsi_write_opcode",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_is_supported_descriptor_opcode: Recognizes WRITE and WRITE AND VERIFY 6/10/12/16 opcode values 0A,2A,2E,8A,8E,AA,AE; see TI scsi.h."
+    ]
+  },
+  {
+    "old": "core_transfer_pending_ata_queue",
+    "new": "core_reset_ata_callback_queue",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_transfer_pending_ata_queue: Clears all 16 pending callback bytes and resets producer/consumer indices."
+    ]
+  },
+  {
+    "old": "core_get_ahci_control_register",
+    "new": "core_start_ahci_command_override_if_stopped",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_get_ahci_control_register: Reads PxCMD.ST and sets PxCMD.CLO=0x10 only when ST is clear; returns the previous ST value."
+    ]
+  },
+  {
+    "old": "core_transfer_x01",
+    "new": "core_decode_indexed_bytes",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_transfer_x01: Subtracts the byte index and 0x54 from each encoded byte; used for embedded keys and prefixes."
+    ]
+  },
+  {
+    "old": "core_transfer_spi_transfer_storage",
+    "new": "core_find_scsi_opcode_entry",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_transfer_spi_transfer_storage: Walks 42 entries with stride 0x18 from the cursor before the SCSI opcode table, matching the first byte."
+    ]
+  },
+  {
+    "old": "core_process_clear_memory_for_cartridge_monitor_context",
+    "new": "core_initialize_cartridge_monitor",
+    "evidence": [
+      "src/rdx_core/17_cartridge_state_and_validation.inc::core_process_clear_memory_for_cartridge_monitor_context: Clears 0x14 bytes and allocates its three timer IDs at offsets 0D,0E,0F."
+    ]
+  },
+  {
+    "old": "core_update_clear_memory_thermal_control_context",
+    "new": "core_initialize_software_timers",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_update_clear_memory_thermal_control_context: Clears all 19 uint32 countdown slots and resets allocation count and elapsed ticks; not temperature control."
+    ]
+  },
+  {
+    "old": "core_update_firmware_context_usb_completion_state",
+    "new": "core_notify_usb_resume",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_update_firmware_context_usb_completion_state: Disables dynamic clock gating, sets USB power state USB_PM_RESUME=1 and emits callback event1; see include/rdx_mount/usb_hal.h."
+    ]
+  },
+  {
+    "old": "core_process_ti_memset_for_build_scsi_mode",
+    "new": "core_initialize_scsi_response_buffer",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_process_ti_memset_for_build_scsi_mode: Selects the response buffer, clears payload length bytes, publishes descriptor and sets allocated/used lengths."
+    ]
+  },
+  {
+    "old": "core_transfer_packed",
+    "new": "core_format_hex_u32",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_transfer_packed: Writes eight hexadecimal digits backwards from destination+8 and terminates the text with zero."
+    ]
+  },
+  {
+    "old": "core_process_halt_forever_for_build_scsi_mode",
+    "new": "core_write_bounded_response_field",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_process_halt_forever_for_build_scsi_mode: Checks the last requested byte index against response capacity before writing a reversed field value."
+    ]
+  },
+  {
+    "old": "core_process_ti_memset_0x20",
+    "new": "core_reset_flash_validation_context",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_process_ti_memset_0x20: Clears 0x198 bytes, invokes reset hook, and preserves the boolean at offset 0x20."
+    ]
+  },
+  {
+    "old": "core_update_spi_transfer_context_for_program_spi_flash",
+    "new": "core_unmask_usb_interrupt_when_allowed",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_update_spi_transfer_context_for_program_spi_flash: Writes VIM_REQMASKSET0 bit21 when the USB interrupt suspension flag permits or the caller overrides."
+    ]
+  },
+  {
+    "old": "core_update_mww_saved_request",
+    "new": "core_reset_bot_command_state",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_update_mww_saved_request: Clears saved CBW state and BOT phase flags, then receives a 0x1f-byte CBW on endpoint 3."
+    ]
+  },
+  {
+    "old": "core_submit_fixed_ata_command",
+    "new": "core_submit_ata_identify_device",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_submit_fixed_ata_command: Builds the taskfile and issues ATA opcode EC with ahci_execute_taskfile_command."
+    ]
+  },
+  {
+    "old": "core_update_ti_memset_for_ti_memset_for",
+    "new": "core_clear_media_record_state",
+    "evidence": [
+      "src/rdx_core/18_firmware_transfer_and_persistence.inc::core_update_ti_memset_for_ti_memset_for: Clears context subregions 0x10..0x43 and 0x44..0x7B without altering other fields."
+    ]
+  },
+  {
+    "old": "core_forward_ti_memset",
+    "new": "core_clear_media_record_state_after_accounting",
+    "evidence": [
+      "src/rdx_core/23_low_level_accessors.inc::core_forward_ti_memset: Clears context subregions0x10..0x43 and0x44..0x7B after its caller folds transfer-byte totals into persistent counters."
+    ]
+  },
+  {
+    "old": "core_process_persistent_identity_record_for_identity_persistence_context",
+    "new": "core_save_persistent_state_with_checksum",
+    "evidence": [
+      "src/rdx_core/19_identity_sense_and_mww.inc::core_process_persistent_identity_record_for_identity_persistence_context: Updates the 0x40-byte persistent-state checksum and writes the primary flash copy."
+    ]
+  },
+  {
+    "old": "core_update_sense_refresh_context",
+    "new": "core_clear_transfer_byte_counters",
+    "evidence": [
+      "src/rdx_core/19_identity_sense_and_mww.inc::core_update_sense_refresh_context: Clears command read/write low/high byte-counter pairs. core_handle_primary_sense_context accumulates sector count times device sector size into these counters."
+    ]
+  },
+  {
+    "old": "core_update_cddis_reg_off_cartridge_eject_control",
+    "new": "core_enable_processor_sleep_clock_gating",
+    "evidence": [
+      "src/rdx_core/19_identity_sense_and_mww.inc::core_update_cddis_reg_off_cartridge_eject_control: Writes CDDIS=3 when USB core revision exceeds 0x101A. TI system.h maps bits 0 and 1 to GCLK/HCLK sleep gating."
+    ]
+  },
+  {
+    "old": "core_get_mww_active_flag",
+    "new": "core_is_usb_endpoint_stalled",
+    "evidence": [
+      "src/rdx_core/19_identity_sense_and_mww.inc::core_get_mww_active_flag: Selects EP0 OUT/IN stalled-field origin by direction bit7 and indexes the EP_INFO_T stride of 0x28."
+    ]
+  },
+  {
+    "old": "core_handle_type_type",
+    "new": "core_handle_scsi_security_protocol",
+    "evidence": [
+      "src/rdx_core/19_identity_sense_and_mww.inc::core_handle_type_type: Dispatches opcodes A2/B5 (SECURITY PROTOCOL IN/OUT), validates protocol ID and protocol-specific fields, and routes management records."
+    ]
+  },
+  {
+    "old": "core_get_command_feature",
+    "new": "core_scsi_write_requests_fua",
+    "evidence": [
+      "src/rdx_core/20_command_state_accessors.inc::core_get_command_feature: Tests FUA bit3 for WRITE(10), WRITE(16), and WRITE(12), opcodes 2A,8A,AA."
+    ]
+  },
+  {
+    "old": "core_update_set_interrupt_mmio",
+    "new": "core_erase_boot_flash_sectors",
+    "evidence": [
+      "src/rdx_core/20_command_state_accessors.inc::core_update_set_interrupt_mmio: Calls the SPI sector erase helper for sixteen 0x1000-byte sectors beginning at zero, stopping on error."
+    ]
+  },
+  {
+    "old": "core_get_cartridge_eject_control",
+    "new": "core_usb_revision_uses_deferred_eject",
+    "evidence": [
+      "src/rdx_core/20_command_state_accessors.inc::core_get_cartridge_eject_control: Tests USB revision>0x1089. Its caller core_coordinate_safe_cartridge_eject uses this condition to run the timed eject/reconnect workaround."
+    ]
+  },
+  {
+    "old": "core_get_ahci_status_register",
+    "new": "core_get_sata_link_speed",
+    "evidence": [
+      "src/rdx_core/20_command_state_accessors.inc::core_get_ahci_status_register: Extracts PxSSTS bits 7:4 (SPD), not an entire status register."
+    ]
+  },
+  {
+    "old": "core_copy_words_to_interleaved_destination",
+    "new": "core_copy_bytes_to_alternate_positions",
+    "evidence": [
+      "src/rdx_core/20_command_state_accessors.inc::core_copy_words_to_interleaved_destination: Writes one byte from each source position into every second destination byte; it does not copy words."
+    ]
+  },
+  {
+    "old": "core_update_ti_memset_for_lookup_arguments",
+    "new": "core_initialize_media_record",
+    "evidence": [
+      "src/rdx_core/20_command_state_accessors.inc::core_update_ti_memset_for_lookup_arguments: Clears 0x84-byte media record and stores context pointer at offset 0x0C."
+    ]
+  },
+  {
+    "old": "core_update_command_phase_flags_for_firmware_context_byte",
+    "new": "core_clear_command_phase_flags",
+    "evidence": [
+      "src/rdx_core/20_command_state_accessors.inc::core_update_command_phase_flags_for_firmware_context_byte: Clears the selected flag mask via flags AND NOT mask."
+    ]
+  },
+  {
+    "old": "core_update_command_phase_flags_for_command_phase",
+    "new": "core_set_command_phase_flags",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_update_command_phase_flags_for_command_phase: Sets the selected flag mask via flags OR mask."
+    ]
+  },
+  {
+    "old": "core_get_thermal_control_context",
+    "new": "core_is_software_timer_expired",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_get_thermal_control_context: Reads a countdown slot indexed by the supplied timer ID and tests for zero."
+    ]
+  },
+  {
+    "old": "core_update_command_status_update",
+    "new": "core_set_usb_device_address",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_update_command_status_update: Writes the seven-bit USB address into DCFG bits9:3 using mask 0x3F8."
+    ]
+  },
+  {
+    "old": "core_update_ti_memset_for_ti_memset",
+    "new": "core_initialize_ata_taskfile",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_update_ti_memset_for_ti_memset: Clears eleven taskfile bytes and sets device byte at offset9 to LBA mode 0x40."
+    ]
+  },
+  {
+    "old": "core_update_ahci_device_context",
+    "new": "core_set_ahci_callbacks",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_update_ahci_device_context: Stores completion, DMA Setup FIS and error callback addresses."
+    ]
+  },
+  {
+    "old": "core_set_transfer_interrupt_enable_mask",
+    "new": "core_mask_usb_interrupt",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_set_transfer_interrupt_enable_mask: Writes VIM_REQMASKCLR0 bit21, masking USB (bank0 channel21), not MWW (bank1 bit6/channel38)."
+    ]
+  },
+  {
+    "old": "core_update_usb_reset_state",
+    "new": "core_set_usb_test_mode",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_update_usb_reset_state: Writes DCTL.TEST_MODE bits4:1 using mask0x1E; ULSTCHNGREQ instead uses bits8:5."
+    ]
+  },
+  {
+    "old": "core_update_clear_memory_response_buffer_context",
+    "new": "core_clear_selected_sense_fields",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_update_clear_memory_response_buffer_context: Clears four bytes holding sense key and additional sense code/qualifier."
+    ]
+  },
+  {
+    "old": "core_update_clear_memory_usb_event_counter",
+    "new": "core_clear_usb_event_counters",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_update_clear_memory_usb_event_counter: Clears the five uint32 USB event counters at the counter origin."
+    ]
+  },
+  {
+    "old": "core_get_response_byte_context",
+    "new": "core_get_unit_serial_number",
+    "evidence": [
+      "src/rdx_core/22_state_queries_and_hardware_helpers.inc::core_get_response_byte_context: Returns the fixed unit serial number buffer."
+    ]
+  },
+  {
+    "old": "core_update_secondary_update_context",
+    "new": "core_decode_word_cipher_delta",
+    "evidence": [
+      "src/rdx_core/22_state_queries_and_hardware_helpers.inc::core_update_secondary_update_context: Decodes four embedded bytes into the TEA-family round delta 0x9E3779B9."
+    ]
+  },
+  {
+    "old": "core_set_SYSECR_REG_OFF_to_hex_8000_handler",
+    "new": "core_request_system_reset",
+    "evidence": [
+      "src/rdx_core/22_state_queries_and_hardware_helpers.inc::core_set_SYSECR_REG_OFF_to_hex_8000_handler: Writes software-reset value 0x8000 to SYSECR."
+    ]
+  },
+  {
+    "old": "core_set_CDDIS_REG_OFF_to_hex_38_handler",
+    "new": "core_disable_bus_dynamic_clock_gating",
+    "evidence": [
+      "src/rdx_core/22_state_queries_and_hardware_helpers.inc::core_set_CDDIS_REG_OFF_to_hex_38_handler: Writes CDDIS=0x38; TI system.h maps bits3:5 to M3 RAM/ROM, BMM2 and AHB/VBUS dynamic gating."
+    ]
+  },
+  {
+    "old": "core_update_spi_update_spi",
+    "new": "core_wait_spi_transmit_ready",
+    "evidence": [
+      "src/rdx_core/22_state_queries_and_hardware_helpers.inc::core_update_spi_update_spi: Waits for SPI transmit availability flag0x200. src/spi.c waits for the same bit before writing DAT1; this is readiness, not transfer completion."
+    ]
+  },
+  {
+    "old": "core_get_resource_ahci_state",
+    "new": "core_get_primary_sata_link_speed",
+    "evidence": [
+      "src/rdx_core/22_state_queries_and_hardware_helpers.inc::core_get_resource_ahci_state: Returns link speed read from SATA port zero."
+    ]
+  },
+  {
+    "old": "core_get_constant_hex_1014_value",
+    "new": "core_get_scsi_response_buffer_capacity",
+    "evidence": [
+      "src/rdx_core/23_low_level_accessors.inc::core_get_constant_hex_1014_value: Returns0x1014. src/mww.c bounds the response transfer by this getter; include/rdx_mount/tusb9260.h defines SCSI_RESPONSE_BUFF_SIZE0x1014 for the active layout."
+    ]
+  },
+  {
+    "old": "core_get_constant_hex_1000_value",
+    "new": "core_get_transfer_buffer_capacity",
+    "evidence": [
+      "src/rdx_core/23_low_level_accessors.inc::core_get_constant_hex_1000_value: Returns 0x1000, the normal transfer buffer capacity."
+    ]
+  },
+  {
+    "old": "core_forward_interrupt_transfer_context",
+    "new": "core_advance_software_timers",
+    "evidence": [
+      "src/rdx_core/23_low_level_accessors.inc::core_forward_interrupt_transfer_context: Saturating-subtracts elapsed ticks from each of nineteen software timers and advances elapsed-time counter."
+    ]
+  },
+  {
+    "old": "core_forward_end_remaining",
+    "new": "core_copy_bytes",
+    "evidence": [
+      "src/rdx_core/23_low_level_accessors.inc::core_forward_end_remaining: Copies aligned words where possible, then trailing bytes. Direction is forward and length is measured in bytes."
+    ]
+  },
+  {
+    "old": "core_forward_reconnect_state",
+    "new": "core_service_usb_reconnect",
+    "evidence": [
+      "src/rdx_core/24_reconnect_state_machine.inc::core_forward_reconnect_state: Services delay states, disconnects USB, waits1000 ms, then reconnects and starts the post-connect timer."
+    ]
+  },
+  {
+    "old": "core_signal_channel_completion",
+    "new": "core_start_pwm_channel",
+    "evidence": [
+      "src/rdx_core/21_persistence_and_state_setters.inc::core_signal_channel_completion: Writes1 to PWM_START at0xFFF7880C plus channel stride0x400. This starts the PWM channel, not an interrupt completion."
+    ]
+  }
+]

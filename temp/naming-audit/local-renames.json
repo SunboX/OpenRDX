@@ -1,0 +1,962 @@
+[
+  {
+    "file": "src/rdx_core/02_management_descriptors.inc",
+    "function": "core_handle_descriptor_or_descriptor_delta",
+    "line": 18,
+    "old": "context",
+    "new": "quotient_words",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:18: Function data flow uses this value as quotient words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/02_management_descriptors.inc",
+    "function": "core_handle_descriptor_or_descriptor_delta",
+    "line": 18,
+    "old": "source_descriptors",
+    "new": "remainder_words",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:18: Function data flow uses this value as remainder words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/02_management_descriptors.inc",
+    "function": "core_handle_descriptor_or_descriptor_delta",
+    "line": 18,
+    "old": "length",
+    "new": "dividend_words",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:18: Function data flow uses this value as dividend words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/02_management_descriptors.inc",
+    "function": "core_handle_descriptor_or_descriptor_delta",
+    "line": 18,
+    "old": "flags",
+    "new": "dividend_word_count",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:18: Function data flow uses this value as dividend word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/02_management_descriptors.inc",
+    "function": "core_handle_descriptor_or_descriptor_delta",
+    "line": 18,
+    "old": "destination_descriptors",
+    "new": "divisor_words",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:18: Function data flow uses this value as divisor words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/02_management_descriptors.inc",
+    "function": "core_handle_descriptor_or_descriptor_delta",
+    "line": 18,
+    "old": "destination",
+    "new": "divisor_word_count",
+    "evidence": [
+      "src/rdx_core/02_management_descriptors.inc:18: Function data flow uses this value as divisor word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_word_copy",
+    "line": 772,
+    "old": "offset",
+    "new": "multiplier_words",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Function data flow uses this value as multiplier words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_word_copy",
+    "line": 772,
+    "old": "operation_status",
+    "new": "carry_word",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Function data flow uses this value as carry word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_word_copy",
+    "line": 772,
+    "old": "copy_count",
+    "new": "multiplicand_words_remaining",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Function data flow uses this value as multiplicand words remaining; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_word_copy",
+    "line": 772,
+    "old": "data_cursor",
+    "new": "product_cursor",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Function data flow uses this value as product cursor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_word_copy",
+    "line": 772,
+    "old": "status_bits",
+    "new": "product_low_word",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Function data flow uses this value as product low word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_word_copy",
+    "line": 772,
+    "old": "remaining_count",
+    "new": "product_high_word",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Function data flow uses this value as product high word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_word_copy",
+    "line": 772,
+    "old": "word_count",
+    "new": "multiplicand_word_count",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:772: Function data flow uses this value as multiplicand word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "buffer",
+    "new": "product_words",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as product words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "value",
+    "new": "multiplicand",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as multiplicand; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "length",
+    "new": "multiplier",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as multiplier; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "length_component",
+    "new": "upper_lower_product",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as upper lower product; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "scaled_length",
+    "new": "cross_product_sum",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as cross product sum; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "status_bits",
+    "new": "shifted_cross_product",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as shifted cross product; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "buffer_cursor",
+    "new": "product_low_word",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as product low word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_configure_component_scaled",
+    "line": 15,
+    "old": "entry_index",
+    "new": "high_product_carry",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:15: Function data flow uses this value as high product carry; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_transfer_word_bit_mask",
+    "line": 118,
+    "old": "bit_mask",
+    "new": "divisor",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:118: Function data flow uses this value as divisor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_transfer_word_bit_mask",
+    "line": 118,
+    "old": "word_count",
+    "new": "dividend_word_count",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:118: Function data flow uses this value as dividend word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/14_mww_usb_command_control.inc",
+    "function": "core_transfer_range_start_range_end",
+    "line": 506,
+    "old": "range_start",
+    "new": "left_words",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:506: Function data flow uses this value as left words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/14_mww_usb_command_control.inc",
+    "function": "core_transfer_range_start_range_end",
+    "line": 506,
+    "old": "range_end",
+    "new": "right_words",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:506: Function data flow uses this value as right words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/14_mww_usb_command_control.inc",
+    "function": "core_transfer_range_start_range_end",
+    "line": 506,
+    "old": "flags",
+    "new": "word_count",
+    "evidence": [
+      "src/rdx_core/14_mww_usb_command_control.inc:506: Function data flow uses this value as word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_transfer_descriptor_wait_completion",
+    "line": 448,
+    "old": "wait_for_completion",
+    "new": "pad_with_spaces",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:448: Function data flow uses this value as pad with spaces; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_transfer_descriptor_wait_completion",
+    "line": 448,
+    "old": "condition_2_field",
+    "new": "characters_remaining",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:448: Function data flow uses this value as characters remaining; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_transfer_descriptor_wait_completion",
+    "line": 448,
+    "old": "condition_1_field",
+    "new": "destination_offset",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:448: Function data flow uses this value as destination offset; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_transfer_descriptor_wait_completion",
+    "line": 448,
+    "old": "operation_status",
+    "new": "output_character",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:448: Function data flow uses this value as output character; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_transfer_maximum_payload_payload",
+    "line": 677,
+    "old": "maximum_payload",
+    "new": "minimum_payload_length",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:677: Function data flow uses this value as minimum payload length; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_transfer_tracker",
+    "line": 446,
+    "old": "condition",
+    "new": "byte_count",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:446: Function data flow uses this value as byte count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_transfer_tracker",
+    "line": 446,
+    "old": "value",
+    "new": "encoded_value",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:446: Function data flow uses this value as encoded value; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/08_thermal_and_record_validation.inc",
+    "function": "core_transfer_mixed_word_key_sum",
+    "line": 410,
+    "old": "condition",
+    "new": "word_count",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Function data flow uses this value as word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/08_thermal_and_record_validation.inc",
+    "function": "core_transfer_mixed_word_key_sum",
+    "line": 410,
+    "old": "offset",
+    "new": "key_words",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Function data flow uses this value as key words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/08_thermal_and_record_validation.inc",
+    "function": "core_transfer_mixed_word_key_sum",
+    "line": 410,
+    "old": "flags_snapshot",
+    "new": "cipher_delta",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Function data flow uses this value as cipher delta; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/08_thermal_and_record_validation.inc",
+    "function": "core_transfer_mixed_word_key_sum",
+    "line": 410,
+    "old": "condition_field",
+    "new": "rounds_remaining",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Function data flow uses this value as rounds remaining; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/08_thermal_and_record_validation.inc",
+    "function": "core_transfer_mixed_word_key_sum",
+    "line": 410,
+    "old": "rounds_remaining",
+    "new": "words_remaining",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Function data flow uses this value as words remaining; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/08_thermal_and_record_validation.inc",
+    "function": "core_transfer_mixed_word_key_sum",
+    "line": 410,
+    "old": "remaining_count",
+    "new": "word_index",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Function data flow uses this value as word index; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/08_thermal_and_record_validation.inc",
+    "function": "core_transfer_mixed_word_key_sum",
+    "line": 410,
+    "old": "status_bits",
+    "new": "key_word_index",
+    "evidence": [
+      "src/rdx_core/08_thermal_and_record_validation.inc:410: Function data flow uses this value as key word index; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_remaining_bytes_word",
+    "line": 680,
+    "old": "value",
+    "new": "word_count",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:680: Function data flow uses this value as word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_remaining_bytes_word",
+    "line": 680,
+    "old": "offset",
+    "new": "key_words",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:680: Function data flow uses this value as key words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_remaining_bytes_word",
+    "line": 680,
+    "old": "flags_snapshot",
+    "new": "cipher_delta",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:680: Function data flow uses this value as cipher delta; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_remaining_bytes_word",
+    "line": 680,
+    "old": "value_derived",
+    "new": "round_sum",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:680: Function data flow uses this value as round sum; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_remaining_bytes_word",
+    "line": 680,
+    "old": "last_index",
+    "new": "last_word_index",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:680: Function data flow uses this value as last word index; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_transfer_remaining_bytes_word",
+    "line": 680,
+    "old": "word_index",
+    "new": "key_word_index",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:680: Function data flow uses this value as key word index; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/10_spi_flash_and_response_dispatch.inc",
+    "function": "core_transfer_fourth_byte_byte",
+    "line": 63,
+    "old": "condition",
+    "new": "word_count",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:63: Function data flow uses this value as word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/10_spi_flash_and_response_dispatch.inc",
+    "function": "core_transfer_fourth_byte_byte",
+    "line": 63,
+    "old": "condition_field",
+    "new": "word_pairs_remaining",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:63: Function data flow uses this value as word pairs remaining; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/10_spi_flash_and_response_dispatch.inc",
+    "function": "core_transfer_fourth_byte_byte",
+    "line": 63,
+    "old": "buffer_1_cursor",
+    "new": "reverse_output_cursor",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:63: Function data flow uses this value as reverse output cursor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/10_spi_flash_and_response_dispatch.inc",
+    "function": "core_transfer_fourth_byte_byte",
+    "line": 63,
+    "old": "buffer_2_cursor",
+    "new": "first_source_byte",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:63: Function data flow uses this value as first source byte; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/04_hash_flash_usb_thermal.inc",
+    "function": "core_transfer_address_stack_transfer_address",
+    "line": 536,
+    "old": "remaining_blocks",
+    "new": "byte_count",
+    "evidence": [
+      "src/rdx_core/04_hash_flash_usb_thermal.inc:536: Function data flow uses this value as byte count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/04_hash_flash_usb_thermal.inc",
+    "function": "core_transfer_address_stack_transfer_address",
+    "line": 536,
+    "old": "length",
+    "new": "data_address",
+    "evidence": [
+      "src/rdx_core/04_hash_flash_usb_thermal.inc:536: Function data flow uses this value as data address; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/04_hash_flash_usb_thermal.inc",
+    "function": "core_transfer_address_stack_transfer_address",
+    "line": 536,
+    "old": "iStack_1c",
+    "new": "command_response_word",
+    "evidence": [
+      "src/rdx_core/04_hash_flash_usb_thermal.inc:536: Function data flow uses this value as command response word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/04_hash_flash_usb_thermal.inc",
+    "function": "core_transfer_address_stack_transfer_address",
+    "line": 536,
+    "old": "condition_2_field",
+    "new": "received_data_word",
+    "evidence": [
+      "src/rdx_core/04_hash_flash_usb_thermal.inc:536: Function data flow uses this value as received data word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/04_hash_flash_usb_thermal.inc",
+    "function": "core_transfer_address_stack_transfer_address",
+    "line": 536,
+    "old": "length_component",
+    "new": "read_response_word",
+    "evidence": [
+      "src/rdx_core/04_hash_flash_usb_thermal.inc:536: Function data flow uses this value as read response word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/09_command_phase_and_ata.inc",
+    "function": "core_transfer_response_byte_stack_response_byte",
+    "line": 838,
+    "old": "bStack_1d",
+    "new": "signature_prefix_byte",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:838: Function data flow uses this value as signature prefix byte; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/09_command_phase_and_ata.inc",
+    "function": "core_transfer_response_byte_stack_response_byte",
+    "line": 838,
+    "old": "bstack_1d_pointer",
+    "new": "signature_cursor",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:838: Function data flow uses this value as signature cursor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/09_command_phase_and_ata.inc",
+    "function": "core_transfer_response_byte_stack_response_byte",
+    "line": 838,
+    "old": "bstack_27_pointer",
+    "new": "serial_cursor",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:838: Function data flow uses this value as serial cursor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_transfer_ti_memset_component",
+    "line": 590,
+    "old": "value",
+    "new": "requested_length",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:590: Function data flow uses this value as requested length; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_transfer_ti_memset_component",
+    "line": 590,
+    "old": "length",
+    "new": "source_offset",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:590: Function data flow uses this value as source offset; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_transfer_ti_memset_component",
+    "line": 590,
+    "old": "length_component",
+    "new": "source_byte_pointer",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:590: Function data flow uses this value as source byte pointer; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/05_device_descriptor_dispatch.inc",
+    "function": "core_parse_stream_record_with_output_word",
+    "line": 700,
+    "old": "condition",
+    "new": "usb_speed",
+    "evidence": [
+      "src/rdx_core/05_device_descriptor_dispatch.inc:700: Function data flow uses this value as usb speed; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/05_device_descriptor_dispatch.inc",
+    "function": "core_parse_stream_record_with_output_word",
+    "line": 700,
+    "old": "buffer_2_cursor",
+    "new": "descriptor_cursor",
+    "evidence": [
+      "src/rdx_core/05_device_descriptor_dispatch.inc:700: Function data flow uses this value as descriptor cursor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/05_device_descriptor_dispatch.inc",
+    "function": "core_parse_stream_record_with_output_word",
+    "line": 700,
+    "old": "condition_met",
+    "new": "descriptor_length_or_type",
+    "evidence": [
+      "src/rdx_core/05_device_descriptor_dispatch.inc:700: Function data flow uses this value as descriptor length or type; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/05_device_descriptor_dispatch.inc",
+    "function": "core_parse_stream_record_with_output_word",
+    "line": 700,
+    "old": "status_bits",
+    "new": "total_descriptor_length",
+    "evidence": [
+      "src/rdx_core/05_device_descriptor_dispatch.inc:700: Function data flow uses this value as total descriptor length; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_parse_stream_record",
+    "line": 532,
+    "old": "buffer_2_cursor",
+    "new": "descriptor_cursor",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:532: Function data flow uses this value as descriptor cursor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/06_record_transfer_helpers.inc",
+    "function": "core_parse_stream_record",
+    "line": 532,
+    "old": "status_bits",
+    "new": "total_descriptor_length",
+    "evidence": [
+      "src/rdx_core/06_record_transfer_helpers.inc:532: Function data flow uses this value as total descriptor length; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/09_command_phase_and_ata.inc",
+    "function": "core_process_short_available",
+    "line": 255,
+    "old": "condition",
+    "new": "destination_capacity",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:255: Function data flow uses this value as destination capacity; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/09_command_phase_and_ata.inc",
+    "function": "core_process_short_available",
+    "line": 255,
+    "old": "operation_status",
+    "new": "payload_length",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:255: Function data flow uses this value as payload length; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/09_command_phase_and_ata.inc",
+    "function": "core_process_short_available",
+    "line": 255,
+    "old": "condition_field",
+    "new": "record_bytes_available",
+    "evidence": [
+      "src/rdx_core/09_command_phase_and_ata.inc:255: Function data flow uses this value as record bytes available; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_configure_payload_ti_memset",
+    "line": 639,
+    "old": "condition",
+    "new": "source_capacity",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:639: Function data flow uses this value as source capacity; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/11_usb_ata_payload_transfer.inc",
+    "function": "core_process_end_remaining",
+    "line": 296,
+    "old": "working_result",
+    "new": "copied_header_word",
+    "evidence": [
+      "src/rdx_core/11_usb_ata_payload_transfer.inc:296: Function data flow uses this value as copied header word; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_get_descriptor",
+    "line": 871,
+    "old": "context",
+    "new": "remainder_output",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Function data flow uses this value as remainder output; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_get_descriptor",
+    "line": 871,
+    "old": "value",
+    "new": "dividend_words",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Function data flow uses this value as dividend words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_get_descriptor",
+    "line": 871,
+    "old": "length",
+    "new": "dividend_word_count",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Function data flow uses this value as dividend word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_get_descriptor",
+    "line": 871,
+    "old": "flags",
+    "new": "modulus_words",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Function data flow uses this value as modulus words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_get_descriptor",
+    "line": 871,
+    "old": "index",
+    "new": "modulus_word_count",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Function data flow uses this value as modulus word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_get_descriptor",
+    "line": 871,
+    "old": "working_buffer",
+    "new": "quotient_workspace",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Function data flow uses this value as quotient workspace; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/13_runtime_transfer_helpers.inc",
+    "function": "core_get_descriptor",
+    "line": 871,
+    "old": "descriptor_buffer",
+    "new": "remainder_workspace",
+    "evidence": [
+      "src/rdx_core/13_runtime_transfer_helpers.inc:871: Function data flow uses this value as remainder workspace; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_get_zero_word_buffer",
+    "line": 473,
+    "old": "context",
+    "new": "result_words",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:473: Function data flow uses this value as result words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_get_zero_word_buffer",
+    "line": 473,
+    "old": "value",
+    "new": "left_words",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:473: Function data flow uses this value as left words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_get_zero_word_buffer",
+    "line": 473,
+    "old": "length",
+    "new": "right_words",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:473: Function data flow uses this value as right words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_get_zero_word_buffer",
+    "line": 473,
+    "old": "flags",
+    "new": "modulus_words",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:473: Function data flow uses this value as modulus words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_get_zero_word_buffer",
+    "line": 473,
+    "old": "index",
+    "new": "word_count",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:473: Function data flow uses this value as word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/15_control_transfer_crc_records.inc",
+    "function": "core_get_zero_word_buffer",
+    "line": 473,
+    "old": "working_buffer",
+    "new": "product_workspace",
+    "evidence": [
+      "src/rdx_core/15_control_transfer_crc_records.inc:473: Function data flow uses this value as product workspace; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "context",
+    "new": "result_words",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as result words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "value",
+    "new": "base_words",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as base words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "offset",
+    "new": "exponent_words",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as exponent words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "flags",
+    "new": "modulus_words",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as modulus words; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "condition",
+    "new": "modulus_word_count",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as modulus word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "destination",
+    "new": "exponent_word_count",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as exponent word count; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "status_bits",
+    "new": "exponent_bit_mask",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as exponent bit mask; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/07_eject_reconnect_smart.inc",
+    "function": "core_transfer_find_last_nonzero",
+    "line": 176,
+    "old": "computed_offset",
+    "new": "exponent_cursor",
+    "evidence": [
+      "src/rdx_core/07_eject_reconnect_smart.inc:176: Function data flow uses this value as exponent cursor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rdx_core/10_spi_flash_and_response_dispatch.inc",
+    "function": "core_process_ti_memset_copy",
+    "line": 230,
+    "old": "length",
+    "new": "payload_descriptor",
+    "evidence": [
+      "src/rdx_core/10_spi_flash_and_response_dispatch.inc:230: Function data flow uses this value as payload descriptor; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rti.c",
+    "function": "rti_process_thermal_timer_state",
+    "line": 192,
+    "old": "buffer",
+    "new": "timer_handle",
+    "evidence": [
+      "src/rti.c:192: Function data flow uses this value as timer handle; rename only within this function, including its parameter documentation."
+    ]
+  },
+  {
+    "file": "src/rti.c",
+    "function": "rti_process_thermal_timer_state",
+    "line": 192,
+    "old": "value",
+    "new": "duration_ms",
+    "evidence": [
+      "src/rti.c:192: Function data flow uses this value as duration ms; rename only within this function, including its parameter documentation."
+    ]
+  }
+]

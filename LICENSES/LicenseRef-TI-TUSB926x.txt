@@ -1,0 +1,13 @@
+Texas Instruments TUSB926x material notice
+
+Files carrying this identifier contain or derive from Texas Instruments
+TUSB926x firmware support material and retain the copyright and "All rights
+reserved" notices present in those files.
+
+This identifier records the existing third-party rights boundary. It is not a
+license grant, and OpenRDX does not relicense the underlying Texas Instruments
+material. Obtain and comply with the applicable terms supplied by Texas
+Instruments before using or redistributing that material.
+
+Where a file also carries `AGPL-3.0-or-later`, that identifier applies only to
+the separately copyrightable OpenRDX additions and modifications.

@@ -1,0 +1,24 @@
+# Attribution and notices
+
+OpenRDX was created by André Fiedler / SunboX.
+
+Project repositories:
+
+- https://github.com/SunboX/OpenRDX
+- https://git.just.4be.mobi/sunbox/TUSB9261_RDX_PlatformIO
+
+Copyright (C) 2026 André Fiedler.
+
+When redistributing this project, modified versions, binaries, packaged
+applications, or larger works based on this project, preserve the copyright,
+license, attribution, source-origin, and third-party notices required by the
+applicable licenses.
+
+Files derived from the Texas Instruments TUSB926x firmware support package
+retain their Texas Instruments copyright notices. OpenRDX additions
+and modifications are separately identified; the OpenRDX license does not
+replace or broaden the terms governing the underlying Texas Instruments
+material.
+
+Datasheets, product manuals, release notes, and other third-party documents
+retain the rights and terms supplied by their respective publishers.

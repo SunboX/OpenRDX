@@ -1,0 +1,192 @@
+[
+  {
+    "name": "core_cartridge_monitor_context",
+    "address": "0x0800EE00",
+    "review": "A real 0x14-byte monitor state structure with three embedded software-timer handles; context is appropriate."
+  },
+  {
+    "name": "core_sense_selection_flags",
+    "address": "0x0800EE14",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_smart_monitoring_active",
+    "address": "0x0800EE1B",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_thermal_hot_sample_retry_count",
+    "address": "0x0800EE1C",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_thermal_monitor_timer",
+    "address": "0x0800EE1F",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_device_status_probe_output",
+    "address": "0x0800EE22",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_command_phase",
+    "address": "0x0800EE3C",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_command_feature_state",
+    "address": "0x0800EE44",
+    "review": "Byte used to gate a feature request and set/get externally; no stronger feature meaning established."
+  },
+  {
+    "name": "core_command_buffer_state",
+    "address": "0x0800EE45",
+    "review": "A phase-three command-state byte with set/get paths; specific contract beyond the state flag remains unclear."
+  },
+  {
+    "name": "core_notification_state",
+    "address": "0x0800EE46",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_command_phase_flags",
+    "address": "0x0800EE48",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_validation_flags",
+    "address": "0x0800EE60",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_device_status_value",
+    "address": "0x0800EE64",
+    "review": "Only set/get accessors establish a byte status value; retain the conservative name."
+  },
+  {
+    "name": "core_notification_suppression_flag",
+    "address": "0x0800EE70",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_response_type",
+    "address": "0x0800EE72",
+    "review": "Boolean-like response state gates subsequent response handling; source does not establish a stronger protocol label."
+  },
+  {
+    "name": "core_reconnect_delay_timer",
+    "address": "0x0800EE73",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_reconnect_state",
+    "address": "0x0800EE74",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_flash_update_context",
+    "address": "0x0800F0BD",
+    "review": "Only cleared when the dispatch-blocked flag is zero and during reset; no nonzero writer establishes a replacement meaning."
+  },
+  {
+    "name": "core_transfer_ready_flag",
+    "address": "0x0800F108",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_pwm_duty_target",
+    "address": "0x0800F28C",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_interrupt_timer_elapsed_ticks",
+    "address": "0x0800F2D0",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_usb_event_counter",
+    "address": "0x0800F400",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_ata_data_completion_pending",
+    "address": "0x0800F428",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_atapi_device_flag",
+    "address": "0x0800F47C",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_ata_sata_link_speed_generation",
+    "address": "0x0800F485",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_ata_lba48_supported",
+    "address": "0x0800F48A",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_ata_native_command_queueing_supported",
+    "address": "0x0800F4A7",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_ata_logical_per_physical_sector_exponent",
+    "address": "0x0800F4B4",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_ata_logical_sector_alignment",
+    "address": "0x0800F4C0",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_ahci_active_command_tag",
+    "address": "0x0800F4C8",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_device_request_update",
+    "address": "0x0800F4DC",
+    "review": "Stores a callback-like constant via one setter; insufficient evidence to distinguish port-init callback from another request callback."
+  },
+  {
+    "name": "core_mww_saved_request",
+    "address": "0x0800F640",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_mww_saved_request_reset_companion_word",
+    "address": "0x0800F644",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_mww_command_reset_companion_byte",
+    "address": "0x0800F65A",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_response_record_status_byte",
+    "address": "0x0800F65D",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_response_status_value",
+    "address": "0x0800F65E",
+    "review": "Only reset and queried by the response/USB paths; no nonzero writer establishes a sharper meaning."
+  },
+  {
+    "name": "core_response_buffer",
+    "address": "0x0800F660",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  },
+  {
+    "name": "core_usb_event_callback",
+    "address": "0x0800F66C",
+    "review": "All current source uses in core-ram-uses.txt match the named role; no conflicting meaning or stronger correction established."
+  }
+]
