@@ -5,6 +5,7 @@
 """Tests for the custom RDX Manager update-container builder."""
 
 import tempfile
+import os
 from pathlib import Path
 import sys
 import unittest
@@ -17,7 +18,14 @@ import build_rdx_update_container as builder
 
 
 def find_compatibility_template() -> Path | None:
-    """Return a deterministic pinned template when the sibling tree exists."""
+    """Use the pinned CI input or a deterministic sibling-tree template."""
+
+    configured = os.environ.get("OPENRDX_TEMPLATE_PATH")
+    if configured:
+        path = Path(configured)
+        if builder.sha256(path.read_bytes()) != builder.COMPATIBILITY_TEMPLATE_SHA256:
+            raise ValueError("Configured compatibility template SHA-256 mismatch")
+        return path
 
     manager_root = ROOT.parent / "OpenRDXManager"
     if not manager_root.is_dir():

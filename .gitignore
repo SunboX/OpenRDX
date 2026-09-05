@@ -2,3 +2,5 @@
 __pycache__/
 *.py[cod]
 /docs/superpowers/
+/.worktrees/
+/temp/naming-audit/

@@ -1,8 +1,60 @@
 # Create an OpenRDX release bundle
 
 This maintainer guide describes the Windows release gate driven by
-`build-dist.ps1`. Building the firmware alone does not produce an installable
-release.
+`build-dist.ps1` and its GitHub Actions automation. Building the firmware alone
+does not produce an installable release.
+
+## GitHub build and release automation
+
+The [GitHub Actions workflows](https://github.com/SunboX/OpenRDX/actions) build,
+test, and package OpenRDX in these cases:
+
+| Trigger | Source selected | Result |
+| --- | --- | --- |
+| Push to `main`, including a merged pull request | The pushed commit | Downloadable workflow build artifacts |
+| Manual `workflow_dispatch` | The selected ref | Downloadable workflow build artifacts |
+| GitHub release `published` | That release's exact tag | Build artifacts attached to that release |
+
+Every release tag must have the form `v<MAJOR.MINOR>`, with two minor-version
+digits: for example, `v1.06`. Its version must match both `VERSION` and the
+compiled firmware version in `include/rdx_mount/tusb9260.h`. A release build
+uses the tag's source commit, even if `main` has advanced since that tag was
+created. A version mismatch stops publication of the build assets.
+The tagged commit must also belong to `main`.
+
+The workflow runs the supported Windows TI ARM CGT 5.2.5 build, the automated
+suite, and the complete packaging checks. Its downloaded build inputs are
+checked against their pinned digests. Build records identify the source commit
+and build environment. Consult the actual workflow result before calling an
+artifact verified; configuring the workflow does not establish a successful
+build or any device-validation result.
+
+Pushing to `main` does **not** create a GitHub release. Releases are deliberate
+publications, and each published release triggers artifact attachment. Wait for
+that release run to succeed and verify its Assets list before directing users
+to the download.
+
+### Publish a release
+
+1. Set `VERSION` and the compiled firmware version together, update the release
+   notes under `docs/releases/`, and merge or push the reviewed sources to
+   `main`.
+2. Wait for the matching `main` workflow to pass. Inspect its build records,
+   checksums, installation bundle, and compiler outputs.
+3. Create the matching version tag on that exact commit. Prepare a draft GitHub
+   release with detailed release notes, supported hardware, validation limits,
+   and links to the installation and recovery guides at that tag.
+4. Prefer uploading the verified artifacts from that exact commit to the draft
+   before publishing it, so downloads are available immediately. For command-line
+   publication, `gh release upload` can attach files to the draft before
+   `gh release edit --draft=false` publishes it.
+5. Publish the release. The `published` workflow builds the tagged sources and
+   attaches the complete artifact set. Confirm the run succeeded, the tag and
+   build records agree, and every expected asset is present.
+
+Never attach artifacts from a different commit merely because their filenames
+have the same version. An experimental release should retain that description
+in its notes and can use GitHub's prerelease designation.
 
 ## Before packaging
 
@@ -55,6 +107,30 @@ For release version `1.06`, the current naming pattern produces:
 Keep all six files together in an otherwise empty release directory. The
 updater rejects ambiguous directories containing more than one versioned
 manifest.
+
+## GitHub release assets
+
+For `v1.06`, the GitHub packaging step provides the following additional files,
+alongside all six individual installation files listed above:
+
+| File | Role |
+| --- | --- |
+| `OpenRDX-v1-06.zip` | Complete installation bundle, plus documentation, license notices, and build information |
+| `OpenRDX-v1-06-build.zip` | Compiler and linker outputs for maintainers |
+| `SHA256SUMS` | SHA-256 integrity list for the downloadable release assets |
+
+Use the installation ZIP for installation. The compiler-output ZIP contains
+development artifacts and does not replace the complete installation bundle.
+The bundled `.sha256` list validates the five accompanying installation files;
+the outer `SHA256SUMS` list validates the downloadable assets, including the
+archives. Both lists must be generated from the exact files being uploaded.
+
+The installation ZIP includes the matching installation and recovery
+documentation, source/build information, and applicable license and attribution
+files. The release notes link to the tagged source so users can find the code
+and instructions corresponding to their download. GitHub's automatic source
+archives contain the source tree; the separately attached installation ZIP is
+the prepared firmware bundle.
 
 ## Integrity, identity, and version checks
 

@@ -66,10 +66,16 @@ for detailed evidence, known limitations, and remaining validation work.
 
 ### Install OpenRDX
 
-Use a newly generated, complete, verified release bundle and follow the
-[guarded installation guide](docs/getting-started/installation.md). The
-checked-in `dist/` directory is a historical snapshot, not a verified release
-for current `main`.
+Download the complete `OpenRDX-v<version>.zip` installation bundle from
+[GitHub Releases](https://github.com/SunboX/OpenRDX/releases). Start with the
+[OpenRDX 1.06 release notes](docs/releases/v1.06.md), verify the bundled
+checksums, and follow its `OPENRDX_USB_UPDATE.md` copy of the
+[guarded installation guide](docs/getting-started/installation.md).
+
+Each release includes the firmware container, continuous FlashBurner image,
+manifest, checksums, Windows updater, and matching installation instructions.
+The checked-in `dist/` directory remains a historical snapshot, not a verified
+release for current `main`.
 
 Git preserves the exact bytes of generated `dist/` files so release checksums
 remain valid across checkout platforms and source archives.
@@ -84,6 +90,13 @@ For a receiver already running OpenRDX, follow
 ### Build from source
 
 Maintainers can start with the [common build and test guide](docs/development/building.md).
+
+GitHub Actions builds and tests every push or merge to `main`, and can also be
+run manually. Publishing a versioned GitHub release runs the same process for
+its exact tag and attaches the installation and compiler-output artifacts.
+Ordinary pushes do not publish releases. See the
+[release process](docs/development/release-process.md) for versioning and
+publication instructions.
 
 ## Documentation
 

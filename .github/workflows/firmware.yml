@@ -1,0 +1,116 @@
+# SPDX-FileCopyrightText: 2026 André Fiedler
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: Build OpenRDX firmware
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+# Every main push gets its own build; publishing does not cancel that build.
+concurrency:
+  group: firmware-${{ github.event_name }}-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    env:
+      PYTHONUTF8: '1'
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Check out the exact source revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate release version and source
+        id: version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          $version = (Get-Content -Raw VERSION).Trim()
+          if ($version -notmatch '^\d+\.\d{2}$') { throw 'Invalid VERSION.' }
+          if ($env:GITHUB_EVENT_NAME -eq 'release') {
+            if ($env:RELEASE_TAG -cne "v$version") {
+              throw "Release tag must match VERSION: v$version"
+            }
+            git merge-base --is-ancestor HEAD origin/main
+            if ($LASTEXITCODE -ne 0) { throw 'Release commit must belong to main.' }
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+
+      - name: Install PlatformIO
+        run: |
+          python -m pip install platformio==6.1.18
+          if ($LASTEXITCODE -ne 0) { throw 'PlatformIO installation failed.' }
+
+      - name: Install verified TI compiler and compatibility template
+        run: ./scripts/setup_github_build.ps1 -ToolsDirectory "$env:RUNNER_TEMP/openrdx-tools"
+
+      - name: Build and test the complete installation bundle
+        run: |
+          ./build-dist.ps1 `
+            -PlatformIoPath (Get-Command pio).Source `
+            -PythonPath (Get-Command python).Source `
+            -TemplatePath $env:OPENRDX_TEMPLATE_PATH
+
+      - name: Verify and package release assets
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          python scripts/package_github_release.py `
+            --dist dist --build-dir .pio/build/tusb9261_ti_cgt `
+            --output-dir "$env:RUNNER_TEMP/openrdx-release" `
+            --version $env:RELEASE_VERSION --commit $env:GITHUB_SHA `
+            --repository $env:GITHUB_REPOSITORY
+          if ($LASTEXITCODE -ne 0) { throw 'Release packaging failed.' }
+
+      - name: Preserve firmware and installation artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: OpenRDX-${{ steps.version.outputs.version }}-${{ github.sha }}
+          path: ${{ runner.temp }}/openrdx-release/*
+          if-no-files-found: error
+          retention-days: 90
+
+  release-assets:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified build output
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: OpenRDX-${{ needs.build.outputs.version }}-${{ github.sha }}
+          path: release-assets
+
+      - name: Attach build artifacts to this release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          cd release-assets
+          sha256sum --check SHA256SUMS
+          gh release upload "$RELEASE_TAG" ./* --clobber

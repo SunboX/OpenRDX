@@ -1,8 +1,0 @@
-Third-party documentation notice
-
-Files carrying this identifier are datasheets, product manuals, release notes,
-or other documents published by third parties. They retain the copyrights and
-usage terms supplied by their respective publishers and authors.
-
-This identifier records that those files are outside the OpenRDX-owned AGPL and
-CC BY-SA licensing grants. It is not an additional license grant.
