@@ -86,6 +86,10 @@ conversion remain TI ARM Code Generation Tools responsibilities.
   unrelated user changes and do not assume a clean worktree.
 - Commit messages must start with a prefix such as `fix:`, `feature:`, `docs:`,
   `test:`, or another agreed label, followed by a short imperative summary.
+- Always create and push an explicit version-number Git tag for every GitHub
+  release, using `v<MAJOR.MINOR>` (for example, `v1.06`). The tag must identify
+  the exact validated release commit, and its version must match `VERSION` and
+  the compiled firmware version. Publish the release against that tag.
 - For GitLab merge requests, provide a concise summary, affected repositories
   or paths, and exact testing performed. Attach UI screenshots when a change
   introduces or modifies a UI.
