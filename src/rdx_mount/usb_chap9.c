@@ -92,7 +92,8 @@ UINT8_T descriptor_data_buff[] =
     0x09,                       /* bMaxPktSize0         */    // FW will update this value automatically when operation at USB 2.0.
     0x5A,0x1A,                  /* idVendor: Tandberg   */
     0x05,0x00,                  /* idProduct: RDX       */
-    0x83,0x02,                  /* bcdDevice: 0283h     */
+    FIRMWARE_MINOR_VERSION_BCD, /* bcdDevice, low byte  */
+    FIRMWARE_MAJOR_VERSION_BCD, /* bcdDevice, high byte */
     0x01,                       /* iManufacturer        */
     0x02,                       /* iProduct             */
     0x03,                       /* iSerial Number       */

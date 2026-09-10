@@ -2063,6 +2063,15 @@ static const UINT8_T rdx_product_id[16] =
     ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '
 };
 
+/* Standard INQUIRY carries four ASCII bytes without a terminating NUL. */
+static const UINT8_T rdx_firmware_revision[4] =
+{
+    '0' + (FIRMWARE_MAJOR_VERSION / 10U),
+    '0' + (FIRMWARE_MAJOR_VERSION % 10U),
+    '0' + (FIRMWARE_MINOR_VERSION / 10U),
+    '0' + (FIRMWARE_MINOR_VERSION % 10U)
+};
+
 /*****************************************************************************
  * Function: scsi_build_std_inquiry_data
  *************************************************************************//**
@@ -2083,7 +2092,7 @@ inline void scsi_build_std_inquiry_data(UINT32_T *buff_size)
 
     /* Keep a fixed RDX inquiry shape. Bytes 36-42 are the private extension
      * RDX Manager uses to distinguish this dock from an ordinary SAT bridge.
-     * Revision 0001 identifies this OpenRDX build for update-policy checks. */
+     * The revision follows the compiled release version for host reporting. */
     scsi_resp_buff[1] = RMB_BIT;
     scsi_resp_buff[2] = 0x06U;
     scsi_resp_buff[3] = SPC_DEFINED_DATA_FORMAT;
@@ -2092,7 +2101,8 @@ inline void scsi_build_std_inquiry_data(UINT32_T *buff_size)
               sizeof(rdx_vendor_id));
     ti_memcpy((void*)&scsi_resp_buff[16], rdx_product_id,
               sizeof(rdx_product_id));
-    ti_memcpy((void*)&scsi_resp_buff[32], "0001", 4U);
+    ti_memcpy((void*)&scsi_resp_buff[32], rdx_firmware_revision,
+              sizeof(rdx_firmware_revision));
     scsi_resp_buff[36] = 0x38U;
     ti_memcpy((void*)&scsi_resp_buff[37], "RDX", 3U);
     scsi_resp_buff[40] = 0x02U;

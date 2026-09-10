@@ -1,8 +1,9 @@
 # Create an OpenRDX release bundle
 
 This maintainer guide describes the Windows release gate driven by
-`build-dist.ps1` and its GitHub Actions automation. Building the firmware alone
-does not produce an installable release.
+`build-dist.ps1` and its GitHub Actions automation. Normal PlatformIO builds
+also generate the complete `dist/` bundle; the release command adds the full
+automated test gate before that build.
 
 ## GitHub build and release automation
 
@@ -61,7 +62,8 @@ in its notes and can use GitHub's prerelease designation.
 - Use the supported Windows TI ARM CGT 5.2.5 build environment from
   [Build and test OpenRDX](building.md).
 - Provide the pinned compatibility-image template, either below the sibling
-  `OpenRDXManager` tree where the script can find it or through `-TemplatePath`.
+  `OpenRDXManager` tree, through `-TemplatePath` or `OPENRDX_TEMPLATE_PATH`, or in
+  the verified `.pio/rdx-template/` cache created by an earlier build.
 - Ensure `VERSION` matches the compiled major and minor version in
   `include/rdx_mount/tusb9260.h`.
 - Run from the intended, reviewed source tree. `-SkipTests` is appropriate only
@@ -75,17 +77,25 @@ From Windows PowerShell in the repository root:
 .\build-dist.ps1
 ```
 
+For a local macOS bundle with the full test gate, run the same script with
+PowerShell 7. It defaults to the PlatformIO executables under
+`~/.platformio/penv/bin/`; `-PlatformIoPath`, `-PythonPath`, and `-TemplatePath`
+can override the defaults. Normal PlatformIO builds package through Python and
+do not require PowerShell.
+This uses the configured TI CGT 5.2.9/Wine toolchain; it does not establish
+byte identity with the Windows TI CGT 5.2.5 release build.
+
 The script performs one release transaction:
 
-1. validates the requested release version and required tool/input paths;
-2. builds OpenRDX with the configured TI toolchain;
-3. runs the complete automated suite unless `-SkipTests` was explicitly used;
-4. recreates only the repository's `dist/` directory;
-5. generates and validates the RDX Manager container and manifest;
-6. copies the continuous FlashBurner image, guarded updater, and canonical
-   installation guide; and
-7. writes the release checksum file and validates the container length and
-   manifest digest.
+1. validates the requested release version and required tool paths;
+2. runs the complete automated suite unless `-SkipTests` was explicitly used;
+3. builds OpenRDX with the configured TI toolchain;
+4. invokes the shared Python packager, also used by every normal build;
+5. stages the container, manifest, continuous FlashBurner image, guarded updater,
+   installation guide, and checksum file;
+6. validates the version, container length, manifest digests, and checksums; and
+7. replaces only the repository's `dist/` directory with the complete staged
+   bundle, removing retired artifacts.
 
 The canonical source at
 [`docs/getting-started/installation.md`](../getting-started/installation.md) is
@@ -153,13 +163,11 @@ changing only a filename cannot create a valid new version.
 
 ## The checked-in `dist/` snapshot
 
-The current checked-in `dist/` tree is historical. It is not a verified release
-bundle for current `main`, and its present checksum set does not validate.
-Customers must use a newly generated bundle that completes the full release
-gate and passes its checksum verification.
-
-Do not repair or regenerate `dist/` as part of a documentation change. A release
-must be generated deliberately from the exact source revision being published.
+Every normal build refreshes `dist/` for the local source tree. The files alone
+do not establish that the full automated suite or hardware validation passed.
+Before publication, run the release gate from the exact source revision being
+published and verify the generated checksums. Rebuild after changing any bundled
+updater or installation guide so their bytes and digests remain synchronized.
 
 ## Redistribution obligations
 

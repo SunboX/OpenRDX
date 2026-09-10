@@ -25,7 +25,7 @@ RDX Manager begins with standard INQUIRY, VPD page `83h`, and LOG SENSE page
 |---:|---|---|
 | 8..15 | `TANDBERG` | T10 vendor |
 | 16..31 | `RDX` padded with spaces | product |
-| 32..35 | `0001` | OpenRDX adapter revision |
+| 32..35 | `0107` | OpenRDX release `1.07`, encoded as two major and two minor decimal digits |
 | 36 | `38h` | RDX product type |
 | 37..39 | `RDX` | RDX capability signature |
 | 40 | `02h` | OEM type |

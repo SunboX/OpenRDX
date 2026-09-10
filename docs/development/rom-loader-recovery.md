@@ -171,8 +171,9 @@ Before proceeding, record a SHA-256 digest for the exact file to be written:
 Get-FileHash -Algorithm SHA256 .pio\build\tusb9261_ti_cgt\TUSB9261_RDX_flash.hex
 ```
 
-Do not use a checked-in `dist/` image for this operation. That directory is a
-historical snapshot, not a verified release for current `main`.
+Use the freshly generated image from the intended source revision. Every normal
+build also places the same continuous HEX in the versioned `dist/` bundle;
+verify its manifest and checksums before use.
 
 ## Locate J7
 
@@ -273,7 +274,8 @@ behavioral checks.
 1. After programming finishes, disconnect USB.
 2. Confirm that `J7` is open.
 3. Reconnect USB and allow OpenRDX to start.
-4. Confirm USB VID:PID `1A5A:0005`, revision `0001`, the expected USB serial
+4. Confirm USB VID:PID `1A5A:0005`, revision `0107` for version `1.07`
+   (legacy builds may report `0001`), the expected USB serial
    (`00` plus the ten-character unit serial), and the removable-media interface.
    A changed serial is an identity failure even if USB enumeration succeeds.
 5. With no cartridge inserted, confirm that the eject-button LED is steady

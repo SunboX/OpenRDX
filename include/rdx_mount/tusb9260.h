@@ -43,7 +43,18 @@
 +----------------------------------------------------------------------------*/
 
 #define FIRMWARE_MAJOR_VERSION  1
-#define FIRMWARE_MINOR_VERSION  06
+#define FIRMWARE_MINOR_VERSION  7
+
+/* SCSI uses two decimal digits per component; USB uses packed BCD bytes.
+ * Keep the source values decimal (no leading zero/octal literals). */
+#if (FIRMWARE_MAJOR_VERSION < 0) || (FIRMWARE_MAJOR_VERSION > 99) || \
+    (FIRMWARE_MINOR_VERSION < 0) || (FIRMWARE_MINOR_VERSION > 99)
+#error Firmware version components must fit two decimal digits
+#endif
+#define FIRMWARE_MAJOR_VERSION_BCD \
+    (((FIRMWARE_MAJOR_VERSION / 10U) << 4U) | (FIRMWARE_MAJOR_VERSION % 10U))
+#define FIRMWARE_MINOR_VERSION_BCD \
+    (((FIRMWARE_MINOR_VERSION / 10U) << 4U) | (FIRMWARE_MINOR_VERSION % 10U))
 
 #define CPU_CLOCK_MHZ_FPGA      40
 #define CPU_CLOCK_MHZ_ASIC      75

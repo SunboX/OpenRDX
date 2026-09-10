@@ -18,7 +18,7 @@ import build_rdx_update_container as builder
 
 
 def find_compatibility_template() -> Path | None:
-    """Use the pinned CI input or a deterministic sibling-tree template."""
+    """Use the pinned CI input, verified build cache, or sibling-tree template."""
 
     configured = os.environ.get("OPENRDX_TEMPLATE_PATH")
     if configured:
@@ -27,14 +27,14 @@ def find_compatibility_template() -> Path | None:
             raise ValueError("Configured compatibility template SHA-256 mismatch")
         return path
 
-    manager_root = ROOT.parent / "OpenRDXManager"
-    if not manager_root.is_dir():
-        return None
-    candidates = sorted(manager_root.rglob("RDX2E__STD__F-0283.bin"))
+    cache = ROOT / ".pio/rdx-template/RDX2E__STD__F-0283.bin"
+    candidates = [cache] + sorted(
+        (ROOT.parent / "OpenRDXManager").rglob("RDX2E__STD__F-0283.bin")
+    )
     matching = [
         path
         for path in candidates
-        if builder.sha256(path.read_bytes()) == builder.COMPATIBILITY_TEMPLATE_SHA256
+        if path.is_file() and builder.sha256(path.read_bytes()) == builder.COMPATIBILITY_TEMPLATE_SHA256
     ]
     return matching[0] if matching else None
 

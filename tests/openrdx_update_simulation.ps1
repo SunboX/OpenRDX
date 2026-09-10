@@ -14,7 +14,10 @@ param(
     [Parameter(Mandatory = $true)] [string] $ImagePath,
     [Parameter(Mandatory = $true)] [string] $ManifestPath,
     [ValidateSet('success', 'media', 'identity', 'authentication')]
-    [string] $Scenario = 'success'
+    [string] $Scenario = 'success',
+    [string] $InitialRevision = '0001',
+    [string] $ReconnectedRevision = '0001',
+    [string] $PnpRevision
 )
 
 $ErrorActionPreference = 'Stop'
@@ -81,12 +84,16 @@ function Get-CimInstance {
     $serial = if ($Scenario -eq 'identity' -and $script:diskQueries -gt 1) {
         'CHANGED00000'
     } else { $TargetSerialNumber }
+    $revision = if ($script:diskQueries -gt 2) {
+        $ReconnectedRevision
+    } else { $InitialRevision }
+    $pnpRevisionValue = if ($PnpRevision) { $PnpRevision } else { $revision }
     [pscustomobject] @{
         Index = 99
         Model = 'TANDBERG RDX USB Device'
-        FirmwareRevision = '0001'
+        FirmwareRevision = $revision
         SerialNumber = $serial
-        PNPDeviceID = "USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_0001\$serial&0"
+        PNPDeviceID = "USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_$pnpRevisionValue\$serial&0"
         Size = 0
         MediaLoaded = $true
     }

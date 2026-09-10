@@ -59,6 +59,7 @@ def run(command, working_directory=PROJECT_DIR):
 
 
 def build_with_ti_cgt(target, source, env):
+    """Compile, link, and convert every production source with the TI tools."""
     del target, source, env
     if not ARMCL.is_file():
         print("TI ARM compiler not found: {}".format(ARMCL))
@@ -188,6 +189,7 @@ def build_with_ti_cgt(target, source, env):
 
 dependencies = C_SOURCES + ASM_SOURCES + HEADERS + [
     LINKER_DIR / "tusb9260_link.cmd",
+    PROJECT_DIR / "VERSION",
 ]
 firmware = env.Command(
     [str(PROGRAM), str(MAP_FILE), str(HEX_FILE), str(FLASH_HEX_FILE)],
@@ -196,10 +198,23 @@ firmware = env.Command(
 )
 
 
+def build_distribution(target, source, env):
+    """Refresh the portable bundle even when TI outputs are already current."""
+    del target, source, env
+    return run([
+        sys.executable, SCRIPT_DIR / "build_dist.py",
+        "--root", PROJECT_DIR, "--build-dir", BUILD_DIR,
+    ])
+
+
+distribution = env.Alias("dist", firmware, build_distribution)
+env.AlwaysBuild(distribution)
+
+
 def build_program_with_ti_cgt(build_env):
     """Replace PlatformIO's native Program builder with the TI firmware build."""
     build_env.Replace(PIOMAINPROG=firmware[0])
-    return firmware
+    return list(firmware) + list(distribution)
 
 
 env.AddMethod(build_program_with_ti_cgt, "BuildProgram")

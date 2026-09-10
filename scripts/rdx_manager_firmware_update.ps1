@@ -56,8 +56,8 @@ $ErrorActionPreference = 'Stop'
 $expectedImageLength = 62110
 $compatibilityImageSha256 = '73D528801AEFC032D3A53637B035F65D72809151B2F127C6B2050E9BACC76F3B'
 $expectedModel = 'TANDBERG RDX USB Device'
-$openRdxFirmwareRevision = '0001'
-$openRdxDiskPnpPrefix = 'USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_0001\'
+# Retain discovery of legacy builds while admitting the release-based revision.
+$openRdxFirmwareRevisions = @('0001', '0106', '0107')
 $openRdxUsbPnpPrefix = 'USB\VID_1A5A&PID_0005\'
 $compatibilityRevision = '0283'
 $compatibilityDiskPnpPrefix = 'USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_0283\'
@@ -499,11 +499,9 @@ function Get-RdxTargetCandidates {
     )
 
     if ($FirmwareKind -eq 'CompatibilityReceiver') {
-        $firmwareRevision = $compatibilityRevision
-        $diskPnpPrefix = $compatibilityDiskPnpPrefix
+        $firmwareRevisions = @($compatibilityRevision)
     } else {
-        $firmwareRevision = $openRdxFirmwareRevision
-        $diskPnpPrefix = $openRdxDiskPnpPrefix
+        $firmwareRevisions = $openRdxFirmwareRevisions
     }
 
     $trimmedSerial = if ([string]::IsNullOrWhiteSpace($SerialNumber)) {
@@ -514,8 +512,16 @@ function Get-RdxTargetCandidates {
     $candidates = @(
         Get-CimInstance Win32_DiskDrive |
             Where-Object {
+                # CIM and the PnP instance must describe the same accepted
+                # revision; the USB parent, serial, and location checks follow.
+                $diskPnpPrefix = if ($FirmwareKind -eq 'CompatibilityReceiver') {
+                    $compatibilityDiskPnpPrefix
+                } else {
+                    'USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_' +
+                        ([string]$_.FirmwareRevision) + '\'
+                }
                 $_.Model -eq $expectedModel -and
-                $_.FirmwareRevision -eq $firmwareRevision -and
+                $_.FirmwareRevision -cin $firmwareRevisions -and
                 ([string]$_.PNPDeviceID).StartsWith(
                     $diskPnpPrefix, [StringComparison]::OrdinalIgnoreCase) -and
                 ($null -eq $trimmedSerial -or

@@ -16,6 +16,7 @@ conversion remain TI ARM Code Generation Tools responsibilities.
 - `linker/firmware_absolute_symbols.cmd`: fixed absolute linker symbols.
 - `linker/tusb9260_link.cmd`: TI linker command file.
 - `scripts/ti_cgt_build.py`: PlatformIO/SCons build adapter.
+- `scripts/build_dist.py`: shared, automatic distribution packager.
 - `scripts/ti_cgt_tools.py`: host-specific TI CGT path resolver.
 - `platformio.ini`: PlatformIO environment and Windows/macOS toolchain roots.
 - `tests/test_ti_cgt_tools.py`: toolchain-resolution unit tests.
@@ -28,6 +29,15 @@ conversion remain TI ARM Code Generation Tools responsibilities.
 - Windows build:
   `C:\Users\andre\.platformio\penv\Scripts\pio.exe run -e tusb9261_ti_cgt`
 - Alternate toolchain root: set `TI_CGT_ROOT` for the build command.
+- Every successful normal PlatformIO build must refresh the complete versioned
+  `dist/` bundle, including when the compiler outputs are already up to date.
+  Verify the manifest version and all bundle checksums before reporting a build
+  complete. Never finish a version bump with only `.pio/` outputs updated.
+- Set `OPENRDX_TEMPLATE_PATH` once to the pinned compatibility template when it
+  is not available in the sibling Manager tree. The packager verifies and caches
+  it under ignored `.pio/rdx-template/` for subsequent builds.
+- `build-dist.ps1` runs the full test suite before the same build and packaging
+  path; use it for the release gate.
 - There is no validated upload target. Do not flash these firmware artifacts
   unless the user explicitly requests it and supplies a separately
   validated safety procedure.

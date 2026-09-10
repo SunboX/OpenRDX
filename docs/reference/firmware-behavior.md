@@ -20,7 +20,9 @@ the identity of the inserted SATA disk. The stable identity is:
 - product `RDX`, padded to the protocol field width;
 - one SCSI-transparent Bulk-Only Transport interface;
 - endpoint `0x83` for IN and `0x03` for OUT; and
-- SCSI firmware revision `0001` for OpenRDX update-policy checks.
+- SCSI firmware revision `0107` and USB `bcdDevice` `0107h` for release `1.07`,
+  both derived from the compiled major/minor version. Earlier OpenRDX builds
+  reported the fixed SCSI marker `0001` and USB revision `0283h`.
 
 At startup OpenRDX reads the checksum-protected manufacturing identity and
 publishes the USB serial as `00` followed by the receiver's ten-character unit

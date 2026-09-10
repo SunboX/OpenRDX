@@ -442,7 +442,8 @@ class RdxSataUsbMountFirmwareTests(unittest.TestCase):
 
         self.assertIn("0x5A,0x1A", usb)
         self.assertIn("0x05,0x00", usb)
-        self.assertIn("0x83,0x02", usb)
+        self.assertIn("FIRMWARE_MINOR_VERSION_BCD,", usb)
+        self.assertIn("FIRMWARE_MAJOR_VERSION_BCD,", usb)
         self.assertIn("'T', 0, 'A', 0, 'N', 0, 'D', 0", usb)
         self.assertIn("'R', 0, 'D', 0, 'X', 0", usb)
         # The removable-target path keeps the dock's Windows disk PDO stable

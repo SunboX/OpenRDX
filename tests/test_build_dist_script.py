@@ -32,90 +32,6 @@ class BuildDistScriptTests(unittest.TestCase):
         compiled_version = f"{major.group(1)}.{minor.group(1).zfill(2)}"
         self.assertEqual(release_version, compiled_version)
 
-    def test_script_builds_the_named_manager_container(self) -> None:
-        """Require the distribution script to emit the documented release set."""
-
-        script = (ROOT / "build-dist.ps1").read_text(encoding="utf-8")
-        self.assertIn("$Version.Replace('.', '-')", script)
-        self.assertIn('"OpenRDX-v$versionFileName"', script)
-        self.assertIn('"$releaseBaseName.bin"', script)
-        self.assertIn('"$releaseBaseName-FlashBurner.hex"', script)
-        self.assertIn("build_rdx_update_container.py", script)
-        self.assertIn("TUSB9261_RDX_flash.hex", script)
-        self.assertIn("$manifest.container = Split-Path -Leaf $distBinary", script)
-        self.assertIn(
-            "$manifest.flashburner_hex = Split-Path -Leaf $distRecoveryHex",
-            script,
-        )
-        self.assertIn("does not have the required 62,110-byte length", script)
-        self.assertIn("does not match its generated manifest", script)
-
-    def test_release_gate_runs_the_complete_test_suite(self) -> None:
-        """Do not package a release after only focused protocol checks."""
-
-        script = (ROOT / "build-dist.ps1").read_text(encoding="utf-8")
-        self.assertIn(
-            "'-m', 'unittest', 'discover', '-s', 'tests', '-v'", script
-        )
-        self.assertNotIn("test_build_rdx_update_container.py', '-v'", script)
-        self.assertNotIn("test_rdx_manager_protocol.py', '-v'", script)
-
-    def test_release_includes_the_portable_compatibility_installation_bundle(self) -> None:
-        """Package the guarded updater and record its procedure digests."""
-
-        script = (ROOT / "build-dist.ps1").read_text(encoding="utf-8")
-        self.assertIn("scripts\\rdx_manager_firmware_update.ps1", script)
-        self.assertIn("docs\\getting-started\\installation.md", script)
-        self.assertIn("-Destination $distUpdater", script)
-        self.assertIn("-Destination $distInstallationProcedure", script)
-        self.assertIn("required_receiver_kind", script)
-        self.assertIn("installation_updater", script)
-        self.assertIn("installation_updater_sha256", script)
-        self.assertIn("installation_procedure", script)
-        self.assertIn("installation_procedure_sha256", script)
-        self.assertIn(
-            '"$($updaterHash.ToLowerInvariant()) *$(Split-Path -Leaf $distUpdater)"',
-            script,
-        )
-
-    def test_release_directory_is_recreated_after_build_and_tests(self) -> None:
-        """Prevent retired artifacts from surviving into a later release."""
-
-        script = (ROOT / "build-dist.ps1").read_text(encoding="utf-8")
-        self.assertIn("function Reset-DistributionDirectory", script)
-        self.assertIn(
-            "Remove-Item -LiteralPath $requestedDirectory -Recurse -Force",
-            script,
-        )
-        self.assertIn(
-            "$requestedDirectory.Equals(\n"
-            "            $expectedDirectory, [StringComparison]::OrdinalIgnoreCase)",
-            script,
-        )
-        self.assertLess(
-            script.index("Running the complete automated firmware and release suite"),
-            script.rindex("Reset-DistributionDirectory `"),
-        )
-
-    def test_release_manifest_contains_only_relocatable_artifact_paths(self) -> None:
-        """Remove the development-only compiler input from release metadata."""
-
-        script = (ROOT / "build-dist.ps1").read_text(encoding="utf-8")
-        self.assertIn(
-            "$manifest.PSObject.Properties.Remove('firmware_hex')", script
-        )
-        self.assertNotIn("$manifest.firmware_hex =", script)
-        self.assertIn("$manifest.container = Split-Path -Leaf $distBinary", script)
-        self.assertIn(
-            "$manifest.flashburner_hex = Split-Path -Leaf $distRecoveryHex",
-            script,
-        )
-        self.assertIn(
-            '"$($installationProcedureHash.ToLowerInvariant()) '
-            '*$(Split-Path -Leaf $distInstallationProcedure)"',
-            script,
-        )
-
     def test_bundled_updater_resolves_one_local_release_without_dev_paths(self) -> None:
         """Allow a copied release directory to install without checkout paths."""
 
@@ -135,18 +51,15 @@ class BuildDistScriptTests(unittest.TestCase):
     def test_template_lookup_accepts_only_pinned_bytes_deterministically(self) -> None:
         """Permit duplicate byte-identical templates without path-specific rules."""
 
-        script = (ROOT / "build-dist.ps1").read_text(encoding="utf-8")
         updater = UPDATER.read_text(encoding="utf-8")
         updater_lookup = updater[
             updater.index("function Find-RdxCompatibilityImage"):
             updater.index("function Get-RdxCustomManifestPath")
         ]
-        for content in (script, updater_lookup):
-            self.assertIn("Get-FileHash -Algorithm SHA256", content)
-            self.assertIn("Sort-Object -Property FullName", content)
-            self.assertIn("RDX2E__STD__F-0283.bin", content)
-            self.assertNotIn("$templateCandidates.Count -ne 1", content)
-            self.assertNotIn("$candidates.Count -ne 1", content)
+        self.assertIn("Get-FileHash -Algorithm SHA256", updater_lookup)
+        self.assertIn("Sort-Object -Property FullName", updater_lookup)
+        self.assertIn("RDX2E__STD__F-0283.bin", updater_lookup)
+        self.assertNotIn("$candidates.Count -ne 1", updater_lookup)
 
     def test_installation_procedure_uses_the_guarded_bundle_entrypoint(self) -> None:
         """Keep release instructions aligned with the safe updater mode."""

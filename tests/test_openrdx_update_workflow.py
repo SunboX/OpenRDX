@@ -30,8 +30,10 @@ class OpenRdxUpdateDocumentationTests(unittest.TestCase):
         )[1]
         self.assertIn("-ValidateOnly -ValidateFirmwareKind OpenRDX", guide)
         self.assertIn(".\\rdx_manager_firmware_update.ps1 -InstallOpenRDX `", guide)
-        self.assertIn("-ImagePath .\\OpenRDX-v1-06.bin", guide)
-        self.assertIn("-ManifestPath .\\OpenRDX-v1-06.json", guide)
+        version = (ROOT / "VERSION").read_text(encoding="ascii").strip()
+        release_name = "OpenRDX-v" + version.replace(".", "-")
+        self.assertIn(f"-ImagePath .\\{release_name}.bin", guide)
+        self.assertIn(f"-ManifestPath .\\{release_name}.json", guide)
         self.assertIn("-TargetSerialNumber $targetSerial", guide)
         self.assertNotIn("{10}", guide)
         self.assertIn("Do not substitute `-Update`", guide)
@@ -39,11 +41,12 @@ class OpenRdxUpdateDocumentationTests(unittest.TestCase):
         self.assertIn("does not require observing disappearance", guide)
 
 
-@unittest.skipUnless(os.name == "nt" and POWERSHELL, "Windows PowerShell required")
+@unittest.skipUnless(POWERSHELL, "PowerShell required for simulated host workflow")
 class OpenRdxUpdateWorkflowTests(unittest.TestCase):
     """Run unchanged main-flow code with fake transport and storage cmdlets."""
 
-    def simulate(self, scenario="success", *, corrupt_image=False, bad_manifest=False):
+    def simulate(self, scenario="success", *, corrupt_image=False, bad_manifest=False,
+                 initial_revision="0001", reconnected_revision="0001", pnp_revision=""):
         """Create disposable host-validation fixtures and return recorded I/O."""
         with tempfile.TemporaryDirectory() as directory:
             image = Path(directory) / "fixture.bin"
@@ -78,6 +81,9 @@ class OpenRdxUpdateWorkflowTests(unittest.TestCase):
                     str(ROOT / "tests" / "openrdx_update_simulation.ps1"),
                     "-UpdaterPath", str(UPDATER), "-ImagePath", str(image),
                     "-ManifestPath", str(manifest), "-Scenario", scenario,
+                    "-InitialRevision", initial_revision,
+                    "-ReconnectedRevision", reconnected_revision,
+                    *(["-PnpRevision", pnp_revision] if pnp_revision else []),
                 ],
                 capture_output=True, text=True, timeout=30, env=environment,
             )
@@ -120,6 +126,30 @@ class OpenRdxUpdateWorkflowTests(unittest.TestCase):
             with self.subTest(scenario=scenario, options=options):
                 result = self.simulate(scenario, **options)
                 self.assertIn(message, result["error"])
+                self.assertEqual([], result["commands"])
+
+    def test_versioned_receivers_and_legacy_upgrades_remain_updateable(self):
+        """Accept release revisions before transfer and after a legacy reset."""
+        version = (ROOT / "VERSION").read_text(encoding="ascii").strip()
+        major, minor = map(int, version.split("."))
+        current_revision = f"{major:02d}{minor:02d}"
+        for initial, reconnected in (("0001", current_revision),
+                                     ("0106", current_revision),
+                                     (current_revision, current_revision)):
+            with self.subTest(initial=initial, reconnected=reconnected):
+                result = self.simulate(initial_revision=initial,
+                                       reconnected_revision=reconnected)
+                self.assertIsNone(result["error"])
+                self.assertEqual(17, len(result["commands"]))
+
+    def test_unrecognized_or_inconsistent_revision_sends_no_commands(self):
+        """Do not admit vendor firmware or a mismatched Windows PnP identity."""
+        for revision, pnp_revision in (("0283", "0283"), ("9999", "9999"),
+                                       ("0106", "0001"), ("1.06", "0106")):
+            with self.subTest(revision=revision, pnp_revision=pnp_revision):
+                result = self.simulate(initial_revision=revision,
+                                       pnp_revision=pnp_revision)
+                self.assertIsNotNone(result["error"])
                 self.assertEqual([], result["commands"])
 
     def test_final_authentication_error_never_activates(self):

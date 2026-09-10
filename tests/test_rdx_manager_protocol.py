@@ -66,7 +66,11 @@ class RdxManagerProtocolTests(unittest.TestCase):
     def test_standard_inquiry_contains_rdx_manager_extension(self):
         """The private bytes used by SupportsRDXTech remain exact."""
         self.assertIn("#define STANDARD_INQUIRY_DATA_LENGTH  64U", self.scsi)
-        self.assertIn('ti_memcpy((void*)&scsi_resp_buff[32], "0001", 4U);', self.scsi)
+        self.assertIn(
+            "ti_memcpy((void*)&scsi_resp_buff[32], rdx_firmware_revision,",
+            self.scsi,
+        )
+        self.assertIn("sizeof(rdx_firmware_revision));", self.scsi)
         self.assertIn("scsi_resp_buff[36] = 0x38U;", self.scsi)
         self.assertIn('ti_memcpy((void*)&scsi_resp_buff[37], "RDX", 3U);', self.scsi)
         self.assertIn("scsi_resp_buff[40] = 0x02U;", self.scsi)

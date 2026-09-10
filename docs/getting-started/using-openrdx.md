@@ -3,7 +3,8 @@
 This guide covers everyday operation of OpenRDX on the supported Tandberg Data
 RDX QuikStor external USB 3.0 compatibility receiver built around TUSB9261 and
 identified before installation by preinstalled vendor firmware revision `0283`.
-OpenRDX itself reports receiver revision `0001`. Other docks are outside the
+OpenRDX reports revision `0107` for version `1.07`; earlier builds used the
+fixed marker `0001`. Other docks are outside the
 current support scope.
 
 For installation, follow the separate [guarded installation guide](installation.md).

@@ -10,7 +10,7 @@ USB 3.0 receiver. Select the route by its current firmware field:
 | Current receiver revision | Procedure | Updater switch |
 | --- | --- | --- |
 | Vendor `0283` | [First installation](#inspect-then-install) through the ROM loader | `-InstallOpenRDXOnCompatibilityReceiver` |
-| OpenRDX `0001` | [Update existing OpenRDX](#update-existing-openrdx) through its running firmware | `-InstallOpenRDX` |
+| OpenRDX `0107`, `0106`, or legacy `0001` | [Update existing OpenRDX](#update-existing-openrdx) through its running firmware | `-InstallOpenRDX` |
 
 Both routes use Windows SPTI. First installation also uses TI Command Line
 FlashBurner. The updater checks
@@ -68,7 +68,7 @@ running the updater.
 
 ## Inspect, then install
 
-This section is for vendor revision `0283` only. For revision `0001`, follow
+This section is for vendor revision `0283` only. For OpenRDX `0107`, `0106`, or `0001`, follow
 [Update existing OpenRDX](#update-existing-openrdx).
 
 First list compatibility receivers without sending a SCSI command:
@@ -132,7 +132,7 @@ The script then leads the operator through two distinct power cycles:
 
 Do not disconnect during WRITE BUFFER transfer or FlashBurner programming.
 Accept only the power cycles requested by the script. After the second
-reconnection, the updater must find the OpenRDX revision `0001` empty-bay device
+reconnection, the updater must find an accepted OpenRDX empty-bay device
 at that same USB location before reporting success. Afterwards,
 `.\rdx_manager_firmware_update.ps1 -ValidateOnly` performs a read-only check of
 the installed OpenRDX identity.
@@ -152,7 +152,8 @@ the installed OpenRDX identity.
 
 ## Update existing OpenRDX
 
-Use this route for a supported receiver already running OpenRDX revision `0001`.
+Use this route for a supported receiver already running OpenRDX revision `0107`,
+`0106`, or the legacy marker `0001`.
 It programs the receiver's firmware; it does not copy files to a cartridge.
 Complete **Before starting** and **Verify the release** above first. Keep the
 bay physically empty, leave J7 open, and maintain power and the same USB port
@@ -161,8 +162,9 @@ access programs before starting.
 
 This procedure is derived from the current updater and firmware source, with
 automated host-workflow tests using simulated devices. It is not a recorded
-hardware qualification of updating every earlier OpenRDX build. Revision `0001`
-identifies the firmware family, not the installed release version or image hash.
+hardware qualification of updating every earlier OpenRDX build. Revision `0107`
+represents version `1.07`; legacy `0001` does not identify the installed release.
+Neither revision verifies an image hash.
 Confirm the installed build supports the `OPENRDX1` container protocol before
 programming; discovery and empty-bay validation alone cannot establish that.
 The evidence and remaining device checks are recorded in
@@ -175,9 +177,9 @@ Run in Windows PowerShell from the verified release directory:
 ```powershell
 $devices = @(Get-CimInstance Win32_DiskDrive | Where-Object {
   $_.Model -eq 'TANDBERG RDX USB Device' -and
-  $_.FirmwareRevision -eq '0001' -and
+  $_.FirmwareRevision -cin @('0001', '0106', '0107') -and
   ([string]$_.PNPDeviceID).StartsWith(
-    'USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_0001\',
+    ('USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_' + $_.FirmwareRevision + '\'),
     [StringComparison]::OrdinalIgnoreCase)
 })
 $devices | Select-Object Index, Model, SerialNumber, FirmwareRevision, Size, PNPDeviceID |
@@ -198,14 +200,14 @@ image or test the installed receiver's update implementation.
 
 ### Transfer and activate
 
-For release 1.06, run the following in an elevated Windows PowerShell session
+For release 1.07, run the following in an elevated Windows PowerShell session
 from that release directory, with `$targetSerial` set as above. For another
 release, substitute its matching `.bin` and `.json` names together.
 
 ```powershell
 .\rdx_manager_firmware_update.ps1 -InstallOpenRDX `
-  -ImagePath .\OpenRDX-v1-06.bin `
-  -ManifestPath .\OpenRDX-v1-06.json `
+  -ImagePath .\OpenRDX-v1-07.bin `
+  -ManifestPath .\OpenRDX-v1-07.json `
   -TargetSerialNumber $targetSerial
 ```
 
@@ -237,7 +239,7 @@ Normal completion needs neither J7 nor FlashBurner nor a manual power cycle.
 
 ### Check completion and handle failures
 
-The updater waits for USB identity `1A5A:0005` and an OpenRDX `0001` disk LUN at
+The updater waits for USB identity `1A5A:0005` and an accepted OpenRDX disk LUN at
 the selected physical USB location (up to 30 seconds for each wait). Its final
 message is `Custom firmware adapter and no-media RDX disk LUN re-enumerated:`.
 An activation IOCTL disconnect can produce a warning; the script then checks

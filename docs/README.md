@@ -11,7 +11,7 @@ authoritative details live.
 - [Install OpenRDX](getting-started/installation.md) — safety checks, target
   selection, release verification, and the guarded update workflow.
 - [Update existing OpenRDX](getting-started/installation.md#update-existing-openrdx)
-  — the in-place route for revision `0001` and its validation limits.
+  — the in-place route for existing OpenRDX receivers and its validation limits.
 - [Use OpenRDX](getting-started/using-openrdx.md) — choose media, understand
   write protection and ejection, and respond to rejected media.
 
