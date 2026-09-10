@@ -80,7 +80,10 @@ class BuildDistTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         bundle = validate_bundle(self.dist, "1.07")
         self.assertEqual(set(bundle), {p.name for p in self.dist.iterdir()})
-        self.assertEqual(b"guarded updater\n", bundle["rdx_manager_firmware_update.ps1"])
+        self.assertEqual(
+            (self.root / "scripts/rdx_manager_firmware_update.ps1").read_bytes(),
+            bundle["rdx_manager_firmware_update.ps1"],
+        )
         manifest = json.loads(bundle["OpenRDX-v1-07.json"])
         self.assertNotIn("firmware_hex", manifest)
         self.assertEqual("CompatibilityReceiver", manifest["required_receiver_kind"])
@@ -94,6 +97,19 @@ class BuildDistTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         bundle = validate_bundle(self.dist, "1.08")
         self.assertEqual(set(bundle), {p.name for p in self.dist.iterdir()})
+
+    def test_packaging_preserves_lf_and_crlf_source_bytes(self):
+        """Never normalize checksummed updater or installation-guide bytes."""
+        self.use_template()
+        for payload in (b"first line\nsecond line\n", b"first line\r\nsecond line\r\n"):
+            with self.subTest(payload=payload):
+                (self.root / "scripts/rdx_manager_firmware_update.ps1").write_bytes(payload)
+                (self.root / "docs/getting-started/installation.md").write_bytes(payload)
+                result = self.run_packager()
+                self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+                bundle = validate_bundle(self.dist, "1.07")
+                self.assertEqual(payload, bundle["rdx_manager_firmware_update.ps1"])
+                self.assertEqual(payload, bundle["OPENRDX_USB_UPDATE.md"])
 
     def test_missing_template_fails_without_replacing_previous_bundle(self):
         """Packaging must fail explicitly when the required template is absent."""
