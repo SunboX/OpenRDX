@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -131,6 +132,21 @@ static BOOLEAN_T rdx_load_metadata_sector(UINT32_T port,
         if completed.returncode:
             raise AssertionError(completed.stdout + completed.stderr)
         cls.lib = ctypes.CDLL(str(output))
+        # Class cleanups run in reverse order. Release the loaded library before
+        # TemporaryDirectory removes its files; Windows locks loaded modules.
+        cls.addClassCleanup(cls.release_probe)
+
+    @classmethod
+    def release_probe(cls):
+        """Unload the host library after the last test and before file cleanup."""
+        library = cls.lib
+        cls.lib = None
+        if sys.platform == "win32":
+            from _ctypes import FreeLibrary
+            FreeLibrary(library._handle)
+        else:
+            from _ctypes import dlclose
+            dlclose(library._handle)
 
     def setUp(self):
         """Reset every input before each independent response assertion."""
