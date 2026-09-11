@@ -25,7 +25,7 @@ RDX Manager begins with standard INQUIRY, VPD page `83h`, and LOG SENSE page
 |---:|---|---|
 | 8..15 | `TANDBERG` | T10 vendor |
 | 16..31 | `RDX` padded with spaces | product |
-| 32..35 | `0107` | OpenRDX release `1.07`, encoded as two major and two minor decimal digits |
+| 32..35 | `0108` | OpenRDX release `1.08`, encoded as two major and two minor decimal digits |
 | 36 | `38h` | RDX product type |
 | 37..39 | `RDX` | RDX capability signature |
 | 40 | `02h` | OEM type |
@@ -46,13 +46,17 @@ When a cartridge is ready, Manager can additionally request:
 - MODE SENSE pages `31h`, `33h`, `34h`, and the caching page.
 
 Drive LOG page `20h` is 56 bytes with parameters zero through seven. Cartridge
-page `21h` is 116 bytes with parameters zero through thirteen. Temperature page
-`0Dh` is 16 bytes.
+page `21h` is up to 116 bytes with parameters zero through thirteen. Missing
+cartridge counters are omitted, with the page length adjusted accordingly.
+Temperature page `0Dh` is 16 bytes: parameter zero contains the current sensor
+sample and parameter one contains the reference temperature. An unavailable
+reading uses `FFh`; it must not be presented as a zero-degree measurement.
 
 ### Adapter identity VPD page 83h
 
 The response contains one fixed T10 designator. Vendor begins at byte 8,
-product at byte 16, and serial at byte 32. A 256-byte manufacturing record at
+product at byte 16, serial at byte 32, and the eight-byte manufacturing date at
+byte 42. The complete response is 50 bytes. A 256-byte manufacturing record at
 SPI address `0003E000h` supplies these fixed-width fields:
 
 | Field | Offset | Length |
@@ -60,12 +64,53 @@ SPI address `0003E000h` supplies these fixed-width fields:
 | serial | `08h` | 10 bytes |
 | vendor | `12h` | 8 bytes |
 | product | `1Ah` | 16 bytes |
+| manufacturing date | `9Ch` | 8 ASCII bytes, record version 5 and later |
 | hardware profile | `A4h` | 2 bytes, little-endian |
 
 Bytes zero through three are independent modulo-256 checksum lanes over bytes
 four through 255. An invalid record uses the compiled ten-byte numeric fallback
 identifier, vendor `TANDBERG`, product `RDX` padded with spaces, and hardware
-profile `38h`. Profile values zero, one, and `FFFFh` normalize to `37h`.
+profile `38h`, and default date `10102010`. A valid record older than version 5
+has no date field and reports an empty date. Profile values zero, one, and
+`FFFFh` normalize to `37h`.
+
+### Drive and cartridge status
+
+Drive page `20h` parameter 3 reports the active-low mechanism input on GPIO2.
+Parameter 5 reports bus power for hardware profile `38h` when GPIO4 indicates
+that the device is not self-powered. Other profiles retain the adapter-power
+encoding. The drive load count remains the persistent dock counter.
+
+Cartridge page `21h` reads stored context-4 metadata during cartridge admission:
+
+| Metadata record | Stored value | LOG SENSE parameter |
+| --- | --- | --- |
+| `0Ah` | Cartridge load count | 1 |
+| `0Bh` | Read MiB | 6 |
+| `0Ch` | Written MiB | 5 |
+
+Each scalar has a four-byte typed header and one to four little-endian payload
+bytes. The page emits valid values as four-byte big-endian integers. Zero is a
+valid stored value; missing, malformed, or duplicate counters do not become
+zero samples. Only checksum-validated sectors are decoded. A bounded metadata
+walk continues after identity is found, and cached values are cleared when the
+medium is replaced. Generic SATA media have no cartridge metadata counters.
+
+These are stored counters sampled during admission. OpenRDX does not currently
+add session I/O totals to them or persist updated cartridge usage records.
+Parameter 8 uses the cartridge write-protection input. Filesystem free space is
+not available to this firmware page and must be queried by the host.
+
+Implementation: `src/rdx_mount/rdx_manager_status.c`,
+`src/rdx_mount/rdx_media_metadata.c`, and `src/rdx_mount/rdx_unlock.c`.
+Deterministic response checks: `tests/test_rdx_status_values.py`.
+
+On 2026-09-11 the user reported successful local operation after the macOS
+TI ARM CGT 5.2.9 build of v1.08. Its container SHA-256 was
+`6e7453c672fdd495fe13dc0110b0c26da3c6d049ff0e6d3cc5e40e04ea83ffe7`.
+This is user-reported acceptance, without an independent parameter capture or
+a flash readback. It does not establish byte identity with the Windows release
+build or validate session counter persistence.
 
 ### MODE SENSE block descriptor
 
@@ -172,7 +217,7 @@ image, installing OpenRDX through the ROM loader, and updating OpenRDX in place.
 The [installation guide](../getting-started/installation.md) owns the guarded
 operator commands. For an existing `0001` receiver, use its
 [in-place update procedure](../getting-started/installation.md#update-existing-openrdx)
-with `-InstallOpenRDX`. The `-Update` switch restores the pinned vendor image.
+with `-InstallOpenRDX`. The `-Update` switch restores the pinned compatibility image.
 
 The updater requires one unambiguously selected target with no cartridge volume.
 An optional serial-number filter can select one receiver while other compatible

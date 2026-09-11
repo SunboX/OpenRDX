@@ -290,8 +290,8 @@ Run the tests, clean the previous output, and build:
 ~/.platformio/penv/bin/pio run -e tusb9261_ti_cgt
 ```
 
-A successful clean build compiles 37 C sources and two TI assembly sources,
-creating 39 object files and these direct artifacts:
+A successful clean build compiles 39 C sources and two TI assembly sources,
+creating 41 object files and these direct artifacts:
 
 ```text
 .pio/build/tusb9261_ti_cgt/TUSB9261_RDX.out

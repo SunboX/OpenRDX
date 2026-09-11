@@ -1,0 +1,23 @@
+{
+  "authentication_scheme": "openrdx-sha256-v1",
+  "boot_region_sha256": "843b41c9f3ca0d84ba328952e845f67c8a1afebac8c253e7e420e94760d7bb9a",
+  "container": "OpenRDX-v1-08.bin",
+  "container_length": 62110,
+  "container_sha256": "6e7453c672fdd495fe13dc0110b0c26da3c6d049ff0e6d3cc5e40e04ea83ffe7",
+  "flashburner_hex": "OpenRDX-v1-08-FlashBurner.hex",
+  "flashburner_hex_sha256": "6ffedb66bb17df0121f8bed10dd3c8e651322163bf6994095a7aa32d1d0d4caa",
+  "installation_procedure": "OPENRDX_USB_UPDATE.md",
+  "installation_procedure_sha256": "83a784889a425c72c0859cd028f07c8e2fd5f0f0448f0f78b40836c7144b3085",
+  "installation_requires_rom_loader": true,
+  "installation_updater": "rdx_manager_firmware_update.ps1",
+  "installation_updater_sha256": "a2b386fd3683a3010eac01d03965f33e7bfd86248c5820c228d5722b784ec000",
+  "release_name": "OpenRDX-v1-08",
+  "release_version": "1.08",
+  "required_receiver_kind": "CompatibilityReceiver",
+  "requires_openrdx_receiver": true,
+  "runtime_base": "0x08000000",
+  "runtime_padded_length": 61696,
+  "runtime_sha256": "859f7f2ff8ab55a60633a68f232de79beaaf7c392766e84f278d987c319ee50d",
+  "runtime_used_length": 50772,
+  "template_sha256": "73d528801aefc032d3a53637b035f65d72809151b2f127c6b2050e9bacc76f3b"
+}

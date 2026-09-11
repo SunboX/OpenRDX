@@ -18,7 +18,7 @@
 - Use `standard SATA drives` prominently, qualified by admission checks and the documented validation boundary.
 - Keep TI ARM CGT 5.2.5 on Windows and Windows TI ARM CGT 5.2.9 through Wine on macOS.
 - Keep `dist/OPENRDX_USB_UPDATE.md` as the packaged filename.
-- Never present vendor firmware behavior as OpenRDX behavior.
+- Never present external research results as OpenRDX behavior.
 
 ---
 

@@ -19,8 +19,8 @@ SOURCE = (
 class RdxMechanismDeadlineTests(unittest.TestCase):
     """Keep sensor history and elapsed travel ahead of optional bus work."""
 
-    def test_recovery_gpio0_assertion_uses_vendor_profile_classes(self):
-        """Only vendor class 2 (35h/37h) asserts mapped logical output 11."""
+    def test_recovery_gpio0_assertion_uses_hardware_profiles(self):
+        """Only profiles 35h/37h assert mapped logical output 11."""
         enter = function_body(
             SOURCE,
             "static void rdx_mechanism_enter_state(RDX_MECHANISM_STATE_T state,",
@@ -51,8 +51,8 @@ class RdxMechanismDeadlineTests(unittest.TestCase):
             1, SOURCE.count("gio_rdx_profile_mechanism_auxiliary_set(TRUE);")
         )
 
-    def test_recovery_phase_drives_gpio3_low_as_in_vendor_binary(self):
-        """State 6 passes logical zero, including the translated missing argument."""
+    def test_recovery_phase_drives_gpio3_low_before_motor_power(self):
+        """State 6 sets the control level before applying motor power."""
         enter = function_body(
             SOURCE,
             "static void rdx_mechanism_enter_state(RDX_MECHANISM_STATE_T state,",
@@ -64,9 +64,7 @@ class RdxMechanismDeadlineTests(unittest.TestCase):
             enter.index("case " + recovery_state + ":"):
             enter.index("case RDX_MECHANISM_RETURN_SETTLE:")
         ]
-        # Vendor 0283 at 08003BD8 sets r1=0; 08003BDC sets r0=10;
-        # the BL at 08003BE2 passes those values to spi_set_logical_output.
-        # The translated C omitted r1 and previously led to a wrong high level.
+        # A high control level would stop travel; enforce low before PWM.
         assert_statements_in_order(
             self,
             recovery,

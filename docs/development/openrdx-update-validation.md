@@ -14,17 +14,17 @@ updater, toolchain, ABI, compiler flags, or linker inputs were changed.
 
 | Step | Deciding source | Meaning for the operator |
 | --- | --- | --- |
-| Select operation | `scripts/rdx_manager_firmware_update.ps1` parameter sets and `$targetKind` | `-InstallOpenRDX` targets `0001` and requires `-ImagePath`; `-Update` targets `0001` but writes the pinned vendor image. |
+| Select operation | `scripts/rdx_manager_firmware_update.ps1` parameter sets and `$targetKind` | `-InstallOpenRDX` targets `0001` and requires `-ImagePath`; `-Update` targets `0001` but writes the pinned compatibility image. |
 | Resolve inputs | `Get-RdxCustomManifestPath` and explicit `-ManifestPath` | Supplying both matching paths removes dependence on checkout defaults. |
 | Validate target | `Get-RdxTarget`, `Confirm-RdxSelectedTarget`, `Assert-RdxEmptyBay` | Match model, revision, serial, PnP identity and physical port; recheck empty bay before writing. |
 | Validate container | `if ($InstallOpenRDX -or $InstallOpenRDXOnCompatibilityReceiver)` | Check 62,110-byte length, manifest digest, authentication scheme, required flags and template hash. |
-| Transfer | Main mode-04 loop and `New-WriteBufferCdb` | Send 16 sequential chunks; permit one full retry. The vendor mode-02 authorization path is skipped. |
-| Validate received image | `rdx_manager_handle_write_buffer` in `src/rdx_mount/rdx_manager_protocol.c` | Require sequential offsets and either the pinned vendor hash or the `OPENRDX1` format and payload digest. |
+| Transfer | Main mode-04 loop and `New-WriteBufferCdb` | Send 16 sequential chunks; permit one full retry. The mode-02 authorization path is skipped. |
+| Validate received image | `rdx_manager_handle_write_buffer` in `src/rdx_mount/rdx_manager_protocol.c` | Require sequential offsets and either the pinned compatibility-image hash or the `OPENRDX1` format and payload digest. |
 | Preserve boot boundary | `rdx_program_container_payload`, `rdx_begin_update`, `rdx_program_flash` | Erase/program the application region while withholding its first four bytes; do not erase manufacturing/state sectors. |
 | Activate | Mode-05 branch and `rdx_manager_protocol_tick` | Write withheld vector only after validation, then reset after five 100-ms ticks. |
 | Observe return | `Wait-RdxPnpPrefix`, `Wait-RdxTarget` | Require OpenRDX USB identity and disk family at the same physical port. This is not flash readback or a release-version check. |
 
-The vendor route's ten-character serial requirement occurs in
+The compatibility route's ten-character serial requirement occurs in
 `Enable-RdxCompatibilityHeaderCheckBypass`. It is not an in-place requirement.
 The manifest's ROM-loader flag is validated by both branches, but only the
 compatibility branch runs FlashBurner. This explains why changing manifest
@@ -51,7 +51,7 @@ The checks cover:
 - final-chunk authentication failure, the one permitted complete retry, and no
   activation after either attempt fails; and
 - explicit image, manifest and serial arguments in the maintained procedure,
-  together with its warning about the vendor-restore switch.
+  together with its warning about the compatibility-image switch.
 
 The host fixture is deliberately not a bootable firmware image. These tests do
 not emulate SPI flash, validate the running device's implementation, test real
@@ -102,7 +102,7 @@ The maintained protocol reference reports earlier physical WRITE BUFFER,
 Manager-completion, ROM-loader and re-enumeration exercises. It does not bind an
 in-place transfer transcript, starting-build identity and resulting flash digest
 to this connected receiver and this new container. The examined earlier
-installation guide also covers vendor revision `0283`, not this `0001` case.
+installation guide also covers receiver revision `0283`, not this `0001` case.
 That initial investigation performed no transfer or activation. The subsequent
 explicitly requested hardware run is recorded below.
 

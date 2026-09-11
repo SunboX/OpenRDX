@@ -19,7 +19,9 @@ BUTTON_MODE = (SOURCE_DIR / "rdx_button_mode.c").read_text(encoding="utf-8")
 AHCI = (SOURCE_DIR / "ahci.c").read_text(encoding="utf-8")
 MAIN = (SOURCE_DIR / "main.c").read_text(encoding="utf-8")
 RTI = (SOURCE_DIR / "rti.c").read_text(encoding="utf-8")
-MANAGER = (SOURCE_DIR / "rdx_manager_protocol.c").read_text(encoding="utf-8")
+MANAGER = (SOURCE_DIR / "rdx_manager_protocol.c").read_text(encoding="utf-8") + (
+    SOURCE_DIR / "rdx_manager_status.c"
+).read_text(encoding="utf-8")
 
 
 def function_body(source, signature):
@@ -587,7 +589,7 @@ class RdxHardwareRuntimeTests(unittest.TestCase):
         self.assertNotIn("rdx_hardware_cancel_eject", HARDWARE)
         self.assertEqual(1, eject.count("rdx_hardware_fail_eject();"))
         self.assertIn(
-            "buffer[15] = rdx_hardware_get_temperature_celsius();",
+            "buffer[9] = rdx_hardware_get_temperature_celsius();",
             MANAGER,
         )
 

@@ -538,13 +538,10 @@ void gio_rdx_mechanism_auxiliary_set(BOOLEAN_T asserted)
  *************************************************************************//**
  * Apply the effective profile's active-high output mapping for GPIO0.
  *
- * The vendor v2.83 mapping routine at 08008F40 applies tables at 0800E398
- * and 0800E3D0: selector zero is GPIO0, while 17h is unassigned. Logical
- * output 11 selects GPIO0 except on profile 38h, where output 14 owns it.
- * The latter starts high (0800BB3C) and stays high while USB is connected
- * or the mechanism is active (0800921C). Its separate idle deassertion
- * policy also depends on USB, ATA, ADC, and startup state; that policy is
- * not implemented here, so this implementation retains the high level.
+ * Logical output 11 selects GPIO0 except on profile 38h, where output 14
+ * owns it. Profile 38h starts high and retains that level during USB and
+ * mechanism activity. Idle deassertion would require coordination with
+ * USB, ATA, ADC, and startup state; that policy is not implemented here.
  *
  * Identity is initialized after gio_init(). Defer this output's direction
  * until its correct level can be preloaded without a transient low pulse.
@@ -576,7 +573,7 @@ void gio_rdx_profile_outputs_init(UINT16_T hardware_profile)
  *************************************************************************//**
  * Set logical output 11 without driving another profile's GPIO0 mapping.
  *
- * The vendor stop routine writes logical zero for every mapped profile.
+ * Motor cleanup writes logical zero for every mapped profile.
  * Recovery state 6 asserts logical one for profiles 35h and 37h only. The
  * mechanism selects when to assert it; this helper enforces pin ownership.
  *

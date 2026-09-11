@@ -25,6 +25,7 @@ typedef struct _RDX_DRIVE_IDENTITY_T
     UINT8_T serial[10];
     UINT8_T vendor[8];
     UINT8_T product[16];
+    UINT8_T born_on_date[8];
 } RDX_DRIVE_IDENTITY_T;
 
 /** Load adapter identity and profile from the checksum-protected record. */

@@ -5,13 +5,13 @@
 This standalone procedure uses Texas Instruments TUSB926x FlashBurner through
 the board's `J7` ROM-loader entry path. Choose the image before connecting power:
 
-- To restore the vendor firmware and per-unit data, use the same receiver's
+- To restore the a receiver backup and per-unit data, use the same receiver's
   complete SPI backup with **Program Full Binary Image**. The TI operation is
   documented; its use with the retained 256 KiB capture is an **UNVALIDATED /
   EXPERIMENTAL** procedure and has not been hardware-tested in this project.
 - To install OpenRDX, use the continuous application HEX with normal **Program**.
   This workflow has been physically exercised with earlier builds.
-- The downloadable vendor `0283` update envelope is not a validated FlashBurner
+- The downloadable `0283` compatibility update envelope is not a validated FlashBurner
   input. Downloading it alone does not provide a ready-to-flash SPI image.
 
 The `J7` sequence works with blank flash or an application that does not expose
@@ -68,7 +68,7 @@ always a separate, deliberate operator action.
 - For an OpenRDX build only, the supported Windows TI ARM Code Generation Tools
   5.2.5 environment and PlatformIO setup from the
   [common build guide](building.md).
-- For vendor restoration, the verified same-unit full-flash backup described
+- For receiver restoration, the verified same-unit full-flash backup described
   below. Keep a separate immutable copy before programming.
 
 The TUSB9261 ROM bootloader enumerates as USB VID `0451`, PID `926B`. A usable
@@ -83,26 +83,26 @@ application HEX or with the Tandberg update envelope.
 
 ## Choose the recovery image
 
-Do not interchange the application, vendor-update, analysis, and raw-flash
+Do not interchange the application, compatibility-update, analysis, and raw-flash
 formats:
 
 | Artifact | Intended path | Validation status |
 | --- | --- | --- |
 | `.pio/build/tusb9261_ti_cgt/TUSB9261_RDX_flash.hex` | FlashBurner normal **Program** through the ROM loader | Workflow physically validated with earlier checksum-pinned builds; verify the exact current build |
-| `RDX2E__STD__F-0283.bin` from the vendor download | Vendor update envelope; do not select in FlashBurner | Not a validated FlashBurner input |
+| `RDX2E__STD__F-0283.bin` from the image download | Compatibility update envelope; do not select in FlashBurner | Not a validated FlashBurner input |
 | 256 KiB full-flash capture identified below | Same-unit **Program Full Binary Image** through the ROM loader | Experimental; acceptance, programming, and post-boot behavior not yet physically verified |
 | Extracted 61,696-byte payload or 61,710-byte boot-region image | Analysis only | Not a supported programming input |
 
-### Where to find the vendor firmware
+### Compatibility image for revision 0283
 
 Overland-Tandberg's public
 [USB 3.0 external firmware directory](https://www.overlandtandberg.com/ftp1-sub/rdx/RDXQuikStor/Firmware/USB/USB3.0/external/)
 lists the 62,110-byte `RDX2E__STD__F-0283.bin`. Save a downloaded copy in a
 local firmware archive, for example `C:\RDX-recovery\RDX2E__STD__F-0283.bin`.
-This download is a vendor update package, not the complete SPI backup needed
+This download is a compatibility update package, not the complete SPI backup needed
 for the TI full-image restoration below.
 
-An [archived copy of the vendor-hosted file](https://web.archive.org/web/20220104152216if_/https://ftp1.overlandtandberg.com/rdx/RDX%20QuikStor/Firmware/USB/USB3.0/external/RDX2E__STD__F-0283.bin)
+An [archived copy of the published file](https://web.archive.org/web/20220104152216if_/https://ftp1.overlandtandberg.com/rdx/RDX%20QuikStor/Firmware/USB/USB3.0/external/RDX2E__STD__F-0283.bin)
 is also available. Regardless of source, accept it only after the exact size and
 digest checks below.
 
@@ -110,22 +110,22 @@ The `RDX2E__STD__F-0283.bin` envelope is 62,110 bytes and has SHA-256
 `73d528801aefc032d3a53637b035f65d72809151b2f127c6b2050e9bacc76f3b`.
 The ZIP has SHA-256
 `7e2a33b798a92f609af12538f650d5f5056c4dc487e7f92b278d16fd4b136938`
-and contains that one 62,110-byte file. The `.bin` is a signed vendor update
+and contains that one 62,110-byte file. The `.bin` is a signed compatibility update
 envelope, not a raw SPI image.
 
 Use PowerShell to check the downloaded archive file. These checks identify the
 file; they do not convert it into FlashBurner input:
 
 ```powershell
-$vendorImage = 'C:\RDX-recovery\RDX2E__STD__F-0283.bin'
-$vendorFile = Get-Item -LiteralPath $vendorImage
-if ($vendorFile.Length -ne 62110) {
-    throw "Unexpected vendor-firmware size: $($vendorFile.Length) bytes"
+$compatibilityImage = 'C:\RDX-recovery\RDX2E__STD__F-0283.bin'
+$compatibilityFile = Get-Item -LiteralPath $compatibilityImage
+if ($compatibilityFile.Length -ne 62110) {
+    throw "Unexpected compatibility-image size: $($compatibilityFile.Length) bytes"
 }
 $expectedHash = '73d528801aefc032d3a53637b035f65d72809151b2f127c6b2050e9bacc76f3b'
-$actualHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $vendorImage).Hash
+$actualHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $compatibilityImage).Hash
 if (-not $actualHash.Equals($expectedHash, [StringComparison]::OrdinalIgnoreCase)) {
-    throw "Vendor-firmware checksum mismatch: $actualHash"
+    throw "Compatibility-image checksum mismatch: $actualHash"
 }
 ```
 
@@ -142,9 +142,9 @@ It is exactly 262,144 bytes (`0x40000`) with SHA-256
 `058d1f0b3a22f7833106cf9e2a952ced9d8090802649e728ed5b80032c6cf5f9`.
 It includes the boot region at `0x00000`, the receiver/manufacturing record at
 `0x3E000`, and persistent state at `0x3F000`. Those high-flash records make it a
-same-unit archive, not distributable vendor firmware. Its embedded unit serial
+same-unit archive, not a distributable update image. Its embedded unit serial
 is `7820999743`; never use this capture for a receiver with another serial. See
-[Restore vendor firmware with TI FlashBurner](#restore-vendor-firmware-with-ti-flashburner)
+[Restore a receiver backup with TI FlashBurner](#restore-a-receiver-backup-with-ti-flashburner)
 before considering any use of this file.
 
 ## Build and validate OpenRDX
@@ -290,7 +290,7 @@ If OpenRDX does not start, disconnect power and repeat the `J7` bootloader-entry
 sequence. Do not perform any live bridge action other than the exact step 6
 removal, and never move the bridge during programming.
 
-## Restore vendor firmware with TI FlashBurner
+## Restore a receiver backup with TI FlashBurner
 
 This route writes the same-unit full SPI image directly through the ROM loader.
 It does not require a running application. **UNVALIDATED / EXPERIMENTAL:** the
@@ -337,10 +337,10 @@ $fullImage
 4. Select **Program Full Binary Image**. This operation sends the selected
    image without adding a new firmware wrapper or USB descriptors. Do not use
    normal **Program** for this raw capture, and do not substitute the
-   62,110-byte vendor update envelope.
+   62,110-byte compatibility update envelope.
 5. Wait for the explicit result while maintaining stable power and USB. If the
    tool rejects the file, save the error and stop; do not trim the image, switch
-   programming modes, or retry with the vendor envelope.
+   programming modes, or retry with the compatibility envelope.
 6. After completion, close FlashBurner, disconnect USB, confirm J7 is open,
    and reconnect USB to boot from SPI.
 
@@ -372,14 +372,14 @@ the logs and backup before deciding on another write.
 
 ### Why the downloadable firmware cannot be selected directly
 
-`RDX2E__STD__F-0283.bin` contains a vendor update envelope. Normal **Program**
+`RDX2E__STD__F-0283.bin` contains a compatibility update envelope. Normal **Program**
 expects application bytes or HEX; **Program Full Binary Image** expects an
 already formatted SPI image. Neither action is established to decode the
-vendor envelope.
+compatibility envelope.
 
 The extracted 61,696-byte payload and 61,710-byte boot-region derivative also
 lack a validated TI programming profile and physical boot proof. Do not replace
-the complete same-unit backup with either file. If only the vendor download is
+the complete same-unit backup with either file. If only the image download is
 available, direct TI restoration remains blocked by the missing compatible
 image; the download checksum alone does not resolve that requirement.
 

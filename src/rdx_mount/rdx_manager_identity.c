@@ -24,6 +24,7 @@
 #define RDX_MANUFACTURING_SERIAL_OFFSET      0x0008U
 #define RDX_MANUFACTURING_VENDOR_OFFSET      0x0012U
 #define RDX_MANUFACTURING_PRODUCT_OFFSET     0x001AU
+#define RDX_MANUFACTURING_DATE_OFFSET        0x009CU
 #define RDX_MANUFACTURING_PROFILE_OFFSET     0x00A4U
 #define RDX_DEFAULT_HARDWARE_PROFILE         0x0038U
 
@@ -40,7 +41,8 @@ static const RDX_DRIVE_IDENTITY_T rdx_default_drive_identity =
     {
         'R', 'D', 'X', ' ', ' ', ' ', ' ', ' ',
         ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '
-    }
+    },
+    { '1', '0', '1', '0', '2', '0', '1', '0' }
 };
 
 /** Validate the four-lane checksum used by the 3E000h record. */
@@ -78,6 +80,18 @@ void rdx_manager_identity_init(void)
         ti_memcpy(rdx_drive_identity.product,
                   &record[RDX_MANUFACTURING_PRODUCT_OFFSET],
                   sizeof(rdx_drive_identity.product));
+
+        /* Manufacturing record versions 5 and later store eight ASCII
+         * date bytes at 9Ch. Earlier valid records have no date field. */
+        ti_memset(rdx_drive_identity.born_on_date, 0,
+                  sizeof(rdx_drive_identity.born_on_date));
+        if ((record[4] >= 5U) || (record[5] != 0U) ||
+            (record[6] != 0U) || (record[7] != 0U))
+        {
+            ti_memcpy(rdx_drive_identity.born_on_date,
+                      &record[RDX_MANUFACTURING_DATE_OFFSET],
+                      sizeof(rdx_drive_identity.born_on_date));
+        }
 
         /* The raw 256-byte flash layout stores this little-endian profile at
          * offset 0xA4. Offset 0x78 belongs to a separate decoded wire object;

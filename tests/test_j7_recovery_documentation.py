@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-"""Keep the J7 and vendor-firmware recovery guide safe and discoverable."""
+"""Keep the J7 and receiver-backup guide safe and discoverable."""
 
 from pathlib import Path
 import unittest
@@ -34,7 +34,7 @@ class J7RecoveryDocumentationTests(unittest.TestCase):
             guide,
         )
 
-    def test_vendor_restoration_uses_ti_full_image_with_format_boundaries(self):
+    def test_backup_restoration_uses_ti_full_image_with_format_boundaries(self):
         """Keep TI restoration distinct from incompatible update envelopes."""
 
         guide = GUIDE_PATH.read_text(encoding="utf-8")
@@ -49,7 +49,7 @@ class J7RecoveryDocumentationTests(unittest.TestCase):
         )
         self.assertNotIn("OpenRDXManager", guide)
         self.assertNotIn("rdx_manager_firmware_update.ps1", guide)
-        self.assertIn("Restore vendor firmware with TI FlashBurner", guide)
+        self.assertIn("Restore a receiver backup with TI FlashBurner", guide)
         self.assertIn("not a validated FlashBurner input", compact_guide)
         self.assertIn("Program Full Binary Image", guide)
         self.assertIn("UNVALIDATED / EXPERIMENTAL", compact_guide)

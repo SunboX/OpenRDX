@@ -26,15 +26,10 @@
 #define RDX_METADATA_REAR_DISTANCE   0x0FFFU
 #define RDX_METADATA_TYPE_LBA32      0x02U
 #define RDX_METADATA_TYPE_LBA64      0x1BU
-#define RDX_METADATA_TYPE_VENDOR     0x06U
-#define RDX_METADATA_TYPE_MODEL      0x31U
-#define RDX_METADATA_TYPE_SERIAL     0x05U
-#define RDX_METADATA_TYPE_BARCODE    0x35U
 #define RDX_METADATA_TYPE_CONTEXT3   0x03U
 #define RDX_METADATA_LINK_LIMIT      16U
 
 static UINT64_T rdx_media_lba_offset[NUM_AHCI_PORTS];
-static RDX_MEDIA_IDENTITY_T rdx_media_identity[NUM_AHCI_PORTS];
 static BOOLEAN_T rdx_metadata_root_readable[NUM_AHCI_PORTS];
 static BOOLEAN_T rdx_metadata_layout_detected[NUM_AHCI_PORTS];
 static BOOLEAN_T rdx_metadata_io_failed[NUM_AHCI_PORTS];
@@ -482,105 +477,6 @@ static BOOLEAN_T rdx_metadata_structure_recognized(
 }
 
 /**
- * @brief Copy one byte-string property from an RDX metadata sector.
- *
- * Context-3 identity uses record types 06h, 31h, 05h, and 35h. Text records
- * have flag bits zero and two clear; copy their bytes after the four-byte
- * header into a zero-filled fixed-width destination.
- *
- * @param data Metadata sector containing typed records.
- * @param wanted_type Property record type.
- * @param destination Zero-filled destination field.
- * @param destination_size Size of the destination field.
- * @return TRUE when a structurally valid property record was copied.
- */
-static BOOLEAN_T rdx_copy_metadata_text_record(
-    const volatile UINT8_T *data,
-    UINT8_T wanted_type,
-    UINT8_T *destination,
-    UINT32_T destination_size)
-{
-    UINT32_T offset = RDX_METADATA_FIRST_OFFSET;
-
-    ti_memset(destination, 0U, destination_size);
-    while (offset < RDX_METADATA_DATA_BYTES)
-    {
-        UINT8_T type = data[offset];
-        UINT8_T flags = data[offset + 1U];
-        UINT16_T length = rdx_read_le16(data + offset + 2U);
-        UINT32_T header_size;
-
-        if ((flags & 0x04U) != 0U)
-        {
-            header_size = 20U;
-        }
-        else if ((flags & 0x01U) != 0U)
-        {
-            header_size = 12U;
-        }
-        else
-        {
-            header_size = 4U;
-        }
-
-        if ((length < header_size) ||
-            (length >= RDX_METADATA_DATA_BYTES) ||
-            ((offset + length) >= RDX_METADATA_DATA_BYTES))
-        {
-            return FALSE;
-        }
-
-        if ((type == wanted_type) && ((flags & 0x05U) == 0U))
-        {
-            UINT32_T copy_length = (UINT32_T)length - header_size;
-
-            if (copy_length > destination_size)
-            {
-                copy_length = destination_size;
-            }
-            ti_memcpy(destination, (const void *)(data + offset + header_size),
-                      copy_length);
-            return TRUE;
-        }
-        offset += length;
-    }
-    return FALSE;
-}
-
-/**
- * @brief Capture the four cartridge identity properties used by VPD page C0h.
- *
- * @param port_num SATA port number.
- * @param data Selected, checksum-validated metadata sector.
- */
-static void rdx_capture_media_identity(UINT32_T port_num,
-                                       const volatile UINT8_T *data)
-{
-    RDX_MEDIA_IDENTITY_T candidate;
-    BOOLEAN_T complete;
-
-    ti_memset(&candidate, 0U, sizeof(candidate));
-    complete = rdx_copy_metadata_text_record(
-                   data, RDX_METADATA_TYPE_VENDOR,
-                   candidate.vendor, sizeof(candidate.vendor)) &&
-               rdx_copy_metadata_text_record(
-                   data, RDX_METADATA_TYPE_MODEL,
-                   candidate.model, sizeof(candidate.model)) &&
-               rdx_copy_metadata_text_record(
-                   data, RDX_METADATA_TYPE_SERIAL,
-                   candidate.serial, sizeof(candidate.serial)) &&
-               rdx_copy_metadata_text_record(
-                   data, RDX_METADATA_TYPE_BARCODE,
-                   candidate.barcode, sizeof(candidate.barcode));
-    if (complete)
-    {
-        candidate.valid = TRUE;
-        ti_memcpy(&rdx_media_identity[port_num], &candidate,
-                  sizeof(candidate));
-    }
-}
-
-/**
  * @brief Load and select a checksummed front/rear metadata-sector copy.
  *
  * @param port_num SATA port number.
@@ -720,12 +616,13 @@ static BOOLEAN_T rdx_metadata_link_is_queued(const UINT64_T *queue,
 }
 
 /**
- * @brief Load cartridge identity from the context-3 metadata object.
+ * @brief Load cartridge identity and stored usage counters.
  *
  * Resolve context links through record types 04h, 06h, and 0Bh, follow the
- * active type-03h link, and then load all four identity properties. The
- * bounded queue prevents cyclic metadata from causing an unbounded walk and
- * avoids dynamic allocation.
+ * active type-03h link for identity and type-04h links for usage counters.
+ * Continue after finding identity so later counter objects are still read.
+ * The bounded queue prevents cyclic metadata from causing an unbounded walk
+ * and avoids dynamic allocation.
  *
  * @param port_num SATA port number.
  * @param device Parsed ATA device information.
@@ -735,9 +632,13 @@ static BOOLEAN_T rdx_load_media_identity(UINT32_T port_num,
                                           const ATA_DEVICE_INFO_T *device)
 {
     UINT64_T queue[RDX_METADATA_LINK_LIMIT];
+    BOOLEAN_T statistics_context[RDX_METADATA_LINK_LIMIT];
     UINT32_T queue_count = 1U;
     UINT32_T queue_index = 0U;
 
+    /* Use the platform memory routine; aggregate initialization can emit a
+     * C runtime memset call that is not linked into this firmware. */
+    ti_memset(statistics_context, 0U, sizeof(statistics_context));
     queue[0] = 0U;
     while (queue_index < queue_count)
     {
@@ -752,9 +653,9 @@ static BOOLEAN_T rdx_load_media_identity(UINT32_T port_num,
         }
 
         rdx_capture_media_identity(port_num, sector);
-        if (rdx_media_identity[port_num].valid)
+        if (statistics_context[queue_index])
         {
-            return TRUE;
+            rdx_capture_media_statistics(port_num, sector);
         }
 
         for (type_index = 0U;
@@ -771,12 +672,14 @@ static BOOLEAN_T rdx_load_media_identity(UINT32_T port_num,
                 !rdx_metadata_link_is_queued(
                     queue, queue_count, link.first))
             {
+                statistics_context[queue_count] =
+                    (rdx_metadata_identity_link_types[type_index] == 0x04U);
                 queue[queue_count++] = link.first;
             }
         }
         queue_index++;
     }
-    return FALSE;
+    return rdx_get_media_identity(port_num) != NULL;
 }
 
 /**
@@ -850,8 +753,7 @@ void rdx_reset_media_context(UINT32_T port_num)
     }
 
     rdx_media_lba_offset[port_num] = 0U;
-    ti_memset(&rdx_media_identity[port_num], 0U,
-              sizeof(rdx_media_identity[port_num]));
+    rdx_reset_media_metadata(port_num);
     rdx_metadata_root_readable[port_num] = FALSE;
     rdx_metadata_layout_detected[port_num] = FALSE;
     rdx_metadata_io_failed[port_num] = FALSE;
@@ -873,7 +775,7 @@ static BOOLEAN_T rdx_finish_media_mount(
         return FALSE;
     }
 
-    /* Identity is advisory for Manager presentation and must not make an
+    /* Identity and counters are advisory for presentation and must not make an
      * otherwise authenticated, valid cartridge unreadable. */
     (void)rdx_load_media_identity(port_num, device);
     return TRUE;
@@ -996,17 +898,6 @@ RDX_MEDIA_INSPECTION_T rdx_inspect_accessible_media(
 
     rdx_reset_media_context(port_num);
     return RDX_MEDIA_INSPECTION_UNREADABLE;
-}
-
-/** Return the cartridge identity loaded during authenticated mount. */
-const RDX_MEDIA_IDENTITY_T *rdx_get_media_identity(UINT32_T port_num)
-{
-    if ((port_num >= NUM_AHCI_PORTS) ||
-        !rdx_media_identity[port_num].valid)
-    {
-        return NULL;
-    }
-    return &rdx_media_identity[port_num];
 }
 
 /**

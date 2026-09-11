@@ -29,6 +29,29 @@ typedef struct _RDX_MEDIA_IDENTITY_T
     BOOLEAN_T valid;
 } RDX_MEDIA_IDENTITY_T;
 
+/** Context-4 persisted counters; validity is separate from zero. */
+typedef struct _RDX_MEDIA_STATISTICS_T
+{
+    UINT32_T load_count;
+    UINT32_T read_mib;
+    UINT32_T written_mib;
+    BOOLEAN_T load_count_valid;
+    BOOLEAN_T read_mib_valid;
+    BOOLEAN_T written_mib_valid;
+} RDX_MEDIA_STATISTICS_T;
+
+/** Clear cached metadata for one SATA port on every new medium. */
+void rdx_reset_media_metadata(UINT32_T port_num);
+
+/** Capture identity from one checksum-validated 512-byte metadata sector. */
+void rdx_capture_media_identity(UINT32_T port_num, const volatile UINT8_T *data);
+
+/** Capture context-4 counters from one checksum-validated 512-byte sector. */
+void rdx_capture_media_statistics(UINT32_T port_num, const volatile UINT8_T *data);
+
+/** Return the current port's stored counter values and independent validity. */
+const RDX_MEDIA_STATISTICS_T *rdx_get_media_statistics(UINT32_T port_num);
+
 /** Result of inspecting an already accessible SATA medium for RDX metadata. */
 typedef enum _RDX_MEDIA_INSPECTION_T
 {

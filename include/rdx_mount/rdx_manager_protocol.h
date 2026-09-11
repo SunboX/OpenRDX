@@ -179,6 +179,17 @@ STATUS_T rdx_manager_handle_send_diagnostic(
     const UINT8_T *cdb, const UINT8_T *parameter_list,
     UINT32_T parameter_list_length);
 
+/**
+ * @brief Build a bounded read-only LOG SENSE status response.
+ * @param buffer Response destination.
+ * @param buffer_size Capacity of the destination.
+ * @param lun SATA port index.
+ * @param page_code Requested LOG SENSE page.
+ * @return Written response length, or zero for invalid/unsupported requests.
+ */
+UINT32_T rdx_manager_build_status_log(UINT8_T *buffer, UINT32_T buffer_size,
+                                     UINT8_T lun, UINT8_T page_code);
+
 /** Return the checksum-validated persistent drive load count. */
 UINT32_T rdx_manager_get_drive_load_count(void);
 

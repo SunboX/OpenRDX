@@ -57,7 +57,7 @@ $expectedImageLength = 62110
 $compatibilityImageSha256 = '73D528801AEFC032D3A53637B035F65D72809151B2F127C6B2050E9BACC76F3B'
 $expectedModel = 'TANDBERG RDX USB Device'
 # Retain discovery of legacy builds while admitting the release-based revision.
-$openRdxFirmwareRevisions = @('0001', '0106', '0107')
+$openRdxFirmwareRevisions = @('0001', '0106', '0107', '0108')
 $openRdxUsbPnpPrefix = 'USB\VID_1A5A&PID_0005\'
 $compatibilityRevision = '0283'
 $compatibilityDiskPnpPrefix = 'USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_0283\'

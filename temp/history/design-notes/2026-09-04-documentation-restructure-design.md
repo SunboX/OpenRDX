@@ -3,8 +3,8 @@
 ## Objective
 
 Turn the repository root README into a product-facing landing page and keep the
-published `docs/` tree limited to maintained OpenRDX guidance. Move vendor firmware
-documentation and superseded planning material into a clearly non-authoritative
+published `docs/` tree limited to maintained OpenRDX guidance. Move external research material
+and superseded planning notes into a clearly non-authoritative
 `temp/` holding area without deleting it.
 
 ## Audience and message
@@ -46,8 +46,8 @@ docs/
 ```
 
 `docs/README.md` defines the navigation and authority order. Operator safety
-procedures outrank summaries; maintained OpenRDX behavior outranks vendor firmware
-documentation; vendor documents and historical plans are never instructions.
+procedures outrank summaries; maintained OpenRDX behavior outranks external research
+material; vendor documents and historical plans are never instructions.
 
 ## Temporary holding structure
 
@@ -65,7 +65,7 @@ The holding tree remains tracked so moves are reversible. All vendor PDFs move
 there, including product manuals, release notes, quick-start guides, and component
 datasheets. Existing ignored `docs/superpowers/` plans and specifications move to
 `temp/history/`. The temporary index records that these files may be obsolete,
-may describe vendor firmware rather than OpenRDX behavior, and may have unresolved
+may describe behavior outside the implemented OpenRDX feature set, and may have unresolved
 redistribution rights.
 
 ## Content ownership

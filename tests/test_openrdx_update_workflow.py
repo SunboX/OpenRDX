@@ -24,7 +24,7 @@ class OpenRdxUpdateDocumentationTests(unittest.TestCase):
     """Keep the operator command and its validation boundary explicit."""
 
     def test_existing_receiver_has_explicit_image_and_manifest(self):
-        """Prevent vendor restore or vendor serial rules entering this route."""
+        """Prevent compatibility-image restoration or serial restrictions entering this route."""
         guide = PROCEDURE.read_text(encoding="utf-8").split(
             "## Update existing OpenRDX", 1
         )[1]
@@ -97,7 +97,7 @@ class OpenRdxUpdateWorkflowTests(unittest.TestCase):
             return json.loads(results[0])
 
     def test_in_place_transfer_uses_sixteen_chunks_then_activation(self):
-        """Require exact offsets, sizes, buffer zero, and no vendor bypass."""
+        """Require exact offsets, sizes, buffer zero, and no authorization bypass."""
         result = self.simulate()
         self.assertIsNone(result["error"])
         expected = []
@@ -143,7 +143,7 @@ class OpenRdxUpdateWorkflowTests(unittest.TestCase):
                 self.assertEqual(17, len(result["commands"]))
 
     def test_unrecognized_or_inconsistent_revision_sends_no_commands(self):
-        """Do not admit vendor firmware or a mismatched Windows PnP identity."""
+        """Do not admit incompatible receiver revisions or a mismatched Windows PnP identity."""
         for revision, pnp_revision in (("0283", "0283"), ("9999", "9999"),
                                        ("0106", "0001"), ("1.06", "0106")):
             with self.subTest(revision=revision, pnp_revision=pnp_revision):

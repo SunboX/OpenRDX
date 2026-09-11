@@ -456,17 +456,15 @@ static void rdx_mechanism_enter_state(RDX_MECHANISM_STATE_T state,
 
         case RDX_MECHANISM_RECOVERY_DRIVE_WAIT_ENDPOINT:
             rdx_mechanism_reset_transition();
-            /* Vendor 0283 at 08003BD8..08003BE2 passes r1=0 to logical
-             * output 10. Its C translation lost this argument; high here is
-             * the stopped control level, not a validated return direction. */
+            /* Powered travel requires logical output 10 low. High is the
+             * stopped control level, not a return-direction selector. */
             gio_rdx_motor_control_set_high(FALSE);
             usleep(RDX_MECHANISM_DEAD_TIME_US);
             /*
              * Profile 36h selects logical output 12, which is unassigned by
              * the board map and therefore produces no driven phase here.
-             * Every other profile selects PWM1. Vendor profile classes
-             * 35h/37h additionally assert logical output 11, mapped to GPIO0
-             * by the runtime table override at vendor 0283 address 08008F40.
+             * Every other profile selects PWM1. Profiles 35h/37h additionally
+             * assert logical output 11, mapped to GPIO0.
              */
             if (rdx_mechanism.hardware_profile != 0x36U)
             {

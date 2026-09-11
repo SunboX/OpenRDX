@@ -9,8 +9,8 @@ USB 3.0 receiver. Select the route by its current firmware field:
 
 | Current receiver revision | Procedure | Updater switch |
 | --- | --- | --- |
-| Vendor `0283` | [First installation](#inspect-then-install) through the ROM loader | `-InstallOpenRDXOnCompatibilityReceiver` |
-| OpenRDX `0107`, `0106`, or legacy `0001` | [Update existing OpenRDX](#update-existing-openrdx) through its running firmware | `-InstallOpenRDX` |
+| Receiver `0283` | [First installation](#inspect-then-install) through the ROM loader | `-InstallOpenRDXOnCompatibilityReceiver` |
+| OpenRDX `0108`, `0107`, `0106`, or legacy `0001` | [Update existing OpenRDX](#update-existing-openrdx) through its running firmware | `-InstallOpenRDX` |
 
 Both routes use Windows SPTI. First installation also uses TI Command Line
 FlashBurner. The updater checks
@@ -68,7 +68,7 @@ running the updater.
 
 ## Inspect, then install
 
-This section is for vendor revision `0283` only. For OpenRDX `0107`, `0106`, or `0001`, follow
+This section is for receiver revision `0283` only. For OpenRDX `0108`, `0107`, `0106`, or `0001`, follow
 [Update existing OpenRDX](#update-existing-openrdx).
 
 First list compatibility receivers without sending a SCSI command:
@@ -152,7 +152,7 @@ the installed OpenRDX identity.
 
 ## Update existing OpenRDX
 
-Use this route for a supported receiver already running OpenRDX revision `0107`,
+Use this route for a supported receiver already running OpenRDX revision `0108`, `0107`,
 `0106`, or the legacy marker `0001`.
 It programs the receiver's firmware; it does not copy files to a cartridge.
 Complete **Before starting** and **Verify the release** above first. Keep the
@@ -162,8 +162,8 @@ access programs before starting.
 
 This procedure is derived from the current updater and firmware source, with
 automated host-workflow tests using simulated devices. It is not a recorded
-hardware qualification of updating every earlier OpenRDX build. Revision `0107`
-represents version `1.07`; legacy `0001` does not identify the installed release.
+hardware qualification of updating every earlier OpenRDX build. Revision `0108`
+represents version `1.08`; legacy `0001` does not identify the installed release.
 Neither revision verifies an image hash.
 Confirm the installed build supports the `OPENRDX1` container protocol before
 programming; discovery and empty-bay validation alone cannot establish that.
@@ -177,7 +177,7 @@ Run in Windows PowerShell from the verified release directory:
 ```powershell
 $devices = @(Get-CimInstance Win32_DiskDrive | Where-Object {
   $_.Model -eq 'TANDBERG RDX USB Device' -and
-  $_.FirmwareRevision -cin @('0001', '0106', '0107') -and
+  $_.FirmwareRevision -cin @('0001', '0106', '0107', '0108') -and
   ([string]$_.PNPDeviceID).StartsWith(
     ('USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_' + $_.FirmwareRevision + '\'),
     [StringComparison]::OrdinalIgnoreCase)
@@ -191,7 +191,7 @@ if ([string]::IsNullOrWhiteSpace($targetSerial)) { throw 'A target serial is req
 ```
 
 Use the complete reported serial, including leading zeros. The ten-character
-serial requirement for the vendor authorization step does not apply to this
+serial requirement for the compatibility authorization step does not apply to this
 route. The updater still requires exactly one matching model, revision and
 serial, zero size, and no mounted cartridge volume. A stale WMI `MediaLoaded`
 flag is accepted only with an identity-matched storage result reporting `No Media`
@@ -200,19 +200,19 @@ image or test the installed receiver's update implementation.
 
 ### Transfer and activate
 
-For release 1.07, run the following in an elevated Windows PowerShell session
+For release 1.08, run the following in an elevated Windows PowerShell session
 from that release directory, with `$targetSerial` set as above. For another
 release, substitute its matching `.bin` and `.json` names together.
 
 ```powershell
 .\rdx_manager_firmware_update.ps1 -InstallOpenRDX `
-  -ImagePath .\OpenRDX-v1-07.bin `
-  -ManifestPath .\OpenRDX-v1-07.json `
+  -ImagePath .\OpenRDX-v1-08.bin `
+  -ManifestPath .\OpenRDX-v1-08.json `
   -TargetSerialNumber $targetSerial
 ```
 
 `-ImagePath` is mandatory for this mode. **Do not substitute `-Update`: that
-switch writes the pinned vendor `0283` image to an OpenRDX receiver.**
+switch writes the pinned `0283` compatibility image to an OpenRDX receiver.**
 `-RestoreOpenRDX` is an alias for the compatibility-installation route and also
 does not select the in-place workflow.
 
@@ -229,7 +229,7 @@ checksum verification covers that recovery artifact.
 Expect 16 sequential mode-04 WRITE BUFFER commands: fifteen 4096-byte chunks
 and one 670-byte chunk, totaling 62,110 bytes. All must return SCSI GOOD.
 `07/74/08` is an error on this route, not the expected staging result used for
-vendor installation. The script may retry the complete transfer once from
+first installation. The script may retry the complete transfer once from
 offset zero after an error; do not launch another updater alongside it.
 
 After successful transfer, mode `05h` at offset `0x00F29E` and length zero

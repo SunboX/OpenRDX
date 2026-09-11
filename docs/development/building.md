@@ -55,7 +55,7 @@ C:\Users\andre\.platformio\penv\Scripts\pio.exe run -e tusb9261_ti_cgt
 
 PlatformIO orchestrates the operation. The TI tools still compile, assemble,
 link, and convert the image with warnings promoted to errors. The active build
-scope is 37 C sources and two TI assembly sources, producing 39 object files.
+scope is 39 C sources and two TI assembly sources, producing 41 object files.
 
 Every successful normal build also refreshes the complete versioned `dist/`
 bundle. This step runs even when the TI outputs are already up to date, repairing

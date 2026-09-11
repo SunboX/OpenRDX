@@ -20,7 +20,7 @@ the identity of the inserted SATA disk. The stable identity is:
 - product `RDX`, padded to the protocol field width;
 - one SCSI-transparent Bulk-Only Transport interface;
 - endpoint `0x83` for IN and `0x03` for OUT; and
-- SCSI firmware revision `0107` and USB `bcdDevice` `0107h` for release `1.07`,
+- SCSI firmware revision `0108` and USB `bcdDevice` `0108h` for release `1.08`,
   both derived from the compiled major/minor version. Earlier OpenRDX builds
   reported the fixed SCSI marker `0001` and USB revision `0283h`.
 
@@ -92,8 +92,8 @@ It coordinates:
 - LED state and USB reconnect scheduling.
 
 Every exit path stops PWM1 and returns GPIO3 high after a 50-microsecond dead
-time. Both powered phases select GPIO3 low. The vendor 0283 binary's runtime
-mapping assigns GPIO0 to logical output 11 for non-38h profiles: it is low at
+time. Both powered phases select GPIO3 low. The hardware profile mapping
+assigns GPIO0 to logical output 11 for non-38h profiles: it is low at
 idle and asserted during recovery only for profiles 35h/37h. On profile 38h,
 GPIO0 is logical output 14 and remains high through boot, connected USB
 operation, and mechanism travel; motor cleanup preserves it. Logical output 12
@@ -125,7 +125,7 @@ The first timing changes alone did not resolve the reported roughly 31-second
 run. After the additional MODE SENSE guard, the user confirmed normal eject and
 mechanical reinsertion. Subsequent testing reported inaccessible inserted media
 and continuous fan operation; see the
-[vendor-binary audit](../development/eject-reference-audit.md).
+[eject mechanism validation](../development/eject-reference-audit.md).
 
 Implementation: [`rdx_mechanism.c`](../../src/rdx_mount/rdx_mechanism.c).
 

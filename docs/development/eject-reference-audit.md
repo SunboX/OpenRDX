@@ -15,26 +15,21 @@ identity evidence, not a complete-image hash check. The 256-byte manufacturing
 record at `0x3E000` contained `FF` throughout and failed its checksum, confirming
 the effective fallback profile `0x38`. The probe did not alter that record.
 
-The subsequent audit used the vendor 0283 runtime payload rather than
-assuming translated C retained every call argument or runtime table override.
-The payload SHA-256 is
-`4854e7c7b61c286c2a969adb9670151a627c6c079aa71f98073bfb1bf8ff9f21`.
-Addresses below are runtime addresses with base `0x08000000`.
+## Output behavior
 
-## Output corrections
+The mechanism controller uses these hardware profile mappings:
 
-| Vendor evidence | Production correction |
+| Control | OpenRDX behavior |
 | --- | --- |
-| State 6 sets `r1=0` at `0x08003BD8`, sets logical output index 10 at `0x08003BDC`, and calls its setter at `0x08003BE2`. The translated C omitted the second argument. | Recovery selects GPIO3 low, as do states 1/3. Stopped states select high. An electrical direction function is not inferred from the pin name. |
-| Mapping routine `0x08008F40` applies overrides from tables including `0x0800E398` and `0x0800E3D0`; helper `0x0800BD74` copies the physical selector and polarity while preserving output direction. Selector zero means GPIO0; `0x17` is unassigned. | Non-38h profiles map logical output 11 to active-high GPIO0. Profile 38h maps logical output 14 to that pin. Configure it only after validated identity supplies the effective profile, preloading its correct level before output direction. |
-| The vendor profile classification selects class 2 for 35h/37h, class 1 for 36h, and class 0 otherwise. State 6 asserts output 11 only for class 2 before PWM1. | Assert GPIO0 during recovery only for 35h/37h; clear mapped output 11 during motor cleanup. Profile 36h retains its unassigned output-12 path. |
-| Profile-38h startup at `0x0800BB3C` asserts output 14. Service at `0x0800921C` retains it when USB is connected or mechanism work is pending. | Profile 38h preloads GPIO0 high and keeps it high. Output-11 mechanism cleanup cannot lower it. |
+| Powered travel | GPIO3 low during powered states; high when stopped. The pin name does not imply an electrical direction. |
+| Profile-dependent GPIO0 | Logical output 11 uses active-high GPIO0 on non-38h profiles. Profile 38h assigns the pin to output 14. Identity must be loaded before setting direction so the correct level can be preloaded. |
+| Return travel | Profiles 35h/37h assert GPIO0 before PWM1 and clear it during cleanup. Profile 36h has no assigned output-12 drive phase. |
+| Profile 38h startup | GPIO0 starts high and stays high through connected USB operation and mechanism travel. Motor cleanup cannot lower it. |
 
-The vendor profile-38h idle deassertion additionally depends on its startup
-timer, ADC input, cartridge/standby state, USB state and reconnect settling,
-and cartridge-monitor context. This change does not implement that separate
-low-power policy. Holding the verified connected-operation level is an explicit
-implementation boundary, not a claim that every vendor idle state is matched.
+Profile-38h idle deassertion would require coordination of startup timing, ADC,
+cartridge standby, USB reconnect settling, and cartridge monitoring. OpenRDX
+currently holds the connected-operation level and does not implement that
+separate low-power policy.
 
 ## Foreground servicing
 
@@ -79,7 +74,7 @@ host/button request, so return motion alone is not evidence of a finished cycle.
 
 The PWM driver now disables the channel while loading PER/PH1D and issues START
 last, following the retained TI `pwm_init` source. Stop disables the channel
-before changing its duty register. The vendor initialization also issues a
+before changing its duty register. Initialization also requires a
 START after its timing writes. This removes an uninitialized/stale first
 period without asserting that it explains the full observed delay. Existing
 period and duty arithmetic remain unchanged.

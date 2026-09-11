@@ -52,7 +52,7 @@ When two sources appear to disagree, use this order:
 3. Technical reference documents for implementation-level detail.
 4. Files under [`temp/`](../temp/README.md), including vendor documents and
    historical plans. They are non-authoritative and may be obsolete, describe
-   vendor firmware rather than OpenRDX, or carry unresolved
+   behavior outside the implemented OpenRDX feature set, or carry unresolved
    redistribution terms.
 
 Source code and automated tests remain the deciding evidence for the current

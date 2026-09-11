@@ -40,7 +40,9 @@ class RdxManagerProtocolTests(unittest.TestCase):
         cls.data = SCSI_DATA.read_text(encoding="utf-8")
         cls.ahci_header = AHCI_HEADER.read_text(encoding="utf-8")
         cls.ahci = AHCI_SOURCE.read_text(encoding="utf-8")
-        cls.protocol = PROTOCOL_SOURCE.read_text(encoding="utf-8")
+        cls.protocol = PROTOCOL_SOURCE.read_text(encoding="utf-8") + (
+            PROTOCOL_SOURCE.with_name("rdx_manager_status.c").read_text(encoding="utf-8")
+        )
         cls.protocol_header = PROTOCOL_HEADER.read_text(encoding="utf-8")
         cls.control = CONTROL_SOURCE.read_text(encoding="utf-8")
         cls.hardware = HARDWARE_SOURCE.read_text(encoding="utf-8")
@@ -48,7 +50,9 @@ class RdxManagerProtocolTests(unittest.TestCase):
         cls.identity = IDENTITY_SOURCE.read_text(encoding="utf-8")
         cls.led_header = LED_HEADER.read_text(encoding="utf-8")
         cls.led = LED_SOURCE.read_text(encoding="utf-8")
-        cls.unlock = UNLOCK_SOURCE.read_text(encoding="utf-8")
+        cls.unlock = UNLOCK_SOURCE.read_text(encoding="utf-8") + (
+            UNLOCK_SOURCE.with_name("rdx_media_metadata.c").read_text(encoding="utf-8")
+        )
         cls.spi = SPI_SOURCE.read_text(encoding="utf-8")
         cls.rti = RTI_SOURCE.read_text(encoding="utf-8")
         cls.update_script = UPDATE_SCRIPT.read_text(encoding="utf-8")
@@ -322,6 +326,21 @@ class RdxManagerProtocolTests(unittest.TestCase):
         self.assertIn("data_length = index;", self.scsi)
         self.assertIn("mode_sense_data[7] = 8U;", self.scsi)
         self.assertIn("dSectorSize >> 16U", self.scsi)
+
+    def test_temperature_log_page_reports_current_sample_in_parameter_zero(self):
+        """Match the SPC temperature wire layout, including unavailable values."""
+        start = self.protocol.index("if (page_code == RDX_LOG_SENSE_TEMPERATURE_PAGE_CODE)")
+        page = self.protocol[start:self.protocol.index("return 16U;", start)]
+        self.assertIn("buffer_size < 16U", page)
+        self.assertIn("rdx_store_be16(&buffer[2], 12U);", page)
+        self.assertIn("rdx_store_be16(&buffer[4], 0U);", page)
+        self.assertIn("buffer[7] = 2U;", page)
+        self.assertIn("buffer[9] = rdx_hardware_get_temperature_celsius();", page)
+        self.assertIn("rdx_store_be16(&buffer[10], 1U);", page)
+        self.assertIn("buffer[13] = 2U;", page)
+        self.assertIn("buffer[15] = 0xFFU;", page)
+        self.assertNotIn("rdx_store_be16(&buffer[8], 0U);", page)
+        self.assertNotIn("buffer[15] = rdx_hardware_get_temperature_celsius();", page)
 
     def test_tandberg_security_queries_are_not_forwarded_to_sata(self):
         """No-security records must answer Manager's 10h/21h probes."""
