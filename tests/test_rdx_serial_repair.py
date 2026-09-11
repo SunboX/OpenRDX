@@ -7,12 +7,25 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
 CC = shutil.which("cc")
+
+
+def release_probe(test_class):
+    """Unload the completed host probe before removing its temporary directory."""
+    library = test_class.lib
+    test_class.lib = None
+    if sys.platform == "win32":
+        from _ctypes import FreeLibrary
+        FreeLibrary(library._handle)
+    else:
+        from _ctypes import dlclose
+        dlclose(library._handle)
 
 
 def checksum(record):
@@ -140,6 +153,8 @@ int outside_unchanged(void) {
         if result.returncode:
             raise AssertionError(result.stdout + result.stderr)
         cls.lib = ctypes.CDLL(str(library))
+        # Class cleanups run last-in-first-out; Windows locks loaded modules.
+        cls.addClassCleanup(release_probe, cls)
         cls.lib.rdx_manager_serial_write.argtypes = [ctypes.c_void_p, ctypes.c_uint32,
                                                      ctypes.POINTER(ctypes.c_int)]
         cls.lib.rdx_manager_serial_write.restype = ctypes.c_int
@@ -366,6 +381,8 @@ int firmware_count(void) { return firmware_calls; }
         if result.returncode:
             raise AssertionError(result.stdout + result.stderr)
         cls.lib = ctypes.CDLL(str(library))
+        # Class cleanups run last-in-first-out; Windows locks loaded modules.
+        cls.addClassCleanup(release_probe, cls)
         cls.lib.rdx_manager_handle_write_buffer.argtypes = [ctypes.c_void_p,
                                                            ctypes.c_uint32, ctypes.c_void_p]
 
