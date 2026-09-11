@@ -47,6 +47,7 @@
 #include "one_touch.h"
 #include "rdx_hardware.h"
 #include "rdx_manager_protocol.h"
+#include "rdx_manager_serial.h"
 #include "rdx_mechanism.h"
 #include "sata_media.h"
 #include "reg_io.h"
@@ -2636,7 +2637,8 @@ inline STATUS_T scsi_handle_write_buffer_cmd(void)
 
     if (scsi_cmd.pCmdInput->dDataXferLength != 0U)
     {
-        payload = (const UINT8_T *)datapath_ram->normal_data_buffer;
+        payload = rdx_manager_write_buffer_data(
+            scsi_cmd.pCmdInput->pCommandBlock);
     }
     return rdx_manager_handle_write_buffer(
         scsi_cmd.pCmdInput->pCommandBlock,
@@ -4522,7 +4524,6 @@ inline STATUS_T scsi_handle_send_diagnostic_cmd(void)
 
 inline STATUS_T scsi_handle_ti_defined_cmd(void)
 {
-    static BOOLEAN_T flash_unlocked = FALSE;
     STATUS_T status;
     UINT32_T readStartAddress;
 
@@ -4536,23 +4537,11 @@ inline STATUS_T scsi_handle_ti_defined_cmd(void)
             break;
 
         case SCSI_TI_FLASH_UNLOCK:
-            DEBUG("Flash unlocked.\n");
-            flash_unlocked = TRUE;
-            status = STATUS_OK;
-            break;
-
         case SCSI_TI_FLASH_ERASE:
-            if (flash_unlocked)
-            {
-                /*Erase SPI Flash*/
-                SpiOps(OpcodeWriteEnable, 0x00000000, NULL, 0x0, 0);
-                SpiOps(OpcodeChipErase, 0x00000000, NULL, 0x0, 0);
-                status = STATUS_OK;
-            }
-            else
-            {
-                status = STATUS_SCSI_INVALID_CMD;
-            }
+            /* Legacy TI chip erase also destroys the receiver manufacturing
+             * and state records. Reject the entire unlock/erase protocol;
+             * normal WRITE BUFFER updates erase only the boot-image sectors. */
+            status = STATUS_SCSI_INVALID_CMD;
             break;
 
         case SCSI_TI_GET_PID:

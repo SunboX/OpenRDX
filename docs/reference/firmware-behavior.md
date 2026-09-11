@@ -343,6 +343,22 @@ Complete RDX Manager compatibility is not claimed. Non-intercepted SECURITY
 PROTOCOL commands follow the underlying ATA trusted-command path and are not
 advertised as supported customer controls.
 
+Normal mode-04 firmware transfer erases sixteen 4 KiB sectors, limited to
+`0x00000` through `0x0FFFF`. The manufacturing record at `0x3E000` and state
+records at `0x3F000`/`0x3FC00` remain outside that update range. Legacy TI SCSI
+unlock `E1h` and chip erase `E2h` both return `STATUS_SCSI_INVALID_CMD` without
+SPI operations; an unlock request cannot enable full-chip erasure. The earlier
+legacy handler issued SPI opcode `C7h` after unlock, which erased persistent
+records along with the application. This establishes a destructive source path;
+it does not identify which operation erased a particular receiver without a
+matching transfer trace.
+
+Persistent operation-mode and eject-count writes mask the USB interrupt across
+their complete SPI read/modify/write sequence. Both success and failure restore
+only the USB bit that was enabled before entry, leaving an already masked caller
+masked and preserving other interrupt-mask changes. USB flash reads and update
+requests therefore cannot interrupt those foreground state transactions.
+
 Implementation: [`rdx_manager_protocol.c`](../../src/rdx_mount/rdx_manager_protocol.c),
 [`rdx_manager_control.c`](../../src/rdx_mount/rdx_manager_control.c), and
 [`rdx-manager-protocol.md`](rdx-manager-protocol.md).

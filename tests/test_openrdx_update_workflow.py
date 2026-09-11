@@ -45,8 +45,33 @@ class OpenRdxUpdateDocumentationTests(unittest.TestCase):
 class OpenRdxUpdateWorkflowTests(unittest.TestCase):
     """Run unchanged main-flow code with fake transport and storage cmdlets."""
 
+    def test_unprotected_compatibility_installation_fails_at_entry(self):
+        """Both installation spellings must fail before discovery or native setup."""
+        for operation in ("-InstallOpenRDXOnCompatibilityReceiver", "-RestoreOpenRDX"):
+            with self.subTest(operation=operation):
+                # Tripwires make the test safe even when the entry guard is
+                # removed: no Windows device discovery or native I/O can run.
+                invocation = (
+                    "& { $ErrorActionPreference = 'Stop'; "
+                    "function Add-Type { throw 'Unexpected native transport initialization' }; "
+                    "function Get-CimInstance { throw 'Unexpected Windows device query' }; "
+                    "try { & '" + str(UPDATER).replace("'", "''") + "' " + operation + " } "
+                    "catch { [Console]::Error.WriteLine($_.Exception.Message); exit 1 } }"
+                )
+                completed = subprocess.run(
+                    [POWERSHELL, "-NoProfile", "-NonInteractive", "-Command", invocation],
+                    capture_output=True, text=True, timeout=30,
+                )
+                self.assertNotEqual(0, completed.returncode)
+                output = completed.stdout + completed.stderr
+                self.assertIn("manufacturing", output)
+                self.assertIn("OpenRDX Manager", output)
+                self.assertIn("before", output)
+                self.assertNotIn("Selected target:", output)
+
     def simulate(self, scenario="success", *, corrupt_image=False, bad_manifest=False,
-                 initial_revision="0001", reconnected_revision="0001", pnp_revision=""):
+                 initial_revision="0001", reconnected_revision="0001", pnp_revision="",
+                 validate_kind=None):
         """Create disposable host-validation fixtures and return recorded I/O."""
         with tempfile.TemporaryDirectory() as directory:
             image = Path(directory) / "fixture.bin"
@@ -84,6 +109,8 @@ class OpenRdxUpdateWorkflowTests(unittest.TestCase):
                     "-InitialRevision", initial_revision,
                     "-ReconnectedRevision", reconnected_revision,
                     *(["-PnpRevision", pnp_revision] if pnp_revision else []),
+                    *(["-ValidateOnly", "-ValidateFirmwareKind", validate_kind]
+                      if validate_kind else []),
                 ],
                 capture_output=True, text=True, timeout=30, env=environment,
             )
@@ -95,6 +122,15 @@ class OpenRdxUpdateWorkflowTests(unittest.TestCase):
             ]
             self.assertEqual(1, len(results), completed.stdout + completed.stderr)
             return json.loads(results[0])
+
+    def test_validation_remains_read_only_for_both_receiver_kinds(self):
+        """The installation guard must leave no-command receiver inspection usable."""
+        for kind, revision in (("OpenRDX", "0108"), ("CompatibilityReceiver", "0283")):
+            with self.subTest(kind=kind):
+                result = self.simulate(validate_kind=kind, initial_revision=revision)
+                self.assertIsNone(result["error"])
+                self.assertEqual([], result["commands"])
+                self.assertEqual(1, result["disk_queries"])
 
     def test_in_place_transfer_uses_sixteen_chunks_then_activation(self):
         """Require exact offsets, sizes, buffer zero, and no authorization bypass."""

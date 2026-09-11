@@ -53,11 +53,25 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# The legacy route stages an unbootable application before invoking a generic
+# FlashBurner operation that does not back up or restore receiver-specific data.
+# Fail at entry, including the Restore alias, before native setup or device I/O.
+if ($InstallOpenRDXOnCompatibilityReceiver -or $RestoreOpenRDX) {
+    throw @'
+Compatibility installation is disabled before staging: the generic TI FlashBurner
+route does not preserve the receiver's manufacturing and state records. Use an
+OpenRDX Manager installation/recovery workflow that backs up, restores, and verifies
+those records for this same receiver. If that workflow is unavailable, stop.
+Use -ValidateOnly -ValidateFirmwareKind CompatibilityReceiver for read-only
+inspection, or -InstallOpenRDX for an already running OpenRDX receiver.
+'@
+}
+
 $expectedImageLength = 62110
 $compatibilityImageSha256 = '73D528801AEFC032D3A53637B035F65D72809151B2F127C6B2050E9BACC76F3B'
 $expectedModel = 'TANDBERG RDX USB Device'
 # Retain discovery of legacy builds while admitting the release-based revision.
-$openRdxFirmwareRevisions = @('0001', '0106', '0107', '0108')
+$openRdxFirmwareRevisions = @('0001', '0106', '0107', '0108', '0109')
 $openRdxUsbPnpPrefix = 'USB\VID_1A5A&PID_0005\'
 $compatibilityRevision = '0283'
 $compatibilityDiskPnpPrefix = 'USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_0283\'

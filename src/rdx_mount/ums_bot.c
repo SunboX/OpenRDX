@@ -32,6 +32,7 @@
  */
 
 #include "ums_bot.h"
+#include "rdx_manager_serial.h"
 #include "ahci.h"
 #include "scsi.h"
 #include "sci.h"
@@ -1027,8 +1028,9 @@ inline void ums_bot_process_CBW(void)
             // Don't use wrap window for non-RW cmds because xfers are not always DWORD multiples.
             if (gBOT_state == UMS_BOT_STATE_DATA_OUT)
             {
-                // Assume xfer length is not greater than window memory size.
-                ums_bot_rx((void *)datapath_ram->normal_data_buffer,
+                /* Serial requests must survive an outstanding ATA discovery
+                 * DMA before dispatch can validate port quiescence. */
+                ums_bot_rx((void *)rdx_manager_write_buffer_data(&gCBW->CB[0]),
                            MIN(gActualXferLength, sizeof(datapath_ram->normal_data_buffer)));
 
 //                // Set pointer to data.
@@ -1157,8 +1159,11 @@ void ums_bot_data_xfer_callback_OUT(EP_INFO_T *ep_info)
             {
                 if (!scsi_is_rw_cmd(gCBW->CB[0]))
                 {
-                    // Set data xfer length to the number of bytes received over USB.
-                    ums_cmd.dDataXferLength = ep_info->dByteCount;
+                    /* Keep the initial total for serial writes: a final
+                     * discarded fragment cannot hide an oversized CBW. */
+                    ums_cmd.dDataXferLength = rdx_manager_write_buffer_host_length(
+                        &gCBW->CB[0], gCBW->dDataTransferLength,
+                        ep_info->dByteCount);
                     ums_bot_issue_scsi_cmd();
                 }
 
@@ -1366,6 +1371,3 @@ void ums_bot_init(void)
 
     return;
 }
-
-
-

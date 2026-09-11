@@ -9,8 +9,10 @@ the board's `J7` ROM-loader entry path. Choose the image before connecting power
   complete SPI backup with **Program Full Binary Image**. The TI operation is
   documented; its use with the retained 256 KiB capture is an **UNVALIDATED /
   EXPERIMENTAL** procedure and has not been hardware-tested in this project.
-- To install OpenRDX, use the continuous application HEX with normal **Program**.
-  This workflow has been physically exercised with earlier builds.
+- The continuous application HEX with normal **Program** has been physically
+  exercised with earlier builds, but that evidence does not prove preservation
+  of the receiver's manufacturing or state records. Use it only within a
+  recovery plan that restores and verifies those records from this same receiver.
 - The downloadable `0283` compatibility update envelope is not a validated FlashBurner
   input. Downloading it alone does not provide a ready-to-flash SPI image.
 
@@ -26,6 +28,12 @@ full-image route.
 
 No build or test command in this repository writes to hardware. Programming is
 always a separate, deliberate operator action.
+
+The bundled compatibility installer and its `-RestoreOpenRDX` alias are disabled
+before staging. Use an OpenRDX Manager installation/recovery workflow that backs up,
+restores, and verifies receiver-specific records. A generic FlashBurner success
+result or an application-only HEX is insufficient. If a record-preserving
+workflow is unavailable, stop before entering the ROM loader or programming.
 
 ## Safety requirements
 

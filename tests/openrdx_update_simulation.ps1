@@ -4,7 +4,7 @@
 
 <#
 Exercise the updater's in-place main block with simulated Windows devices.
-Only constant initialization, function definitions, and the main block are
+Only entry guards, constant initialization, function definitions, and the main block are
 loaded from the production AST. Native transport and privilege initialization
 are excluded. This validates host control flow, not SPTI or receiver firmware.
 #>
@@ -17,10 +17,21 @@ param(
     [string] $Scenario = 'success',
     [string] $InitialRevision = '0001',
     [string] $ReconnectedRevision = '0001',
-    [string] $PnpRevision
+    [string] $PnpRevision,
+    [Parameter(Mandatory = $true, ParameterSetName = 'Validate')]
+    [switch] $ValidateOnly,
+    [Parameter(ParameterSetName = 'Validate')]
+    [ValidateSet('OpenRDX', 'CompatibilityReceiver')]
+    [string] $ValidateFirmwareKind = 'OpenRDX'
 )
 
 $ErrorActionPreference = 'Stop'
+$InstallOpenRDX = -not $ValidateOnly
+$InstallOpenRDXOnCompatibilityReceiver = $false
+$RestoreOpenRDX = $false
+$RepairCompatibilityReceiver = $false
+$Update = $false
+$EjectOnly = $false
 $tokens = $null
 $parseErrors = $null
 $ast = [System.Management.Automation.Language.Parser]::ParseFile(
@@ -35,8 +46,9 @@ if ($constantStart -lt 0 -or $constantEnd -le $constantStart -or
 foreach ($statement in $ast.EndBlock.Statements) {
     if ($statement.Extent.StartOffset -ge $constantStart -and
         $statement.Extent.EndOffset -le $constantEnd -and
-        $statement -is [System.Management.Automation.Language.AssignmentStatementAst] -and
-        $statement.Left.Extent.Text -ne '$developmentManifestPath') {
+        (($statement -is [System.Management.Automation.Language.AssignmentStatementAst] -and
+          $statement.Left.Extent.Text -ne '$developmentManifestPath') -or
+         $statement -is [System.Management.Automation.Language.IfStatementAst])) {
         # Explicit fixture paths make the checkout-dependent default unnecessary.
         . ([scriptblock]::Create($statement.Extent.Text))
     }
@@ -66,12 +78,9 @@ public static class RdxManagerScsiTransport
 }
 '@
 
-$InstallOpenRDX = $true
-$InstallOpenRDXOnCompatibilityReceiver = $false
-$RepairCompatibilityReceiver = $false
-$Update = $false
-$EjectOnly = $false
-$TargetSerialNumber = 'TESTSERIAL12'
+$TargetSerialNumber = if ($ValidateFirmwareKind -eq 'CompatibilityReceiver') {
+    'TESTSERIAL'
+} else { 'TESTSERIAL12' }
 $script:diskQueries = 0
 $script:sleepCalls = 0
 [RdxManagerScsiTransport]::RejectFinalChunk = $Scenario -eq 'authentication'
@@ -144,10 +153,13 @@ try {
     . ([scriptblock]::Create($source.Substring($mainStart)))
 } catch {
     $failure = $_.Exception.Message
+} finally {
+    # ValidateOnly exits successfully from the real main block. The finally
+    # block still records its transport side effects before the process exits.
+    $result = [ordered] @{
+        error = $failure
+        commands = @([RdxManagerScsiTransport]::Commands)
+        disk_queries = $script:diskQueries
+    }
+    Write-Output ('WORKFLOW_RESULT ' + ($result | ConvertTo-Json -Depth 4 -Compress))
 }
-$result = [ordered] @{
-    error = $failure
-    commands = @([RdxManagerScsiTransport]::Commands)
-    disk_queries = $script:diskQueries
-}
-Write-Output ('WORKFLOW_RESULT ' + ($result | ConvertTo-Json -Depth 4 -Compress))

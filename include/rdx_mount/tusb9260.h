@@ -43,7 +43,7 @@
 +----------------------------------------------------------------------------*/
 
 #define FIRMWARE_MAJOR_VERSION  1
-#define FIRMWARE_MINOR_VERSION  8
+#define FIRMWARE_MINOR_VERSION  9
 
 /* SCSI uses two decimal digits per component; USB uses packed BCD bytes.
  * Keep the source values decimal (no leading zero/octal literals). */

@@ -152,8 +152,9 @@ signed firmware.
 The `.sha256` file lists all five other bundle files. The operator's checksum
 loop in the packaged guide validates every listed file. The updater separately
 validates target identity and state, reads the manifest, hashes the selected
-firmware container, and, for compatibility installation, hashes the continuous
-FlashBurner HEX against its manifest value. It does not independently hash
+firmware container for updates of running OpenRDX receivers. Compatibility
+installation is disabled before staging because the generic FlashBurner route
+does not preserve receiver-specific records. The updater does not independently hash
 itself or the procedure, and it does not authenticate the manifest or checksum
 file. The manual whole-bundle checksum step remains mandatory.
 

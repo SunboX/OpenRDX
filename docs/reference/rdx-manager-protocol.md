@@ -213,7 +213,11 @@ The generated manifest records all build-specific hashes and declares
 
 Read-only target validation is the default. The updater supports returning an
 OpenRDX receiver to the pinned compatibility image, repairing that compatibility
-image, installing OpenRDX through the ROM loader, and updating OpenRDX in place.
+image, and updating OpenRDX in place. The generic ROM-loader installation route
+and its `-RestoreOpenRDX` alias are disabled before staging because they do not
+back up or restore manufacturing/state records. First installation requires an
+OpenRDX Manager installation/recovery workflow that preserves and verifies the
+same receiver's records.
 The [installation guide](../getting-started/installation.md) owns the guarded
 operator commands. For an existing `0001` receiver, use its
 [in-place update procedure](../getting-started/installation.md#update-existing-openrdx)
@@ -222,15 +226,11 @@ with `-InstallOpenRDX`. The `-Update` switch restores the pinned compatibility i
 The updater requires one unambiguously selected target with no cartridge volume.
 An optional serial-number filter can select one receiver while other compatible
 adapters remain connected. Re-enumeration is then bound to that receiver's
-physical USB location. Compatibility installation separately requires exactly
-one `0451:926B` ROM loader system-wide because FlashBurner selects it by index.
+physical USB location.
 
-For OpenRDX images both installation branches verify the manifest, container
+For in-place OpenRDX updates the updater verifies the manifest, container
 integrity digest, the exact manifest field `authentication_scheme`, template
-digest, ROM-loader requirement field, and device identity. Compatibility
-installation additionally verifies the continuous-HEX digest and accepts only
-the exact `07/74/08` authentication result before requesting the first USB power
-cycle and selecting the ROM loader. In-place installation requires successful
+digest, ROM-loader requirement field, and device identity. In-place installation requires successful
 transfer and sends mode `05h` directly; `07/74/08` is a failure on that route.
 
 ## Validation boundary

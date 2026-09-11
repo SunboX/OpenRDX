@@ -66,20 +66,12 @@ class BuildDistScriptTests(unittest.TestCase):
 
         procedure = UPDATE_PROCEDURE.read_text(encoding="utf-8")
         self.assertIn("Get-CimInstance Win32_DiskDrive", procedure)
-        self.assertIn(
-            ".\\rdx_manager_firmware_update.ps1 -InstallOpenRDXOnCompatibilityReceiver `",
-            procedure,
-        )
         self.assertIn("-TargetSerialNumber $targetSerial", procedure)
         self.assertIn("Read-Host 'Enter the exact SerialNumber", procedure)
         self.assertIn(
             "-ValidateOnly -ValidateFirmwareKind CompatibilityReceiver", procedure
         )
         self.assertIn("physically remove the cartridge", procedure)
-        self.assertIn("exact late `07/74/08` authentication result", procedure)
-        self.assertIn("with **J7 open**", procedure)
-        self.assertIn("at that same USB location", procedure)
-        self.assertIn("manifest-pinned continuous HEX", procedure)
 
     def test_packaged_installation_procedure_has_no_checkout_relative_links(self) -> None:
         """Keep the copied operator guide usable outside the source checkout."""
@@ -111,7 +103,6 @@ class BuildDistScriptTests(unittest.TestCase):
             "manual whole-bundle checksum step remains mandatory", procedure_prose
         )
         self.assertIn("hashes the selected firmware container", procedure_prose)
-        self.assertIn("hashes the continuous FlashBurner HEX", procedure_prose)
         self.assertIn(
             "does not independently hash itself or this procedure", procedure_prose
         )

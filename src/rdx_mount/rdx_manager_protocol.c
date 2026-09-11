@@ -14,6 +14,7 @@
 
 #include "ahci.h"
 #include "rdx_hardware.h"
+#include "rdx_manager_serial.h"
 #include "rdx_unlock.h"
 #include "sata_media.h"
 #include "scsi.h"
@@ -64,6 +65,7 @@ typedef struct _RDX_UPDATE_CONTEXT_T
 
 static RDX_UPDATE_CONTEXT_T rdx_update;
 static volatile UINT8_T rdx_update_reset_ticks;
+static BOOLEAN_T rdx_serial_mutation_started;
 
 /* SHA-256 allow-list entry for the supported 62,110-byte compatibility image.
  * The digest bytes remain part of the fixed update-wire compatibility contract. */
@@ -563,6 +565,7 @@ void rdx_manager_protocol_init(void)
 {
     ti_memset(&rdx_update, 0, sizeof(rdx_update));
     rdx_update_reset_ticks = 0U;
+    rdx_serial_mutation_started = FALSE;
     rdx_manager_identity_init();
     rdx_manager_control_init();
 }
@@ -807,7 +810,7 @@ UINT32_T rdx_manager_build_security_protocol_in(
     return length;
 }
 
-/** Receive one RDX Manager WRITE BUFFER firmware-download command. */
+/** Receive a firmware-download command or the separately framed serial utility. */
 STATUS_T rdx_manager_handle_write_buffer(const UINT8_T *cdb,
                                          UINT32_T host_length,
                                          const UINT8_T *payload)
@@ -825,9 +828,36 @@ STATUS_T rdx_manager_handle_write_buffer(const UINT8_T *cdb,
     mode = cdb[1] & 0x1FU;
     offset = rdx_load_be24(&cdb[3]);
     length = rdx_load_be24(&cdb[6]);
-    if ((cdb[1] & 0xE0U) || (cdb[2] != 0U) || (cdb[9] != 0U) ||
+    if ((cdb[0] != 0x3BU) || (cdb[1] & 0xE0U) || (cdb[9] != 0U) ||
         (length != host_length))
     {
+        return STATUS_SCSI_INVALID_CMD_FIELD;
+    }
+
+    if (cdb[2] == RDX_SERIAL_BUFFER_ID)
+    {
+        if (mode != 2U)
+        {
+            return STATUS_SCSI_INVALID_CMD_FIELD;
+        }
+        /* Explicit no-data capability query: old firmware rejects this frame.
+         * No query can initiate a manufacturing write or firmware download. */
+        if ((offset == 1U) && (length == 0U))
+        {
+            return STATUS_OK;
+        }
+        if ((offset != 0U) || (length != RDX_SERIAL_REQUEST_LENGTH) ||
+            rdx_update.started || rdx_serial_mutation_started)
+        {
+            return STATUS_SCSI_INVALID_CMD_FIELD;
+        }
+        return rdx_manager_serial_write(payload, length,
+                                         &rdx_serial_mutation_started);
+    }
+    if ((cdb[2] != 0U) || rdx_serial_mutation_started)
+    {
+        /* Keep the old in-RAM USB identity stable until the host has verified
+         * the complete written sector and explicitly requested a reset. */
         return STATUS_SCSI_INVALID_CMD_FIELD;
     }
 

@@ -14,12 +14,15 @@
 
 #include "rdx_hardware.h"
 #include "rdx_led.h"
+#include "reg_io.h"
 #include "scsi.h"
 #include "spi.h"
 #include "string.h"
 #include "system.h"
 #include "usb_hal.h"
+#include "vim_nvic.h"
 
+#define RDX_CONTROL_USB_INTERRUPT_MASK         0x00200000U
 #define RDX_STATE_RECORD_ADDRESS              0x3F000U
 #define RDX_STATE_RECORD_LENGTH               64U
 #define RDX_STATE_LOAD_COUNT_OFFSET            4U
@@ -109,11 +112,18 @@ static STATUS_T rdx_control_save_operation_mode(UINT8_T operation_mode)
 {
     UINT8_T record[RDX_STATE_RECORD_LENGTH];
     UINT8_T checksum[4];
+    UINT32_T usb_interrupt_mask;
+    STATUS_T status = STATUS_ERROR;
 
+    /* USB commands share the SPI flash. Exclude them across the entire
+     * read/modify/write transaction, including both write-enable operations. */
+    usb_interrupt_mask = READ_REG32(VIM_REQMASKSET0) &
+                         RDX_CONTROL_USB_INTERRUPT_MASK;
+    WRITE_REG32(VIM_REQMASKCLR0, RDX_CONTROL_USB_INTERRUPT_MASK);
     if (SpiOps(OpcodeReadData, RDX_STATE_RECORD_ADDRESS, record,
                sizeof(record), 0U) != STATUS_OK)
     {
-        return STATUS_ERROR;
+        goto restore_usb;
     }
     if (!rdx_control_record_is_valid(record))
     {
@@ -133,9 +143,17 @@ static STATUS_T rdx_control_save_operation_mode(UINT8_T operation_mode)
         (SpiOps(OpcodePageProgram, RDX_STATE_RECORD_ADDRESS, record,
                 sizeof(record), 0U) != STATUS_OK))
     {
-        return STATUS_ERROR;
+        goto restore_usb;
     }
-    return STATUS_OK;
+    status = STATUS_OK;
+
+restore_usb:
+    /* Leave an already masked caller masked; never restore unrelated IRQs. */
+    if (usb_interrupt_mask != 0U)
+    {
+        WRITE_REG32(VIM_REQMASKSET0, usb_interrupt_mask);
+    }
+    return status;
 }
 
 /** Save the accepted-eject count in bytes four through seven. */
@@ -143,11 +161,18 @@ static STATUS_T rdx_control_save_drive_load_count(UINT32_T drive_load_count)
 {
     UINT8_T record[RDX_STATE_RECORD_LENGTH];
     UINT8_T checksum[4];
+    UINT32_T usb_interrupt_mask;
+    STATUS_T status = STATUS_ERROR;
 
+    /* The foreground eject path can otherwise be interrupted by a USB flash
+     * command between write-enable and erase/program, or during the SPI read. */
+    usb_interrupt_mask = READ_REG32(VIM_REQMASKSET0) &
+                         RDX_CONTROL_USB_INTERRUPT_MASK;
+    WRITE_REG32(VIM_REQMASKCLR0, RDX_CONTROL_USB_INTERRUPT_MASK);
     if (SpiOps(OpcodeReadData, RDX_STATE_RECORD_ADDRESS, record,
                sizeof(record), 0U) != STATUS_OK)
     {
-        return STATUS_ERROR;
+        goto restore_usb;
     }
     if (!rdx_control_record_is_valid(record))
     {
@@ -169,9 +194,17 @@ static STATUS_T rdx_control_save_drive_load_count(UINT32_T drive_load_count)
         (SpiOps(OpcodePageProgram, RDX_STATE_RECORD_ADDRESS, record,
                 sizeof(record), 0U) != STATUS_OK))
     {
-        return STATUS_ERROR;
+        goto restore_usb;
     }
-    return STATUS_OK;
+    status = STATUS_OK;
+
+restore_usb:
+    /* Both success and failure preserve the caller's USB interrupt state. */
+    if (usb_interrupt_mask != 0U)
+    {
+        WRITE_REG32(VIM_REQMASKSET0, usb_interrupt_mask);
+    }
+    return status;
 }
 
 /** Initialize the Manager-visible control pages from persistent flash state. */
