@@ -34,6 +34,8 @@ authoritative details live.
   implementation evidence, and validation limits.
 - [RDX Manager protocol](reference/rdx-manager-protocol.md) — implemented
   discovery, status, control, and update protocol details.
+- [Manufacturing restore](reference/manufacturing-restore.md) — full-record
+  recovery, required host checks, and validation limits.
 - [LED output map](reference/led-output-map.md) — electrical ownership,
   polarity, and indicator sequencing.
 - [TI SDK integration](reference/ti-sdk-integration.md) — maintained evidence

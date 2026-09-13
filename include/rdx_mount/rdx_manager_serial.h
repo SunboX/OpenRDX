@@ -14,7 +14,7 @@
 /**
  * @brief Select the same bounded USB receive buffer for BOT and SCSI dispatch.
  *
- * Serial-buffer requests use the SCSI response allocation, which is not an ATA
+ * Serial and full-record requests use the SCSI response allocation, not an ATA
  * DMA target. Other data-out commands retain the normal 4-KiB buffer. Both
  * allocations hold at least 4096 bytes; this selector does not admit commands.
  *
@@ -24,16 +24,18 @@
 UINT8_T *rdx_manager_write_buffer_data(const UINT8_T *cdb);
 
 /**
- * @brief Retain the complete CBW length for strict serial command framing.
+ * @brief Preserve exact framing for serial and full-record manufacturing writes.
  *
  * BOT discards surplus non-RW bytes after its first buffer. The final discard
- * fragment must never make an oversized serial transfer appear to be 280 bytes.
+ * fragment must never hide an oversized serial or full-record transfer.
+ * Full-record requests also reject a short final receive when the CBW is 528 bytes.
  * Other commands retain their existing completed-fragment length contract.
  *
  * @param[in] cdb Command bytes, or NULL for the ordinary length contract.
  * @param[in] total_length Initial CBW transfer length.
  * @param[in] completed_length Last completed USB receive length.
- * @return Complete CBW length for serial requests, otherwise completed_length.
+ * @return Complete CBW length for manufacturing requests; the final received length
+ *         for exact-size full-record requests and other command families.
  */
 UINT32_T rdx_manager_write_buffer_host_length(const UINT8_T *cdb,
                                               UINT32_T total_length,

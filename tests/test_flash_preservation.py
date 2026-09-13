@@ -85,6 +85,18 @@ class FlashPreservationTests(unittest.TestCase):
         """Do not report a successful unlock for the disabled erase protocol."""
         self.run_probe("unlock")
 
+    def test_failed_flash_read_never_publishes_stale_response(self):
+        """SPI contention/fault must fail backup reads instead of replaying old bytes."""
+        self.run_probe("read-failure")
+
+    def test_successful_flash_read_returns_exact_bytes(self):
+        """Preserve the existing bounded manufacturing-read response contract."""
+        self.run_probe("read")
+
+    def test_restore_waits_for_restart_after_update_or_serial_activity(self):
+        """Update failure, pending activation, and prior serial writes exclude restore."""
+        self.run_probe("restore-interlocks")
+
     def test_mode04_and_activation_preserve_every_byte_above_boot_image(self):
         """A valid streamed update writes its payload while preserving high flash."""
         image = bytearray((index * 17 + 3) & 255 for index in range(62110))

@@ -6,8 +6,8 @@ the build, but compilation, assembly, linking, the required ABI, and HEX
 conversion remain TI ARM Code Generation Tools responsibilities.
 
 ## Key files
-- `src/rdx_mount/`: active production build tree with 39 C sources and two TI
-  assembly sources, producing 41 objects.
+- `src/rdx_mount/`: active production build tree with 40 C sources and two TI
+  assembly sources, producing 42 objects.
 - Top-level `src/`: 28 C sources and two TI assembly sources kept for implementation
   reference; they are not part of the active build.
 - `include/rdx_mount/`: active production headers.

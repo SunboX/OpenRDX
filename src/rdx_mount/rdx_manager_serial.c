@@ -6,6 +6,7 @@
 /** @file Serial-only manufacturing edits with stale-snapshot protection. */
 
 #include "rdx_manager_serial.h"
+#include "rdx_manufacturing.h"
 
 #include "ahci.h"
 #include "gio.h"
@@ -23,14 +24,15 @@
 UINT8_T *rdx_manager_write_buffer_data(const UINT8_T *cdb)
 {
     if ((cdb != NULL) && (cdb[0] == 0x3BU) &&
-        (cdb[2] == RDX_SERIAL_BUFFER_ID))
+        ((cdb[2] == RDX_SERIAL_BUFFER_ID) ||
+         (cdb[2] == RDX_MANUFACTURING_BUFFER_ID)))
     {
         return (UINT8_T *)datapath_ram->scsi_response_buffer;
     }
     return (UINT8_T *)datapath_ram->normal_data_buffer;
 }
 
-/** Keep an oversized BOT transfer visible to the serial command validator. */
+/** Keep oversized and incomplete manufacturing-data transfers visible to validation. */
 UINT32_T rdx_manager_write_buffer_host_length(const UINT8_T *cdb,
                                               UINT32_T total_length,
                                               UINT32_T completed_length)
@@ -39,6 +41,14 @@ UINT32_T rdx_manager_write_buffer_host_length(const UINT8_T *cdb,
         (cdb[2] == RDX_SERIAL_BUFFER_ID))
     {
         return total_length;
+    }
+    if ((cdb != NULL) && (cdb[0] == 0x3BU) &&
+        (cdb[2] == RDX_MANUFACTURING_BUFFER_ID))
+    {
+        /* Retain oversized CBWs but also reject a short final receive when
+         * the declared total alone matches this fixed restore frame. */
+        return (total_length == RDX_MANUFACTURING_TRANSFER_LENGTH) ?
+            completed_length : total_length;
     }
     return completed_length;
 }

@@ -1028,7 +1028,7 @@ inline void ums_bot_process_CBW(void)
             // Don't use wrap window for non-RW cmds because xfers are not always DWORD multiples.
             if (gBOT_state == UMS_BOT_STATE_DATA_OUT)
             {
-                /* Serial requests must survive an outstanding ATA discovery
+                /* Manufacturing-data requests must survive an outstanding ATA discovery
                  * DMA before dispatch can validate port quiescence. */
                 ums_bot_rx((void *)rdx_manager_write_buffer_data(&gCBW->CB[0]),
                            MIN(gActualXferLength, sizeof(datapath_ram->normal_data_buffer)));
@@ -1159,8 +1159,8 @@ void ums_bot_data_xfer_callback_OUT(EP_INFO_T *ep_info)
             {
                 if (!scsi_is_rw_cmd(gCBW->CB[0]))
                 {
-                    /* Keep the initial total for serial writes: a final
-                     * discarded fragment cannot hide an oversized CBW. */
+                    /* Preserve manufacturing-write framing: neither an oversized CBW
+                     * nor an incomplete full-record receive may be hidden. */
                     ums_cmd.dDataXferLength = rdx_manager_write_buffer_host_length(
                         &gCBW->CB[0], gCBW->dDataTransferLength,
                         ep_info->dByteCount);

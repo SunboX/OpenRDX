@@ -208,6 +208,9 @@ UINT32_T rdx_manager_get_drive_load_count(void);
 UINT32_T rdx_manager_build_security_protocol_in(
     UINT8_T *buffer, UINT32_T buffer_size, UINT16_T protocol_specific);
 
+/** Return TRUE after update activity or serial mutation until manual restart. */
+BOOLEAN_T rdx_manager_manufacturing_restore_blocked(void);
+
 /**
  * Receive one RDX Manager WRITE BUFFER firmware-download command.
  *

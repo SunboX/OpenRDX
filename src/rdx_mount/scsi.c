@@ -48,6 +48,7 @@
 #include "rdx_hardware.h"
 #include "rdx_manager_protocol.h"
 #include "rdx_manager_serial.h"
+#include "rdx_manufacturing.h"
 #include "rdx_mechanism.h"
 #include "sata_media.h"
 #include "reg_io.h"
@@ -2635,10 +2636,24 @@ inline STATUS_T scsi_handle_write_buffer_cmd(void)
 {
     const UINT8_T *payload = NULL;
 
+    if (scsi_cmd.pCmdInput->bCmdBlkLength != 10U)
+    {
+        return STATUS_SCSI_INVALID_CMD_FIELD;
+    }
     if (scsi_cmd.pCmdInput->dDataXferLength != 0U)
     {
         payload = rdx_manager_write_buffer_data(
             scsi_cmd.pCmdInput->pCommandBlock);
+    }
+    if (scsi_cmd.pCmdInput->pCommandBlock[2] == RDX_MANUFACTURING_BUFFER_ID)
+    {
+        if (rdx_manager_manufacturing_restore_blocked())
+        {
+            return STATUS_SCSI_LOGICAL_UNIT_NOT_READY;
+        }
+        return rdx_manager_handle_manufacturing(
+            scsi_cmd.pCmdInput->pCommandBlock,
+            scsi_cmd.pCmdInput->dDataXferLength, payload);
     }
     return rdx_manager_handle_write_buffer(
         scsi_cmd.pCmdInput->pCommandBlock,
@@ -4598,7 +4613,15 @@ inline STATUS_T scsi_handle_ti_defined_cmd(void)
         case SCSI_TI_READ_FLASH:
             readStartAddress = ((scsi_cmd.pCmdInput->pCommandBlock[1] << 24) | (scsi_cmd.pCmdInput->pCommandBlock[2] << 16) |
                                 (scsi_cmd.pCmdInput->pCommandBlock[3] << 8) | scsi_cmd.pCmdInput->pCommandBlock[4]);
-            SpiOps(OpcodeReadData, readStartAddress, (UINT8_T*)&scsi_resp_buff[0], scsi_cmd.pCmdInput->pCommandBlock[5], 0);
+            /* A bus conflict or latched fault must never publish bytes from a
+             * previous command as a successful manufacturing backup/readback. */
+            if (SpiOps(OpcodeReadData, readStartAddress,
+                       (UINT8_T *)&scsi_resp_buff[0],
+                       scsi_cmd.pCmdInput->pCommandBlock[5], 0U) != STATUS_OK)
+            {
+                status = STATUS_SCSI_INTERNAL_TARGET_FAILURE;
+                break;
+            }
             scsi_cmd.pCmdInput->pData = (void*)scsi_resp_buff;
             scsi_cmd.pCmdInput->dDataByteCnt = scsi_cmd.pCmdInput->pCommandBlock[5];
             status = STATUS_SCSI_RESPONSE_READY; 

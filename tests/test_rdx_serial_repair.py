@@ -144,6 +144,8 @@ int outside_unchanged(void) {
         source_text = re.sub(r'^#include .*$', '', source.read_text(), flags=re.M)
         header = re.sub(r'^#include .*$', '', (
             ROOT / "include/rdx_mount/rdx_manager_serial.h").read_text(), flags=re.M)
+        header += re.sub(r'^#include .*$', '', (
+            ROOT / "include/rdx_mount/rdx_manufacturing.h").read_text(), flags=re.M)
         harness = directory / "probe.c"
         harness.write_text(prelude + header + source_text)
         library = directory / "probe.so"
@@ -295,6 +297,30 @@ int outside_unchanged(void) {
         self.assertEqual(b"7820746632", self.read()[8:18])
         self.assertEqual(self.sector[256:], self.read()[256:])
 
+    def test_manufacturing_receive_buffer_survives_ata_scratch_writes(self):
+        """A complete manufacturing record must survive DMA before command admission."""
+        select = self.lib.rdx_manager_write_buffer_data
+        select.argtypes = [ctypes.c_void_p]
+        select.restype = ctypes.c_void_p
+        destination = select(bytes.fromhex("3b024d00000000021000"))
+        ordinary = select(bytes.fromhex("3b040000000000100000"))
+        self.assertNotEqual(destination, ordinary)
+        request = bytes((index * 17) & 255 for index in range(528))
+        ctypes.memmove(destination, request, len(request))
+        self.lib.scribble_ata_buffer()
+        self.assertEqual(request, ctypes.string_at(destination, len(request)))
+
+    def test_manufacturing_cbw_rejects_oversized_and_short_transfers(self):
+        """Neither surplus fragments nor a short receive may look exactly 528 bytes."""
+        length = self.lib.rdx_manager_write_buffer_host_length
+        length.argtypes = [ctypes.c_void_p, ctypes.c_uint32, ctypes.c_uint32]
+        length.restype = ctypes.c_uint32
+        command = bytes.fromhex("3b024d00000000021000")
+        self.assertEqual(4624, length(command, 4624, 528))
+        self.assertEqual(528, length(command, 528, 528))
+        self.assertNotEqual(528, length(command, 528, 527))
+        self.assertNotEqual(528, length(command, 529, 528))
+
     def test_receive_and_dispatch_use_the_same_buffer_selector(self):
         """Keep BOT reception and SCSI payload handoff wired to the isolated buffer."""
         bot = (ROOT / "src/rdx_mount/ums_bot.c").read_text()
@@ -353,6 +379,9 @@ static UINT8_T rdx_update_reset_ticks;
 static BOOLEAN_T rdx_serial_mutation_started;
 static UINT8_T rdx_compatibility_image_sha256[32];
 static int serial_calls, mutate, serial_status, firmware_calls;
+static int manufacturing_mutated;
+BOOLEAN_T rdx_manufacturing_mutation_started(void) { return manufacturing_mutated; }
+void set_manufacturing_mutated(int value) { manufacturing_mutated = value; }
 STATUS_T rdx_manager_serial_write(const UINT8_T *p, UINT32_T n, BOOLEAN_T *changed) {
  (void)p; (void)n; serial_calls++; *changed = mutate; return serial_status;
 }
@@ -367,7 +396,7 @@ static int rdx_bytes_equal(const UINT8_T *a, const UINT8_T *b, UINT32_T n) { ret
 static int rdx_custom_update_is_valid(const UINT8_T *p) { (void)p;return 1; }
 void reset(int update, int m, int status) { memset(&rdx_update,0,sizeof(rdx_update));
  rdx_update.started=update; rdx_serial_mutation_started=0; serial_calls=firmware_calls=0;
- mutate=m;serial_status=status; }
+ mutate=m;serial_status=status; manufacturing_mutated=0; }
 int serial_count(void) { return serial_calls; }
 int firmware_count(void) { return firmware_calls; }
 """
@@ -410,6 +439,15 @@ int firmware_count(void) { return firmware_calls; }
         self.lib.reset(1, 1, 0)
         self.assertEqual(2, self.command("3b025300000000011800"))
         self.assertEqual(0, self.lib.serial_count())
+
+    def test_manufacturing_mutation_blocks_serial_and_update_until_restart(self):
+        """A full-record change must keep cached identity stable until manual restart."""
+        self.lib.reset(0, 1, 0)
+        self.lib.set_manufacturing_mutated(1)
+        self.assertEqual(2, self.command("3b025300000000011800"))
+        self.assertEqual(2, self.command("3b040000000000000100"))
+        self.assertEqual(0, self.lib.serial_count())
+        self.assertEqual(0, self.lib.firmware_count())
 
     def test_invalid_serial_frames_do_not_reach_the_writer(self):
         """Reject wrong mode, id, offset, length, reserved bytes or host length."""

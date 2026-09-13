@@ -25,7 +25,7 @@ typedef int BOOLEAN_T;
 
 static UINT8_T flash[0x40000], initial_flash[0x40000];
 static unsigned int spi_calls, sector_erases;
-static int write_enabled;
+static int write_enabled, read_failure;
 static UINT8_T scsi_resp_buff[256];
 static struct { UINT8_T dev_speed; } usb_dev;
 typedef struct {
@@ -64,6 +64,7 @@ static STATUS_T SpiOps(UINT8_T opcode, UINT32_T address, UINT8_T *buffer,
     }
     if (opcode == OpcodeReadData)
     {
+        if (read_failure) return STATUS_ERROR;
         memcpy(buffer, flash + address, length);
         return STATUS_OK;
     }
@@ -115,6 +116,7 @@ static STATUS_T rdx_manager_serial_write(const UINT8_T *payload, UINT32_T length
     return STATUS_SCSI_INVALID_CMD;
 }
 
+BOOLEAN_T rdx_manufacturing_mutation_started(void);
 /* PRODUCTION_COMMAND_HANDLERS */
 
 /** Exercise a real SCSI handler and compare the complete resulting flash. */
@@ -128,7 +130,8 @@ int main(int argc, char **argv)
     for (index = 0; index < sizeof(flash); index++)
         flash[index] = (UINT8_T)(index * 23U + 11U);
     memcpy(initial_flash, flash, sizeof(flash));
-    if (strcmp(argv[1], "update") != 0)
+    if (strcmp(argv[1], "erase") == 0 || strcmp(argv[1], "unlock") == 0 ||
+        strcmp(argv[1], "unlock-erase") == 0)
     {
         if (strcmp(argv[1], "erase") != 0)
         {
@@ -147,6 +150,40 @@ int main(int argc, char **argv)
                 "legacy E2 modified flash, including manufacturing/state records");
         require(status == STATUS_SCSI_INVALID_CMD, "legacy E2 did not return INVALID CMD");
         require(spi_calls == 0, "legacy E2 issued an SPI operation");
+        return 0;
+    }
+    if (strcmp(argv[1], "read-failure") == 0 || strcmp(argv[1], "read") == 0)
+    {
+        input.pCommandBlock[0] = 0xE7;
+        input.pCommandBlock[2] = 3;
+        input.pCommandBlock[3] = 0xE0;
+        input.pCommandBlock[5] = 128;
+        memset(scsi_resp_buff, 0xA5, sizeof(scsi_resp_buff));
+        read_failure = strcmp(argv[1], "read-failure") == 0;
+        status = scsi_handle_ti_defined_cmd();
+        if (read_failure) {
+            require(status == STATUS_SCSI_INTERNAL_TARGET_FAILURE, "Failed flash read returned success");
+            require(input.pData == NULL && input.dDataByteCnt == 0, "Failed read exposed stale response bytes");
+        } else {
+            require(status == STATUS_SCSI_RESPONSE_READY, "Valid flash read failed");
+            require(input.dDataByteCnt == 128, "Incorrect flash response length");
+            require(memcmp(input.pData, flash + 0x3E000, 128) == 0, "Wrong flash response bytes");
+        }
+        require(spi_calls == 1, "Flash read retried unexpectedly");
+        require(memcmp(flash, initial_flash, sizeof(flash)) == 0, "Read changed flash");
+        return 0;
+    }
+    if (strcmp(argv[1], "restore-interlocks") == 0)
+    {
+        require(!rdx_manager_manufacturing_restore_blocked(), "Idle receiver blocked");
+        rdx_update.failed = TRUE;
+        require(rdx_manager_manufacturing_restore_blocked(), "Failed update admitted restore");
+        rdx_update.failed = FALSE; rdx_update.started = TRUE;
+        require(rdx_manager_manufacturing_restore_blocked(), "Active update admitted restore");
+        rdx_update.started = FALSE; rdx_update_reset_ticks = 1;
+        require(rdx_manager_manufacturing_restore_blocked(), "Pending reset admitted restore");
+        rdx_update_reset_ticks = 0; rdx_serial_mutation_started = TRUE;
+        require(rdx_manager_manufacturing_restore_blocked(), "Prior serial write admitted restore");
         return 0;
     }
     require(argc == 3, "missing container fixture");
@@ -185,3 +222,6 @@ int main(int argc, char **argv)
             "activation modified high flash");
     return 0;
 }
+
+/** This probe isolates boot erasure; the manufacturing latch is tested separately. */
+BOOLEAN_T rdx_manufacturing_mutation_started(void) { return FALSE; }

@@ -117,6 +117,27 @@ void SPI_Init(void);
  */
 STATUS_T SpiOps( UINT8_T cOpcode, UINT32_T iAddress, UINT8_T *pbuffer, UINT32_T size, UINT32_T cs_num );
 
+/** Reserve the shared flash/ADC bus; return FALSE without I/O if already owned. */
+BOOLEAN_T rdx_spi_acquire(void);
+
+/** Release a bus reservation acquired by this synchronous caller. */
+void rdx_spi_release(void);
+
+/**
+ * @brief Execute one bounded flash operation while the caller owns the SPI bus.
+ *
+ * @param opcode Read, page program, sector erase, write enable, or write disable.
+ * @param address Three-byte address in the 256-KiB flash; erase must be aligned.
+ * @param buffer Transfer buffer, required for reads and page programs.
+ * @param length Read bytes (1..4096) or page bytes that stay within one page.
+ * @param chip Must be zero (flash CS0).
+ * @return STATUS_OK, STATUS_TIMEOUT after finite flag/status waits, or error.
+ * @note Caller must hold rdx_spi_acquire() across the complete transaction and
+ *       release it on every exit. This helper never erases an entire chip.
+ */
+STATUS_T SpiOpsBounded(UINT8_T opcode, UINT32_T address, UINT8_T *buffer,
+                       UINT32_T length, UINT32_T chip);
+
 /**
  * @brief Read one single-ended MCP3008 input using a three-word SPI frame.
  *

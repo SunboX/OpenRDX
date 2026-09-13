@@ -10,7 +10,7 @@ USB 3.0 receiver. Select the route by its current firmware field:
 | Current receiver revision | Procedure | Updater switch |
 | --- | --- | --- |
 | Receiver `0283` | [Inspect, then establish record preservation](#inspect-then-install) | Compatibility installation is disabled |
-| OpenRDX `0109`, `0108`, `0107`, `0106`, or legacy `0001` | [Update existing OpenRDX](#update-existing-openrdx) through its running firmware | `-InstallOpenRDX` |
+| OpenRDX `0110`, `0109`, `0108`, `0107`, `0106`, or legacy `0001` | [Update existing OpenRDX](#update-existing-openrdx) through its running firmware | `-InstallOpenRDX` |
 
 The bundled updater uses Windows SPTI for existing OpenRDX receivers. It checks
 the product model, revision, selected serial number, physical USB location, and
@@ -68,7 +68,7 @@ running the updater.
 
 ## Inspect, then install
 
-This section is for receiver revision `0283` only. For OpenRDX `0109`, `0108`, `0107`, `0106`, or `0001`, follow
+This section is for receiver revision `0283` only. For OpenRDX `0110`, `0109`, `0108`, `0107`, `0106`, or `0001`, follow
 [Update existing OpenRDX](#update-existing-openrdx).
 
 First list compatibility receivers without sending a SCSI command:
@@ -124,7 +124,7 @@ that guide is not included in the six-file bundle.
 
 ## Update existing OpenRDX
 
-Use this route for a supported receiver already running OpenRDX revision `0109`, `0108`, `0107`,
+Use this route for a supported receiver already running OpenRDX revision `0110`, `0109`, `0108`, `0107`,
 `0106`, or the legacy marker `0001`.
 It programs the receiver's firmware; it does not copy files to a cartridge.
 Complete **Before starting** and **Verify the release** above first. Keep the
@@ -134,8 +134,8 @@ access programs before starting.
 
 This procedure is derived from the current updater and firmware source, with
 automated host-workflow tests using simulated devices. It is not a recorded
-hardware qualification of updating every earlier OpenRDX build. Revision `0109`
-represents version `1.09`; legacy `0001` does not identify the installed release.
+hardware qualification of updating every earlier OpenRDX build. Revision `0110`
+represents version `1.10`; legacy `0001` does not identify the installed release.
 Neither revision verifies an image hash.
 Confirm the installed build supports the `OPENRDX1` container protocol before
 programming; discovery and empty-bay validation alone cannot establish that.
@@ -149,7 +149,7 @@ Run in Windows PowerShell from the verified release directory:
 ```powershell
 $devices = @(Get-CimInstance Win32_DiskDrive | Where-Object {
   $_.Model -eq 'TANDBERG RDX USB Device' -and
-  $_.FirmwareRevision -cin @('0001', '0106', '0107', '0108', '0109') -and
+  $_.FirmwareRevision -cin @('0001', '0106', '0107', '0108', '0109', '0110') -and
   ([string]$_.PNPDeviceID).StartsWith(
     ('USBSTOR\DISK&VEN_TANDBERG&PROD_RDX&REV_' + $_.FirmwareRevision + '\'),
     [StringComparison]::OrdinalIgnoreCase)
@@ -171,14 +171,14 @@ image or test the installed receiver's update implementation.
 
 ### Transfer and activate
 
-For release 1.09, run the following in an elevated Windows PowerShell session
+For release 1.10, run the following in an elevated Windows PowerShell session
 from that release directory, with `$targetSerial` set as above. For another
 release, substitute its matching `.bin` and `.json` names together.
 
 ```powershell
 .\rdx_manager_firmware_update.ps1 -InstallOpenRDX `
-  -ImagePath .\OpenRDX-v1-09.bin `
-  -ManifestPath .\OpenRDX-v1-09.json `
+  -ImagePath .\OpenRDX-v1-10.bin `
+  -ManifestPath .\OpenRDX-v1-10.json `
   -TargetSerialNumber $targetSerial
 ```
 

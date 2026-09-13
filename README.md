@@ -22,7 +22,7 @@ OpenRDX is firmware for the Tandberg Data RDX QuikStor external USB 3.0
 compatibility receiver. It keeps the familiar removable-drive experience while
 opening the dock to qualifying standard SATA media.
 
-Current firmware version: **1.09**.
+Current firmware version: **1.10**.
 
 ## Why OpenRDX
 
@@ -40,9 +40,11 @@ Current firmware version: **1.09**.
 Both paths appear through the same stable removable USB drive. An empty bay or
 rejected medium stays safely unavailable instead of being silently accepted.
 
-Version 1.09 adds guarded serial-number repair and protects manufacturing data
-from legacy full-chip erase commands. See the
-[release notes](docs/releases/v1.09.md) for details.
+Version 1.10 adds full manufacturing-data restore from a saved backup using
+OpenRDXManager. It preserves neighboring flash data, verifies the complete result,
+and requires a manual restart to activate the restored identity. Existing
+serial-repair and firmware-update protections remain in place. See the
+[release notes](docs/releases/v1.10.md) for details.
 
 For everyday operation, media rejection, ejection, and write protection, read
 [Using OpenRDX](docs/getting-started/using-openrdx.md).

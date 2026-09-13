@@ -51,6 +51,30 @@
 #define MCP3008_CHANNEL_WORD   0x11050080UL
 #define MCP3008_FINISH_WORD    0x01050000UL
 
+#define RDX_FLASH_STATUS_TIMEOUT_US  2000000UL
+
+static volatile BOOLEAN_T rdx_spi_owned;
+static volatile BOOLEAN_T rdx_spi_faulted;
+
+/** Reserve the shared synchronous bus before a flash operation or ADC frame. */
+BOOLEAN_T rdx_spi_acquire(void)
+{
+    if (rdx_spi_owned || rdx_spi_faulted)
+    {
+        return FALSE;
+    }
+    /* Single-core callers complete before returning to a preempted foreground
+     * caller. A USB command therefore cannot interrupt a live owned ADC frame. */
+    rdx_spi_owned = TRUE;
+    return TRUE;
+}
+
+/** Release only a reservation acquired by the current synchronous caller. */
+void rdx_spi_release(void)
+{
+    rdx_spi_owned = FALSE;
+}
+
 /**
  * @brief Poll one SPI completion flag with a finite wait bound.
  *
@@ -140,11 +164,16 @@ STATUS_T rdx_mcp3008_read_channel(UINT8_T channel, UINT16_T *sample)
     }
 
     *sample = 0U;
+    if (!rdx_spi_acquire())
+    {
+        return STATUS_ERROR;
+    }
     frame_started_us = READ_REG32(RTIFRC0_REG_OFF);
     status = spi_transfer_word_bounded(MCP3008_START_WORD, &receive_word,
                                         frame_started_us);
     if (status != STATUS_OK)
     {
+        rdx_spi_release();
         return status;
     }
 
@@ -153,6 +182,7 @@ STATUS_T rdx_mcp3008_read_channel(UINT8_T channel, UINT16_T *sample)
         frame_started_us);
     if (status != STATUS_OK)
     {
+        rdx_spi_release();
         return status;
     }
 
@@ -161,11 +191,139 @@ STATUS_T rdx_mcp3008_read_channel(UINT8_T channel, UINT16_T *sample)
                                         frame_started_us);
     if (status != STATUS_OK)
     {
+        rdx_spi_release();
         return status;
     }
 
     *sample = (UINT16_T)(upper_bits | (receive_word & 0xFFUL));
+    rdx_spi_release();
     return STATUS_OK;
+}
+
+/** Transfer one flash byte with the existing framing and a finite flag wait. */
+static STATUS_T rdx_flash_transfer(UINT32_T word, UINT32_T *received)
+{
+    STATUS_T status = spi_transfer_word_bounded(word | SPI_WDEL, received,
+                                               READ_REG32(RTIFRC0_REG_OFF));
+    if (status != STATUS_OK)
+    {
+        /* A failed held-CS frame has unknown hardware state. Refuse all new
+         * flash/ADC work until SPI_Init rather than append bytes to that frame. */
+        rdx_spi_faulted = TRUE;
+    }
+    return status;
+}
+
+/** Poll flash status with finite word waits and a two-second total budget. */
+static STATUS_T rdx_flash_wait_status(UINT8_T mask, UINT8_T expected)
+{
+    UINT32_T started = READ_REG32(RTIFRC0_REG_OFF);
+    UINT32_T received;
+    STATUS_T status;
+    do
+    {
+        wdt_reset();
+        status = rdx_flash_transfer(0x00FE0000UL | SPICS_HOLD | OpcodeReadStatus,
+                                    &received);
+        if (status == STATUS_OK)
+        {
+            status = rdx_flash_transfer(0x00FE0000UL, &received);
+        }
+        if (status != STATUS_OK)
+        {
+            return status;
+        }
+        if (((UINT8_T)received & mask) == expected)
+        {
+            return STATUS_OK;
+        }
+    } while ((UINT32_T)(READ_REG32(RTIFRC0_REG_OFF) - started) <
+             RDX_FLASH_STATUS_TIMEOUT_US);
+    rdx_spi_faulted = TRUE;
+    return STATUS_TIMEOUT;
+}
+
+/** Validate and execute one finite read/page/sector flash transaction on CS0. */
+STATUS_T SpiOpsBounded(UINT8_T opcode, UINT32_T address, UINT8_T *buffer,
+                       UINT32_T length, UINT32_T chip)
+{
+    UINT32_T index;
+    UINT32_T received;
+    UINT32_T hold;
+    STATUS_T status;
+    BOOLEAN_T transfer = (opcode == OpcodeReadData) ||
+                         (opcode == OpcodePageProgram);
+
+    if (!rdx_spi_owned || rdx_spi_faulted || (chip != 0U) || (address >= 0x40000U) ||
+        (length > 4096U) || ((address + length) > 0x40000U))
+    {
+        return STATUS_ERROR;
+    }
+    if (transfer)
+    {
+        if ((buffer == NULL) || (length == 0U) ||
+            ((opcode == OpcodePageProgram) &&
+             (((address & 255U) + length) > 256U)))
+        {
+            return STATUS_ERROR;
+        }
+    }
+    else if ((length != 0U) ||
+             ((opcode != OpcodeSectorErase) && (opcode != OpcodeWriteEnable) &&
+              (opcode != OpcodeWriteDisable)) ||
+             ((opcode == OpcodeSectorErase) && ((address & 4095U) != 0U)))
+    {
+        return STATUS_ERROR;
+    }
+
+    status = rdx_flash_wait_status(1U, 0U);
+    if (status != STATUS_OK)
+    {
+        return status;
+    }
+    hold = (transfer || (opcode == OpcodeSectorErase)) ? SPICS_HOLD : 0U;
+    status = rdx_flash_transfer(0x00FE0000UL | hold | opcode, &received);
+    if (status != STATUS_OK)
+    {
+        return status;
+    }
+    if (hold != 0U)
+    {
+        for (index = 0U; index < 3U; index++)
+        {
+            hold = ((index < 2U) || transfer) ? SPICS_HOLD : 0U;
+            status = rdx_flash_transfer(0x00FE0000UL | hold |
+                       ((address >> (16U - index * 8U)) & 255U), &received);
+            if (status != STATUS_OK)
+            {
+                return status;
+            }
+        }
+        for (index = 0U; index < length; index++)
+        {
+            hold = ((index + 1U) < length) ? SPICS_HOLD : 0U;
+            status = rdx_flash_transfer(0x00FE0000UL | hold |
+                       ((opcode == OpcodePageProgram) ? buffer[index] : 0U),
+                       &received);
+            if (status != STATUS_OK)
+            {
+                return status;
+            }
+            if (opcode == OpcodeReadData)
+            {
+                buffer[index] = (UINT8_T)received;
+            }
+        }
+    }
+    if (opcode == OpcodeWriteEnable)
+    {
+        return rdx_flash_wait_status(3U, 2U);
+    }
+    if (opcode == OpcodeWriteDisable)
+    {
+        return rdx_flash_wait_status(3U, 0U);
+    }
+    return rdx_flash_wait_status(1U, 0U);
 }
 
 /*****************************************************************************
@@ -279,6 +437,11 @@ STATUS_T SpiOps( UINT8_T cOpcode, UINT32_T iAddress, UINT8_T *pbuffer, UINT32_T 
     UINT32_T qBytesToWrite;
     UINT32_T qindex;
 
+    if (!rdx_spi_acquire())
+    {
+        return STATUS_ERROR;
+    }
+
     csnr = (0xFF & ~(1 << cs_num)) << CSNR_OFFSET;
 
     /*************************************************************************
@@ -377,6 +540,7 @@ STATUS_T SpiOps( UINT8_T cOpcode, UINT32_T iAddress, UINT8_T *pbuffer, UINT32_T 
             break;
     }
 
+    rdx_spi_release();
     return status;
 }
 
@@ -448,7 +612,8 @@ void SPI_Init(void)
     // Enable SPI communication.
     MODIFY_REG32(SPI_GCR1, SPI_GCR1_SPIEN, SPI_GCR1_SPIEN);
 
+    rdx_spi_owned = FALSE;
+    rdx_spi_faulted = FALSE;
+
     return;
 }
-
-

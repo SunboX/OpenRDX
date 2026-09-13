@@ -15,6 +15,7 @@
 #include "ahci.h"
 #include "rdx_hardware.h"
 #include "rdx_manager_serial.h"
+#include "rdx_manufacturing.h"
 #include "rdx_unlock.h"
 #include "sata_media.h"
 #include "scsi.h"
@@ -560,6 +561,13 @@ static UINT32_T rdx_load_be24(const UINT8_T *bytes)
            (UINT32_T)bytes[2];
 }
 
+/** Exclude restores after update activity or serial mutation until restart. */
+BOOLEAN_T rdx_manager_manufacturing_restore_blocked(void)
+{
+    return rdx_update.started || rdx_update.failed || rdx_update_reset_ticks ||
+           rdx_serial_mutation_started;
+}
+
 /** Reset the in-RAM state of the RDX firmware download receiver. */
 void rdx_manager_protocol_init(void)
 {
@@ -834,6 +842,10 @@ STATUS_T rdx_manager_handle_write_buffer(const UINT8_T *cdb,
         return STATUS_SCSI_INVALID_CMD_FIELD;
     }
 
+    if (rdx_manufacturing_mutation_started())
+    {
+        return STATUS_SCSI_INVALID_CMD_FIELD;
+    }
     if (cdb[2] == RDX_SERIAL_BUFFER_ID)
     {
         if (mode != 2U)
