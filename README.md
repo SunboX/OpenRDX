@@ -61,7 +61,7 @@ lock at boot. TI ARM9 COFF does not zero uninitialized static storage, so the
 previous declaration could block updates even without a manufacturing write.
 The latch still remains set after a real mutation until boot; no command clears
 or bypasses it. The distributed 1.10 bundle is unchanged. On the verified receiver,
-a personalized J7 ROM-loader bootstrap restored and preserved the exact original
+a personalized J7 ROM-loader bootstrap restored and preserved the exact same-unit
 records, then enabled the normal Manager update to the corrected production image.
 An already blocked receiver still requires an independently qualified recovery
 procedure; this single-unit result does not qualify arbitrary full-image rollback.

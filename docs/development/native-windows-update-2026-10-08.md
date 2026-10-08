@@ -21,7 +21,7 @@ The previously installed image rejected the Serial capability query with
 `05/24/00` on both native Windows SPTI paths, reproducing the macOS and VM result.
 The user entered J7 ROM mode, removed the link, and explicitly requested flashing.
 A separately compiled personalized bootstrap restored the same receiver's exact
-original 256-byte Manufacturing and 64-byte State records before USB startup.
+pre-update 256-byte Manufacturing and 64-byte State records before USB startup.
 Physical complete SPI readback verified that bootstrap and all preserved records.
 Both readiness queries then returned GOOD through direct and buffered SPTI.
 
@@ -41,12 +41,12 @@ with state `succeeded`, stage `complete`.
 
 At 12:13 UTC independent allowlisted read-only probes captured all 262,144 SPI
 bytes twice with identical results. The complete comparison matched the normal
-boot, erased padding and both original records exactly. Installed SPI SHA-256:
+boot, erased padding and both pre-update records exactly. Installed SPI SHA-256:
 
 `c44846f67181949a7a7437791aba8f9c872428e1197c92a86672c172a8f23d7f`.
 
 Manufacturing and Serial readiness returned host success and SCSI GOOD through
-direct and buffered SPTI after the update. The original complete backup remained
+direct and buffered SPTI after the update. The pre-update complete backup remained
 unchanged. Manager reopened with privileged hardware access, the correct unit,
 revision 1.10 and firmware-update capability available. Renderer sandbox and
 context isolation remained enabled; Node integration remained disabled.
