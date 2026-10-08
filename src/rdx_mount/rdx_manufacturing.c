@@ -26,7 +26,10 @@
 #define RDX_MFG_DESIRED_OFFSET             272U
 #define RDX_MFG_INTERRUPT_MASK       0x00200060U
 
-static BOOLEAN_T rdx_mfg_mutation_started;
+/* TI ARM9 COFF does not zero uninitialized static storage. An explicit
+ * initializer creates the .cinit record consumed by init_globals at boot.
+ * Do not clear this latch from protocol/USB reset or any command path. */
+static BOOLEAN_T rdx_mfg_mutation_started = FALSE;
 
 /** Report a started manufacturing write, including uncertain completion, until reboot. */
 BOOLEAN_T rdx_manufacturing_mutation_started(void)

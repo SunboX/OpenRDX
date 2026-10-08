@@ -211,8 +211,12 @@ void ums_bot_xfer_cleanup(BOOLEAN_T stall_active_endpt)
 
     DEBUG("-> ums_bot_xfer_cleanup() - stall = %u.\n", stall_active_endpt);
 
-    if (gBOT_state == UMS_BOT_STATE_DATA_OUT)
+    if ((gBOT_state == UMS_BOT_STATE_DATA_OUT) && pEP->bXferActive)
     {
+        /* The USB completion handler accounts these bytes and clears
+         * bXferActive before calling BOT. A synchronous SCSI rejection from
+         * that callback must not subtract the same TRB bytes again or stall
+         * an already completed OUT transfer. */
         // Calculate bytes remaining to determine if the OUT transfer is complete.
         pEP->dBytesRemaining -= (pEP->dXferLength - (pEP->pTRB->dStatus & TRB_STATUS_BUFFER_SIZE_MASK));
 

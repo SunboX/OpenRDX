@@ -12,7 +12,7 @@
 #define RDX_MANUFACTURING_BUFFER_ID 0x4DU
 #define RDX_MANUFACTURING_TRANSFER_LENGTH 528U
 
-/** Return TRUE after a started restore until a manual restart clears RAM. */
+/** Return TRUE after a started restore until boot applies the explicit initializer. */
 BOOLEAN_T rdx_manufacturing_mutation_started(void);
 
 /**
