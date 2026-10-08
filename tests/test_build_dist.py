@@ -151,6 +151,9 @@ class BuildDistTests(unittest.TestCase):
         (self.root / "linker").mkdir()
         (self.root / "linker/tusb9260_link.cmd").write_text("fixture", encoding="ascii")
         (self.root / "SConstruct").write_text('''from pathlib import Path
+# Global Dir() helpers must use an empty tool set too: PlatformIO's bundled
+# SCons omits MSCommon and cannot autodetect the ordinary Windows toolchain.
+DefaultEnvironment(tools=[])
 env = Environment(tools=[])
 env.Replace(PROJECT_DIR=Dir('.').abspath, BUILD_DIR=Dir('.pio/build/tusb9261_ti_cgt').abspath)
 env.AddMethod(lambda self, name, default='': default, 'GetProjectOption')

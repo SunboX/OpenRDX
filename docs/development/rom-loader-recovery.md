@@ -2,6 +2,25 @@
 
 ## Purpose
 
+The [8 October 2026 native Windows verification](native-windows-update-2026-10-08.md)
+records a successful personalized small-bootstrap recovery, followed by a normal
+Manager update and complete physical SPI comparison on one receiver. It does not
+qualify the complete-backup restoration trial below.
+
+> [!IMPORTANT]
+> Native Windows qualification on 8 October 2026 found that the installed TI
+> FlashBurner **2.10.0.0** cannot accept a complete **262,144-byte** SPI backup
+> through **Program Full Binary Image**. Static inspection of the installed
+> executable's `ProgramFull_Button_Click` and `StartBurning(Boolean)` shows a
+> **65,535-byte maximum** for `.bin` input in full-image mode; larger files return
+> before device selection or programming. Its SHA-256 is
+> `29c92ad710e07c14b01a5d1b5dc5abbddcb1e7175dc0f52ca99ca19034379bd8`.
+> Details are in the Manager's `docs/NATIVE_WINDOWS_INVESTIGATION_2026-10-08.md`.
+> The restoration trial below is
+> therefore blocked with this tool. Do not truncate the backup, rename it to
+> HEX, split it, or change programming modes to evade this limit. A tool and
+> procedure supporting the entire same-unit image still need qualification.
+
 This standalone procedure uses Texas Instruments TUSB926x FlashBurner through
 the board's `J7` ROM-loader entry path. Choose the image before connecting power:
 
@@ -307,6 +326,12 @@ read back, or boot-tested through this route. These are the TI GUI steps for an
 operator-led recovery trial, not a claim of completed hardware validation.
 
 ### Verify the full image and receiver
+
+First qualify the exact programming tool's full-image size support. FlashBurner
+2.10.0.0 rejects the complete 256 KiB image before hardware access, including
+when **Program Full Binary Image** is selected. Its ordinary application **Program**
+mode is a different operation and does not resolve this limitation. Do not enter
+the ROM loader for the full-image trial while this prerequisite is unresolved.
 
 Remove the cartridge. Match the receiver's pre-programming serial or label to
 the backup's embedded serial `7820999743`. For a different receiver, obtain its

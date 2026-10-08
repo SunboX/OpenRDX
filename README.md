@@ -49,16 +49,22 @@ serial-repair and firmware-update protections remain in place. See the
 Development source now avoids counting completed USB OUT bytes twice when a
 SCSI command fails. The BOT cleanup regression test covers completed, partial,
 active and repeated cleanup. A separate development candidate has passed the
-automated regression tests and a TI target build. It has not been hardware
-verified. The existing 1.10 release bundle is unchanged, and the outstanding Windows
-first-chunk firmware-command rejection remains unresolved.
+automated regression tests and a TI target build. The corrected native TI 5.2.5
+image subsequently completed a real firmware update through OpenRDXManager on
+Windows, followed by an independent complete SPI comparison. The existing
+published 1.10 release bundle is unchanged. See the
+[native Windows update verification](docs/development/native-windows-update-2026-10-08.md)
+for the exact artifact and receiver scope.
 
 Development source also explicitly initializes the manufacturing-write safety
 lock at boot. TI ARM9 COFF does not zero uninitialized static storage, so the
 previous declaration could block updates even without a manufacturing write.
 The latch still remains set after a real mutation until boot; no command clears
-or bypasses it. The distributed 1.10 bundle is unchanged. A corrected image cannot
-be installed through an already blocked receiver without a validated recovery path.
+or bypasses it. The distributed 1.10 bundle is unchanged. On the verified receiver,
+a personalized J7 ROM-loader bootstrap restored and preserved the exact original
+records, then enabled the normal Manager update to the corrected production image.
+An already blocked receiver still requires an independently qualified recovery
+procedure; this single-unit result does not qualify arbitrary full-image rollback.
 
 For everyday operation, media rejection, ejection, and write protection, read
 [Using OpenRDX](docs/getting-started/using-openrdx.md).
@@ -111,6 +117,10 @@ For a receiver already running OpenRDX, follow
 
 Build the firmware and its installation bundle with the
 [common build and test guide](docs/development/building.md).
+
+The distribution regression fixture disables SCons tool autodetection for both
+explicit and default environments, so the test works with PlatformIO's reduced
+Windows SCons package without requiring its omitted MSVC support modules.
 
 ## Documentation
 
