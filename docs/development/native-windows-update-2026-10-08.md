@@ -59,3 +59,35 @@ ACL-protected `native-windows-20261008-1/` directory. They are not release asset
 
 macOS normal updates, other receivers, broader cartridge operations, complete
 backup rollback and a signed Windows installer remain separately unqualified.
+
+## Cartridge capacity refresh candidate
+
+A subsequent TI ARM CGT 5.2.5 candidate limits runtime caching-page refreshes
+to cache-enable bits. It preserves the admitted RDX data-area capacity and
+translation offset instead of rerunning the initialization IDENTIFY parser.
+The Python suite completed 307 tests with 39 skips, including an executable
+host-C regression probe for the production cache-refresh helper.
+
+This candidate retains version 1.10 and is distinguished by its container
+SHA-256 `007d233114a9ba3b36f7cd1e98329bcf03524281aea5dc23cf05dbe9c1e56f10`.
+Its boot region SHA-256 is
+`fd823afeedf8d5db93fdcbcd59645829a2a1aac20bd3a4f9e86f029ed6bbb046`.
+At 16:33:41–16:33:56 UTC it completed the real production Manager update on
+the same receiver with the bay empty. Independent repeated complete SPI reads
+matched the selected boot, erased padding through 0x10000, and every retained
+pre-update byte from 0x10000 through 0x40000. Both readiness routes returned GOOD.
+Installed complete SPI SHA-256:
+`239b7a0fc44e801c47a59a12fa26c8dd57465ce349bbcbd4ed40ed211b5311f8`.
+
+After reinserting the same 3 TB cartridge, a read-only retained-handle probe at
+17:00:36 UTC confirmed a last LBA of 5,860,524,975 with 512-byte sectors:
+3,000,588,787,712 bytes. READ16 returned GOOD at LBA 0, 4,294,967,296,
+5,860,524,943 and 5,860,524,975. Caching-page MODE SENSE6 and MODE SENSE10
+returned GOOD; a subsequent READ CAPACITY16 reported the same last LBA, and
+both end-sector reads again returned GOOD. Dock identity was checked before
+and after the probe. No cartridge data was written or retained by this check.
+
+These results qualify the corrected capacity and readable end sectors on this
+receiver and cartridge. Successful formatting remains unverified until a
+separate user-initiated format completes. Private raw evidence remains in
+`native-windows-20261008-1/format-capacity-update-2/` outside the repositories.

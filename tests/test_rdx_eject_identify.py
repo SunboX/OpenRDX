@@ -52,9 +52,9 @@ class RdxEjectIdentifyTests(unittest.TestCase):
         """Empty, logically unloaded, or eject-owned media uses cached fields."""
         self.assertIn(self.refresh_gate, self.cache_pages)
         refresh = function_body(self.cache_pages, self.refresh_gate)
-        self.assertIn("ahci_identify_device(scsi_cmd.pCmdInput->bLUN);", refresh)
-        self.assertEqual(1, self.mode_sense.count("ahci_identify_device("))
-        self.assertEqual(1, refresh.count("ahci_identify_device("))
+        self.assertIn("rdx_refresh_cache_info(scsi_cmd.pCmdInput->bLUN);", refresh)
+        self.assertNotIn("ahci_identify_device(", self.mode_sense)
+        self.assertEqual(1, refresh.count("rdx_refresh_cache_info("))
         self.assertNotIn("return", refresh)
 
     def test_pending_eject_blocks_refresh_before_the_motor_starts(self):

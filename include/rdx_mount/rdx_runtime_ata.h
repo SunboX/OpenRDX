@@ -14,6 +14,19 @@
 #include "ahci.h"
 
 /**
+ * @brief Refresh only IDENTIFY word 85's current cache-enable bits.
+ *
+ * The caller must mask USB submission. The runtime session owns idle AHCI
+ * slot zero and accepts the result only for the same admitted media epoch.
+ * Capacity, sector geometry, identity, and the RDX LBA mapping are preserved;
+ * the initialization-only full IDENTIFY parser must not run after admission.
+ *
+ * @param port_num SATA port number.
+ * @return TRUE when current cache bits were read; FALSE leaves them cached.
+ */
+BOOLEAN_T rdx_refresh_cache_info(UINT32_T port_num);
+
+/**
  * @brief Read the cartridge temperature from its SMART attribute table.
  *
  * The caller must mask USB command submission.  This helper independently

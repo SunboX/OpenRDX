@@ -50,6 +50,7 @@
 #include "rdx_manager_serial.h"
 #include "rdx_manufacturing.h"
 #include "rdx_mechanism.h"
+#include "rdx_runtime_ata.h"
 #include "sata_media.h"
 #include "reg_io.h"
 #include "sci.h"
@@ -2798,13 +2799,14 @@ inline STATUS_T scsi_handle_mode_sense_cmd(void)
     {
         /* MODE SENSE remains available with no visible media. Refresh only
          * for a ready, loaded cartridge outside an accepted eject request;
-         * otherwise IDENTIFY can block motor service for its seven-second
-         * timeout. The cached capability/current words still form the reply. */
+         * otherwise use cached capability/current words. The runtime reader
+         * updates only cache bits: full initialization IDENTIFY would replace
+         * the admitted RDX capacity while retaining its translation offset. */
         if (ata_dev[scsi_cmd.pCmdInput->bLUN].bDeviceInitComplete &&
             !rdx_hardware_is_logically_unloaded() &&
             !rdx_hardware_eject_in_progress())
         {
-            ahci_identify_device(scsi_cmd.pCmdInput->bLUN);
+            rdx_refresh_cache_info(scsi_cmd.pCmdInput->bLUN);
         }
 
         if (scsi_cmd.pCmdInput->pCommandBlock[0] == SCSI_MODE_SENSE6)

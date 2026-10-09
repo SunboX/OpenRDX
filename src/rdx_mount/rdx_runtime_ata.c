@@ -269,6 +269,56 @@ static BOOLEAN_T rdx_runtime_finish_sync_commands(
 }
 
 /**
+ * @brief Refresh cache-enable flags without reinitializing admitted media.
+ *
+ * Full IDENTIFY parsing replaces ddMaxLBA with native SATA capacity. That
+ * would retain the RDX translation offset while advertising sectors beyond
+ * its user-data extent. Only word 85 bits 5 and 6 are mutable here. Failed,
+ * busy, or replaced media keeps its previous cache bits and geometry.
+ *
+ * @param port_num SATA port number.
+ * @return TRUE when the same medium supplied current cache-enable flags.
+ */
+BOOLEAN_T rdx_refresh_cache_info(UINT32_T port_num)
+{
+    ATA_COMMAND_T ata_cmd;
+    RDX_RUNTIME_SESSION_T session;
+    const volatile UINT8_T *identify;
+    UINT16_T current;
+    BOOLEAN_T successful;
+
+    if (!rdx_runtime_begin_sync_commands(port_num, &session))
+    {
+        return FALSE;
+    }
+    ti_memset(&ata_cmd, 0U, sizeof(ata_cmd));
+    ata_cmd.fis.FIS_type = H2D_REGISTER_FIS_TYPE;
+    ata_cmd.fis.CRRR_PMP = 0x80U;
+    ata_cmd.fis.command = ATA_CMD_IDENTIFY_DEVICE;
+    ata_cmd.dDataByteCnt = RDX_RUNTIME_DATA_BYTES;
+    WRITE32(PxIS(port_num), RDX_PIO_COMPLETION_STATUS);
+    successful = rdx_runtime_execute_sync_command(
+        port_num, &ata_cmd, &session);
+    WRITE32(PxIS(port_num), RDX_PIO_COMPLETION_STATUS);
+
+    if (!rdx_runtime_lock_current_session(port_num, &session))
+    {
+        return FALSE;
+    }
+    if (successful)
+    {
+        identify = datapath_ram->normal_data_buffer;
+        current = (UINT16_T)((UINT16_T)identify[170U] |
+                            ((UINT16_T)identify[171U] << 8U));
+        ata_dev[port_num].wIdentifyDeviceInfo[85] =
+            (UINT16_T)((ata_dev[port_num].wIdentifyDeviceInfo[85] &
+                        0xFF9FU) | (current & 0x0060U));
+    }
+    rdx_runtime_unlock_current_session(port_num, &session);
+    return successful;
+}
+
+/**
  * @brief Read and parse a one-sector ATA SMART temperature table.
  *
  * SMART READ DATA uses command B0h, feature D0h, and mandatory 4Fh/C2h task-

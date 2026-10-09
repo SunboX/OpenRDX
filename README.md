@@ -69,6 +69,19 @@ procedure; this single-unit result does not qualify arbitrary full-image rollbac
 For everyday operation, media rejection, ejection, and write protection, read
 [Using OpenRDX](docs/getting-started/using-openrdx.md).
 
+Development source preserves the cartridge's admitted data capacity when a host
+queries its cache settings. The fix applies to Windows, macOS and Linux hosts.
+Previously that query re-ran the initialization
+IDENTIFY parser, advertising raw SATA capacity while retaining the RDX data-area
+offset. Reads and GPT formatting near the reported end could then fail with
+“LBA out of range.” The runtime refresh now updates only cache-enable bits under
+the existing media-epoch and ATA ownership guards. The TI 5.2.5 candidate passed
+automated checks and a normal Manager update with complete SPI verification on
+the selected Windows receiver. Read-only hardware checks then confirmed readable
+end sectors and stable capacity across cache queries. Successful hardware
+formatting still requires a separate test; see the
+[native Windows verification](docs/development/native-windows-update-2026-10-08.md#cartridge-capacity-refresh-candidate).
+
 ## Supported hardware
 
 OpenRDX currently targets one receiver family only:
