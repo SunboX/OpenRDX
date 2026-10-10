@@ -22,7 +22,7 @@ OpenRDX is firmware for the Tandberg Data RDX QuikStor external USB 3.0
 compatibility receiver. It keeps the familiar removable-drive experience while
 opening the dock to qualifying standard SATA media.
 
-Current firmware version: **1.10**.
+Current firmware version: **1.11**.
 
 ## Why OpenRDX
 
@@ -44,11 +44,11 @@ Version 1.10 adds full manufacturing-data restore from a saved backup using
 OpenRDXManager. It preserves neighboring flash data, verifies the complete result,
 and requires a manual restart to activate the restored identity. Existing
 serial-repair and firmware-update protections remain in place. See the
-[release notes](docs/releases/v1.10.md) for details.
+[1.10 release notes](docs/releases/v1.10.md) for details.
 
-Development source now avoids counting completed USB OUT bytes twice when a
+Version 1.11 avoids counting completed USB OUT bytes twice when a
 SCSI command fails. The BOT cleanup regression test covers completed, partial,
-active and repeated cleanup. A separate development candidate has passed the
+active and repeated cleanup. A preceding 1.10 candidate passed the
 automated regression tests and a TI target build. The corrected native TI 5.2.5
 image subsequently completed a real firmware update through OpenRDXManager on
 Windows, followed by an independent complete SPI comparison. The existing
@@ -56,7 +56,7 @@ published 1.10 release bundle is unchanged. See the
 [native Windows update verification](docs/development/native-windows-update-2026-10-08.md)
 for the exact artifact and receiver scope.
 
-Development source also explicitly initializes the manufacturing-write safety
+Version 1.11 also explicitly initializes the manufacturing-write safety
 lock at boot. TI ARM9 COFF does not zero uninitialized static storage, so the
 previous declaration could block updates even without a manufacturing write.
 The latch still remains set after a real mutation until boot; no command clears
@@ -69,7 +69,7 @@ procedure; this single-unit result does not qualify arbitrary full-image rollbac
 For everyday operation, media rejection, ejection, and write protection, read
 [Using OpenRDX](docs/getting-started/using-openrdx.md).
 
-Development source preserves the cartridge's admitted data capacity when a host
+Version 1.11 preserves the cartridge's admitted data capacity when a host
 queries its cache settings. The fix applies to Windows, macOS and Linux hosts.
 Previously that query re-ran the initialization
 IDENTIFY parser, advertising raw SATA capacity while retaining the RDX data-area
@@ -81,6 +81,10 @@ the selected Windows receiver. Read-only hardware checks then confirmed readable
 end sectors and stable capacity across cache queries. Successful hardware
 formatting still requires a separate test; see the
 [native Windows verification](docs/development/native-windows-update-2026-10-08.md#cartridge-capacity-refresh-candidate).
+
+See the [1.11 release notes](docs/releases/v1.11.md) for all changes and the
+validation boundary. The earlier hardware evidence applies to the identified
+1.10 candidate images; the versioned 1.11 release requires its own device checks.
 
 ## Supported hardware
 
