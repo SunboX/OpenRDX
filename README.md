@@ -44,52 +44,11 @@ Available features depend on the device, firmware, and operating system.
 Both paths appear through the same stable removable USB drive. An empty bay or
 rejected medium stays safely unavailable instead of being silently accepted.
 
-Version 1.10 adds full manufacturing-data restore from a saved backup using
-[OpenRDXManager](https://github.com/SunboX/OpenRDXManager). It preserves
-neighboring flash data, verifies the complete result,
-and requires a manual restart to activate the restored identity. Existing
-serial-repair and firmware-update protections remain in place. See the
-[1.10 release notes](docs/releases/v1.10.md) for details.
-
-Version 1.11 avoids counting completed USB OUT bytes twice when a
-SCSI command fails. The BOT cleanup regression test covers completed, partial,
-active and repeated cleanup. A preceding 1.10 candidate passed the
-automated regression tests and a TI target build. The corrected native TI 5.2.5
-image subsequently completed a real firmware update through OpenRDXManager on
-Windows, followed by an independent complete SPI comparison. The existing
-published 1.10 release bundle is unchanged. See the
-[native Windows update verification](docs/development/native-windows-update-2026-10-08.md)
-for the exact artifact and receiver scope.
-
-Version 1.11 also explicitly initializes the manufacturing-write safety
-lock at boot. TI ARM9 COFF does not zero uninitialized static storage, so the
-previous declaration could block updates even without a manufacturing write.
-The latch still remains set after a real mutation until boot; no command clears
-or bypasses it. The distributed 1.10 bundle is unchanged. On the verified receiver,
-a personalized J7 ROM-loader bootstrap restored and preserved the exact same-unit
-records, then enabled the normal Manager update to the corrected production image.
-An already blocked receiver still requires an independently qualified recovery
-procedure; this single-unit result does not qualify arbitrary full-image rollback.
-
 For everyday operation, media rejection, ejection, and write protection, read
 [Using OpenRDX](docs/getting-started/using-openrdx.md).
 
-Version 1.11 preserves the cartridge's admitted data capacity when a host
-queries its cache settings. The fix applies to Windows, macOS and Linux hosts.
-Previously that query re-ran the initialization
-IDENTIFY parser, advertising raw SATA capacity while retaining the RDX data-area
-offset. Reads and GPT formatting near the reported end could then fail with
-“LBA out of range.” The runtime refresh now updates only cache-enable bits under
-the existing media-epoch and ATA ownership guards. The TI 5.2.5 candidate passed
-automated checks and a normal Manager update with complete SPI verification on
-the selected Windows receiver. Read-only hardware checks then confirmed readable
-end sectors and stable capacity across cache queries. Successful hardware
-formatting still requires a separate test; see the
-[native Windows verification](docs/development/native-windows-update-2026-10-08.md#cartridge-capacity-refresh-candidate).
-
-See the [1.11 release notes](docs/releases/v1.11.md) for all changes and the
-validation boundary. The earlier hardware evidence applies to the identified
-1.10 candidate images; the versioned 1.11 release requires its own device checks.
+See [GitHub releases](https://github.com/SunboX/OpenRDX/releases) for firmware
+downloads, changes, and the validation limits of each release.
 
 ## Supported hardware
 

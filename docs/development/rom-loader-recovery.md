@@ -307,8 +307,9 @@ behavioral checks.
 1. After programming finishes, disconnect USB.
 2. Confirm that `J7` is open.
 3. Reconnect USB and allow OpenRDX to start.
-4. Confirm USB VID:PID `1A5A:0005`, revision `0107` for version `1.07`
-   (legacy builds may report `0001`), the expected USB serial
+4. Confirm USB VID:PID `1A5A:0005`, the revision corresponding to the selected
+   image's release version (two major and two minor decimal digits; legacy
+   builds may report `0001`), the expected USB serial
    (`00` plus the ten-character unit serial), and the removable-media interface.
    A changed serial is an identity failure even if USB enumeration succeeds.
 5. With no cartridge inserted, confirm that the eject-button LED is steady
