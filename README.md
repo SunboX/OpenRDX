@@ -4,7 +4,7 @@
   <img
     src="docs/assets/openrdx-rdx-quikstor-hero.png"
     alt="Tandberg Data RDX QuikStor external USB 3.0 dock supported by OpenRDX"
-    width="520"
+    width="1000"
   >
 </p>
 
