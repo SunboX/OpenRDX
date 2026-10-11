@@ -1,9 +1,41 @@
 # Install or update OpenRDX
 
-This is the canonical installation procedure. `build-dist.ps1` copies it into
-release bundles as `OPENRDX_USB_UPDATE.md`; use that packaged copy with the
-matching release files when installing.
+Use **[OpenRDXManager](https://github.com/SunboX/OpenRDXManager)** for guided
+installation, migration from vendor firmware, firmware updates, and management
+of OpenRDX-enabled devices. Start with the Manager's
+[application installation guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/installation.md).
+Its current device, release, and platform checks determine which operations are
+available; a firmware version alone does not establish installation support.
 
+This is the canonical firmware installation and safety guide. `build-dist.ps1`
+copies it into release bundles as `OPENRDX_USB_UPDATE.md`; use that packaged
+copy with the matching release files when installing.
+
+## Guided installation and migration with OpenRDXManager
+
+- **Still running vendor firmware?** Follow the Manager's
+  [migration guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
+  First installation must save, restore, and verify this same receiver's
+  manufacturing and state records. Use only the device, release, and platform
+  combinations currently admitted by the Manager; other combinations remain
+  unavailable. Keep its saved recovery data outside the dock.
+- **Already running OpenRDX?** Follow the Manager's
+  [firmware update guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/firmware-updates.md).
+  Keep the matching release `.bin` and `.json` together, select the intended
+  empty dock, and use **Utilities → Update Firmware**. Verify the release
+  checksums below before selecting the image, then follow the application's
+  progress, reconnection, and verification instructions.
+- **Managing an installed device?** Follow the Manager's
+  [app usage guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/app-usage.md)
+  for status, supported settings, diagnostics, and media utilities.
+
+Keep the bay empty and USB power stable during firmware work. Follow the
+Manager's explicit power-cycle prompts when requested by its guided workflow.
+Do not run the Manager and the bundled PowerShell updater concurrently.
+
+## Alternative Windows PowerShell workflow
+
+The remaining sections document the bundled updater and its safety checks.
 The procedure applies only to the supported Tandberg Data RDX QuikStor external
 USB 3.0 receiver. Select the route by its current firmware field:
 
@@ -35,8 +67,9 @@ another product or image.
 - Connect the intended RDX adapter to stable USB power. The updater must select
   one unambiguous target. If more than one compatible adapter is connected, use
   its exact serial number so the intended unit is the sole match.
-- Eject and physically remove the cartridge. Close RDX Manager and every other
-  program that could access the device.
+- Eject and physically remove the cartridge. When using the PowerShell updater,
+  close OpenRDXManager, RDX Manager, and every other program that could access
+  the device.
 - Use an elevated Windows PowerShell window for the installation.
 
 ## Verify the release
@@ -108,12 +141,17 @@ generic TI FlashBurner step does not back up or restore receiver-specific
 manufacturing and state records. Programming an application HEX or receiving
 a FlashBurner success message does not establish that those records survived.
 
-Use an OpenRDX Manager installation/recovery workflow that backs up, restores, and
-verifies the records for this same receiver. If that workflow is unavailable,
-stop after read-only inspection. Keep J7 open during inspection; do not enter
-the ROM loader or bypass the script's guard to continue first installation.
+Use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) and its
+[migration workflow](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md)
+to back up, restore, and verify the records for this same receiver. If that
+workflow is unavailable, stop after read-only inspection. Keep J7 open during
+inspection; do not enter the ROM loader or bypass the script's guard to continue first installation.
 
 ## If an earlier first installation was interrupted
+
+Start with OpenRDXManager's
+[interrupted-installation recovery guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md#recover-an-interrupted-installation)
+and the saved records for this same physical receiver.
 
 Retain the complete log and any receiver-specific backup. Do not restart the
 legacy installer, force mode `05h`, or program a generic application HEX as a
@@ -124,13 +162,17 @@ that guide is not included in the six-file bundle.
 
 ## Update existing OpenRDX
 
+Prefer [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) and its
+[firmware update guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/firmware-updates.md).
+The commands below describe the alternative Windows PowerShell workflow.
+
 Use this route for a supported receiver already running OpenRDX revision `0111`, `0110`, `0109`, `0108`, `0107`,
 `0106`, or the legacy marker `0001`.
 It programs the receiver's firmware; it does not copy files to a cartridge.
 Complete **Before starting** and **Verify the release** above first. Keep the
 bay physically empty, leave J7 open, and maintain power and the same USB port
-throughout transfer and automatic reset. Close RDX Manager and other device
-access programs before starting.
+throughout transfer and automatic reset. Close OpenRDXManager, RDX Manager,
+and other device access programs before starting the PowerShell updater.
 
 This procedure is derived from the current updater and firmware source, with
 automated host-workflow tests using simulated devices. It is not a recorded

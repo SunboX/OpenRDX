@@ -1,5 +1,10 @@
 # Manufacturing restore validation — 2026-09-13
 
+For supported device management and manufacturing backup or restore, use
+[OpenRDXManager](https://github.com/SunboX/OpenRDXManager) and its
+[backup and restore guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/manufacturing-backup-restore.md).
+The historical validation record below retains its recorded scope.
+
 This records verification of the OpenRDX 1.10 receiver integration. No firmware
 was installed and no physical manufacturing data was written during this work.
 

@@ -1,5 +1,12 @@
 # Existing OpenRDX update: evidence and validation limits
 
+For guided firmware updates and device management, use
+[OpenRDXManager](https://github.com/SunboX/OpenRDXManager) and its
+[firmware update guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/firmware-updates.md).
+Migration from vendor firmware uses its separate
+[migration workflow](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
+The evidence below concerns the bundled PowerShell updater and its recorded tests.
+
 The operator procedure is
 [Update existing OpenRDX](../getting-started/installation.md#update-existing-openrdx).
 This record separates implementation evidence, simulated host behavior, and

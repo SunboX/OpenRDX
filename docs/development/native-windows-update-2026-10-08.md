@@ -1,7 +1,8 @@
 # Native Windows firmware update verification — 8 October 2026
 
 The corrected normal OpenRDX 1.10 image completed an actual update through
-OpenRDXManager on native Windows x64 build 26200. The selected TANDBERG RDX
+[OpenRDXManager](https://github.com/SunboX/OpenRDXManager) on native Windows x64
+build 26200. The selected TANDBERG RDX
 receiver was unit `7820999743`, USB serial `007820999743`, with an empty bay.
 This qualifies this image and this receiver's update flow, not every management
 operation or another host platform.

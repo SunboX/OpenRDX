@@ -29,6 +29,8 @@ IGNORED_DIRECTORIES = {
 # The digests intentionally keep disallowed vocabulary out of the repository
 # while still making the check case-insensitive and deterministic. Each value
 # is SHA-256 over one lowercase token or adjacent-token phrase.
+# Operator guidance may describe migration from vendor firmware, including
+# the matching OpenRDXManager documentation URL.
 DISALLOWED_TOKEN_DIGESTS = {
     "0682c5f2076f099c34cfdd15a9e063849ed437a49677e6fcc5b4198c76575be5",
     "06c8aaa93d80a768829b6005973fa92e34612849b79910c8be8e3b006cf91c61",
@@ -36,14 +38,12 @@ DISALLOWED_TOKEN_DIGESTS = {
     "10cc74f79a1b5f011a106c79bf0a840af182b3f5a4a29f7ddce8d2344b4ef2dd",
     "1dc7be12a594ad02dcf69b900b16046c92cbc261681585efb77abe2b42ae3845",
     "2d0d38e68843216f183110ca3f4212682e1ccf86371e15fbdc0a3f24e697cfe0",
-    "3bc801a33ea83df414e1aeb962a52412835be99db28668ec25de73fdd4733804",
     "59a2ea36c20b30a30f3aa251b346188d5afbeddfca2d496e67b0c2d9eb74a345",
     "5e4edc3e9d98c34d7600433c568d2af26f079768667d7239c6d0f9ea997d9b99",
     "6a9bb179400afb21957db1e9f878f0c8a7dd1bb443303855c43e0597647a3457",
     "6c695db7135689cbb77eb4bc2d0adff21bf841b0015f51e30030c89e3562dba6",
     "6e3fd0b70aa5c52721d996ac6485608b4b1d6a9066541778c2b8bb920742a54f",
     "74da08619813b9c5410783c2306662e73e98cb0fba51da747e77608ed0f411e1",
-    "8a6cead4385ed4394247b71692fb729b0563f8e1bd4818a8c6c82940e9e099ba",
     "8dd57713195214f20fc904ef3de163b4cd26462bf9e65c0c311438008b227ba5",
     "94805aea13420685a2929f6859071e2e12d650c6609c0d91ed602a9bf227af39",
     "94adcb78fb6df2e132e4bbf8f9fa89a2e8657721252b5e58953ed595ceb807c1",
@@ -140,6 +140,14 @@ def violations_in_text(value: str) -> list[str]:
 
 class ProductLanguageTests(unittest.TestCase):
     """Prevent disallowed vocabulary from entering product text."""
+
+    def test_manager_migration_guidance_is_allowed(self):
+        """Allow the operator migration wording and the linked Manager guide."""
+
+        self.assertEqual([], violations_in_text(
+            "Migrate from vendor firmware with OpenRDXManager. "
+            "https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md"
+        ))
 
     def test_tracked_history_and_ignored_files_are_scanned(self):
         """Keep tracked prose in scope even when its directory is ignored."""

@@ -24,6 +24,12 @@ opening the dock to qualifying standard SATA media.
 
 Current firmware version: **1.11**.
 
+Use **[OpenRDXManager](https://github.com/SunboX/OpenRDXManager)** to install
+OpenRDX, migrate supported devices from vendor firmware, update firmware, and
+manage OpenRDX-enabled devices. Its guided workflows check the selected device
+and preserve that device's manufacturing records where installation is supported.
+Available features depend on the device, firmware, and operating system.
+
 ## Why OpenRDX
 
 | Flexible media | Familiar operation | Guarded access |
@@ -41,7 +47,8 @@ Both paths appear through the same stable removable USB drive. An empty bay or
 rejected medium stays safely unavailable instead of being silently accepted.
 
 Version 1.10 adds full manufacturing-data restore from a saved backup using
-OpenRDXManager. It preserves neighboring flash data, verifies the complete result,
+[OpenRDXManager](https://github.com/SunboX/OpenRDXManager). It preserves
+neighboring flash data, verifies the complete result,
 and requires a manual restart to activate the restored identity. Existing
 serial-repair and firmware-update protections remain in place. See the
 [1.10 release notes](docs/releases/v1.10.md) for details.
@@ -110,15 +117,22 @@ for detailed evidence, known limitations, and remaining validation work.
 
 ### Install OpenRDX
 
-Use a newly generated, complete, verified release bundle and follow the
+Start with [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) and its
+[application installation guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/installation.md).
+For a supported device still running vendor firmware, follow the Manager's
+[migration guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
+For a device already running OpenRDX, follow its
+[firmware update guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/firmware-updates.md).
+Use a complete, verified release bundle and read the
 [guarded installation guide](docs/getting-started/installation.md).
 
 Git preserves the exact bytes of generated `dist/` files so release checksums
 remain valid across checkout platforms and source archives.
 
-Firmware installation changes the receiver and requires Windows, stable USB
-power, an empty bay, and careful target selection. Read the safety procedure in
-full before starting.
+Firmware installation changes the receiver and requires stable USB power, an
+empty bay, and careful target selection. Follow OpenRDXManager's current device,
+release, and platform checks; the alternative bundled PowerShell updater requires
+Windows. Read the safety procedure in full before starting.
 
 First installation requires an installation/recovery workflow that preserves the
 receiver's own manufacturing and state records. The bundled compatibility
@@ -129,6 +143,14 @@ For an incorrect receiver serial, see the guarded
 
 For a receiver already running OpenRDX, follow
 [Update existing OpenRDX](docs/getting-started/installation.md#update-existing-openrdx).
+
+### Manage your device
+
+Use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) to inspect dock and
+media status, run supported diagnostics, safely eject media, manage supported
+settings, and back up manufacturing records. See its
+[app usage guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/app-usage.md)
+for available controls and their limits.
 
 ### Build from source
 
@@ -141,6 +163,8 @@ Windows SCons package without requiring its omitted MSVC support modules.
 
 ## Documentation
 
+- [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) — guided installation,
+  migration from vendor firmware, updates, and device management.
 - [Documentation index](docs/README.md) — choose the authoritative guide for
   installation, use, development, or reference.
 - [Using OpenRDX](docs/getting-started/using-openrdx.md) — media, write

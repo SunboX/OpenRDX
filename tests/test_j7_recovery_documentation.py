@@ -47,7 +47,10 @@ class J7RecoveryDocumentationTests(unittest.TestCase):
             "73d528801aefc032d3a53637b035f65d72809151b2f127c6b2050e9bacc76f3b",
             guide,
         )
-        self.assertNotIn("OpenRDXManager", guide)
+        self.assertIn(
+            "[OpenRDXManager](https://github.com/SunboX/OpenRDXManager)", guide,
+        )
+        self.assertIn("separate advanced recovery reference", guide)
         self.assertNotIn("rdx_manager_firmware_update.ps1", guide)
         self.assertIn("Restore a receiver backup with TI FlashBurner", guide)
         self.assertIn("not a validated FlashBurner input", compact_guide)

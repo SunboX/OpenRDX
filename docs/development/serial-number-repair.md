@@ -1,5 +1,11 @@
 # Serial-number inspection and repair
 
+For device management and supported serial inspection or repair, use
+[OpenRDXManager](https://github.com/SunboX/OpenRDXManager) and its
+[serial utility guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/serial-utility.md).
+The host sequence below documents the protocol and preservation requirements;
+it does not establish capability on every receiver.
+
 The USB serial is `00` followed by the ten ASCII unit-serial digits stored at
 offset `0x08` of the 256-byte manufacturing record at flash address `0x3E000`.
 There is no numeric conversion. A missing or checksum-invalid record selects

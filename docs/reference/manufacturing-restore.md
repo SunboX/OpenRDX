@@ -1,5 +1,12 @@
 # Manufacturing record restore
 
+Use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) for supported
+device management and manufacturing-record backup or restore. Its
+[manufacturing backup and restore guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/manufacturing-backup-restore.md)
+describes the operator workflow; this page documents the firmware protocol.
+For first installation from vendor firmware, follow the Manager's separate
+[migration guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
+
 This OpenRDX-specific protocol restores exactly the 256-byte manufacturing
 record at SPI flash `0x3E000`. It requires no arbitrary flash-write command and
 does not write the boot image or the state-record sector at `0x3F000`.

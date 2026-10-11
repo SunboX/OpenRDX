@@ -105,7 +105,10 @@ generated Intel HEX when firmware-byte comparison is required.
 This repository has no validated PlatformIO upload target. A successful build
 does not write hardware and does not authorize anyone to flash an adapter.
 
-Normal installation requires a complete verified release bundle and the
+Use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) for installation,
+updates, and device management, including supported
+[migration from vendor firmware](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
+Installation requires a complete verified release bundle and the
 [guarded installation procedure](../getting-started/installation.md). Direct
 FlashBurner programming is an advanced recovery operation covered separately in
 [ROM-loader recovery](rom-loader-recovery.md).

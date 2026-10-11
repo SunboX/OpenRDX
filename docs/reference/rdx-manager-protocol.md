@@ -4,7 +4,11 @@
 
 This maintainer reference documents the Manager-compatible subset implemented
 by OpenRDX. It is not a claim of complete RDX Manager compatibility. For
-customer operation, start with [Using OpenRDX](../getting-started/using-openrdx.md).
+customer operation, use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager)
+for installation, updates, and device management, and read
+[Using OpenRDX](../getting-started/using-openrdx.md). Migration from vendor
+firmware uses the Manager's
+[guided migration workflow](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
 
 OpenRDX keeps one removable direct-access LUN available with or without a
 cartridge. This lets RDX Manager discover the adapter, inspect dock and media

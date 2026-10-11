@@ -6,8 +6,11 @@ data path together with the dock's mechanism, front panel, thermal service, and
 supported management behavior.
 
 This is a maintainer-facing technical reference for the maintained
-implementation and its external contracts. Owners should begin with
-[Using OpenRDX](../getting-started/using-openrdx.md); developers should use the
+implementation and its external contracts. Owners should use
+[OpenRDXManager](https://github.com/SunboX/OpenRDXManager) for installation,
+updates, and device management, including supported
+[migration from vendor firmware](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
+Begin with [Using OpenRDX](../getting-started/using-openrdx.md); developers should use the
 [common build guide](../development/building.md).
 
 ## Device presentation

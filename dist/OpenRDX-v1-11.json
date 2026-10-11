@@ -7,7 +7,7 @@
   "flashburner_hex": "OpenRDX-v1-11-FlashBurner.hex",
   "flashburner_hex_sha256": "1c2e2a00a86c7bcf567def6911140b7dbec00118026951ecd4e6f63e236642bb",
   "installation_procedure": "OPENRDX_USB_UPDATE.md",
-  "installation_procedure_sha256": "8f7260d814dbb9696cc93429f1c37d2a3aeb9f111a8e568ed586782acc481daa",
+  "installation_procedure_sha256": "ffc5578578b1e00b677ac2830c3782bcd1c5fb1b20f99a8efae3f63c6f4fabfd",
   "installation_requires_rom_loader": true,
   "installation_updater": "rdx_manager_firmware_update.ps1",
   "installation_updater_sha256": "196a21ca757bd24447af2e43e65f14f1cb1b7b389dad2cd03b7c176e5b00a046",

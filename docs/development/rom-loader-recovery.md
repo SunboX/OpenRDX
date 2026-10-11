@@ -2,6 +2,11 @@
 
 ## Purpose
 
+For guided installation, management, and migration from vendor firmware, start
+with [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) and its
+[migration and interrupted-installation recovery guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md).
+The board-level TI procedure below is a separate advanced recovery reference.
+
 The [8 October 2026 native Windows verification](native-windows-update-2026-10-08.md)
 records a successful personalized small-bootstrap recovery, followed by a normal
 Manager update and complete physical SPI comparison on one receiver. It does not
@@ -49,8 +54,9 @@ No build or test command in this repository writes to hardware. Programming is
 always a separate, deliberate operator action.
 
 The bundled compatibility installer and its `-RestoreOpenRDX` alias are disabled
-before staging. Use an OpenRDX Manager installation/recovery workflow that backs up,
-restores, and verifies receiver-specific records. A generic FlashBurner success
+before staging. Use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager)
+for a supported installation/recovery workflow that backs up, restores, and
+verifies receiver-specific records. A generic FlashBurner success
 result or an application-only HEX is insufficient. If a record-preserving
 workflow is unavailable, stop before entering the ROM loader or programming.
 

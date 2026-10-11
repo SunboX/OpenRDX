@@ -7,7 +7,11 @@ OpenRDX reports revision `0109` for version `1.09`; earlier builds used the
 fixed marker `0001`. Other docks are outside the
 current support scope.
 
-For installation, follow the separate [guarded installation guide](installation.md).
+Use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) for installation,
+firmware updates, and management of OpenRDX-enabled devices. For migration from
+vendor firmware, follow the Manager's
+[migration guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md)
+and the separate [guarded installation guide](installation.md).
 For implementation detail and test limits, see
 [firmware behavior](../reference/firmware-behavior.md).
 
@@ -94,7 +98,17 @@ When this happens:
 4. For an RDX cartridge, treat damaged identity or access metadata as a
    cartridge-repair problem, not as permission to use the direct-disk path.
 
-## RDX Manager support
+## Manage your device with OpenRDXManager
+
+Use [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) to inspect dock and
+cartridge status, run supported diagnostics, safely eject media, manage available
+settings, and save private manufacturing-record backups. Its
+[app usage guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/app-usage.md)
+describes the controls. Available actions depend on the dock, firmware, operating
+system, and inserted media; follow the application's availability explanations.
+Formatting erases the selected medium and requires deliberate confirmation.
+
+### RDX Manager support
 
 OpenRDX supports a defined RDX Manager subset for receiver discovery, identity
 and status pages, selected saved controls, diagnostics, eject policy, and the

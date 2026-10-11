@@ -5,6 +5,13 @@ This maintainer guide describes the Windows release gate driven by
 also generate the complete `dist/` bundle; the release command adds the full
 automated test gate before that build.
 
+Direct device owners to [OpenRDXManager](https://github.com/SunboX/OpenRDXManager)
+for installation, updates, and management of OpenRDX-enabled devices. Release
+notes should also link to its
+[migration guide](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md)
+for supported devices still running vendor firmware, alongside the matching
+OpenRDX installation and recovery documentation.
+
 ## GitHub build and release automation
 
 The [GitHub Actions workflows](https://github.com/SunboX/OpenRDX/actions) build,
@@ -129,7 +136,11 @@ alongside all six individual installation files listed above:
 | `OpenRDX-v1-06-build.zip` | Compiler and linker outputs for maintainers |
 | `SHA256SUMS` | SHA-256 integrity list for the downloadable release assets |
 
-Use the installation ZIP for installation. The compiler-output ZIP contains
+Use the installation ZIP's verified BIN and matching JSON with
+[OpenRDXManager](https://github.com/SunboX/OpenRDXManager), following its
+[firmware update](https://github.com/SunboX/OpenRDXManager/blob/main/docs/firmware-updates.md)
+or [vendor-firmware migration](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md)
+guide as appropriate. The compiler-output ZIP contains
 development artifacts and does not replace the complete installation bundle.
 The bundled `.sha256` list validates the five accompanying installation files;
 the outer `SHA256SUMS` list validates the downloadable assets, including the

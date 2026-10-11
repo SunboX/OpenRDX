@@ -8,6 +8,12 @@ authoritative details live.
 
 ### Owners and operators
 
+- [OpenRDXManager](https://github.com/SunboX/OpenRDXManager) — the companion
+  application for installation, updates, and management of OpenRDX-enabled devices.
+- [Migrate from vendor firmware](https://github.com/SunboX/OpenRDXManager/blob/main/docs/migration.md)
+  — the Manager's supported first-installation workflow and preservation limits.
+- [Manage your device](https://github.com/SunboX/OpenRDXManager/blob/main/docs/app-usage.md)
+  — status, diagnostics, media utilities, and supported settings.
 - [Install OpenRDX](getting-started/installation.md) — safety checks, target
   selection, release verification, and the guarded update workflow.
 - [Update existing OpenRDX](getting-started/installation.md#update-existing-openrdx)
